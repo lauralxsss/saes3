@@ -971,6 +971,45 @@ body.inscription{margin:0;padding:0;}
   }
 }
 
+/* Bouton retour pour les deux pages */
+
+.back-button{
+  position: absolute;
+  top: 18px;
+  left: 24px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(226, 232, 240, 0.04);
+  transition: border-color .15s ease, color .15s ease, background .15s ease;
+}
+
+.back-button:hover{
+  color: var(--green);
+  border-color: var(--green);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.back-button svg{
+  flex: none;
+}
+
+@media (max-width: 860px){
+  .back-button{
+    top: 16px;
+    left: 16px;
+  }
+}
+
 
 /* --------------------------------------------- */
 

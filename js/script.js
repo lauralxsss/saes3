@@ -375,3 +375,108 @@ function initialiserCarrousels() {
         });
     });
 }
+
+
+/* --------------------------------------------- Page Connexion ----------------------------------------------------- */
+
+const form = document.getElementById('login-form');
+const toggleBtn = document.getElementById('toggle-password');
+const passwordInput = document.getElementById('password');
+const eyeIcon = document.getElementById('eye-icon');
+
+// Bascule l'affichage du mot de passe entre masqué (password) et visible (text)
+toggleBtn.addEventListener('click', () => {
+    const isHidden = passwordInput.type === 'password';
+    passwordInput.type = isHidden ? 'text' : 'password';
+
+    // Mise à jour des attributs d'accessibilité (lecteurs d'écran)
+    toggleBtn.setAttribute('aria-pressed', String(isHidden));
+    toggleBtn.setAttribute('aria-label', isHidden ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+
+    // Change l'icône : œil ouvert quand le mot de passe est visible, œil barré quand il est masqué
+    eyeIcon.innerHTML = isHidden
+    ? '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.6 21.6 0 0 1 5.06-5.94M9.9 4.24A10.9 10.9 0 0 1 12 4c7 0 11 7 11 7a21.7 21.7 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
+    : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>';
+});
+
+// Affiche ou masque le message d'erreur d'un champ en ajoutant/retirant la classe CSS "has-error"
+function setError(fieldId, show){
+    document.getElementById(fieldId).classList.toggle('has-error', show);
+}
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault(); // empêche le rechargement de la page (pas de backend relié pour l'instant)
+
+    const identifiant = document.getElementById('identifiant');
+    const password = document.getElementById('password');
+    let valid = true;
+
+    // Simple champ requis (fini la vérification de format email, l'identifiant n'a plus de type="email")
+    if (!identifiant.checkValidity()) { setError('field-identifiant', true); valid = false; }
+    else { setError('field-identifiant', false); }
+
+    if (!password.checkValidity()) { setError('field-password', true); valid = false; }
+    else { setError('field-password', false); }
+
+    // Si tous les champs sont valides, on simule l'envoi (à remplacer par un vrai appel au backend)
+    if (valid) {
+        form.reset();
+        alert('Connexion simulée : aucun backend n\'est relié à ce formulaire.');
+    }
+});
+
+
+/* ---------------------------------------------------- Page Inscription ------------------------------------------------- */
+
+const form = document.getElementById('signup-form');
+const toggleBtn = document.getElementById('toggle-password');
+const passwordInput = document.getElementById('password');
+const eyeIcon = document.getElementById('eye-icon');
+
+// Bascule l'affichage du mot de passe entre masqué (password) et visible (text)
+toggleBtn.addEventListener('click', () => {
+    const isHidden = passwordInput.type === 'password';
+    // Si le champ était masqué, on le passe en clair, et inversement
+    passwordInput.type = isHidden ? 'text' : 'password';
+
+    // Mise à jour des attributs d'accessibilité (lecteurs d'écran)
+    toggleBtn.setAttribute('aria-pressed', String(isHidden));
+    toggleBtn.setAttribute('aria-label', isHidden ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+
+    // Change l'icône : œil ouvert quand le mot de passe est visible, œil barré quand il est masqué
+    eyeIcon.innerHTML = isHidden
+    ? '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.6 21.6 0 0 1 5.06-5.94M9.9 4.24A10.9 10.9 0 0 1 12 4c7 0 11 7 11 7a21.7 21.7 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
+    : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>';
+});
+
+// Affiche ou masque le message d'erreur d'un champ en ajoutant/retirant la classe CSS "has-error"
+function setError(fieldId, show){
+    document.getElementById(fieldId).classList.toggle('has-error', show);
+}
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault(); // on gère la validation nous-mêmes, pas de rechargement de page
+
+    // Liste des champs à vérifier : [id du champ, id du bloc .field associé (pour l'erreur)]
+    // Mise à jour : pseudo + identifiant + mot de passe (fini nom/prénom/naissance/email)
+    const fields = [
+        ['pseudo', 'field-pseudo'],
+        ['identifiant', 'field-identifiant'],
+        ['password', 'field-password'],
+    ];
+    let valid = true;
+
+    // On boucle sur tous les champs plutôt que de dupliquer le if/else pour chacun
+    fields.forEach(([id, fieldId]) => {
+        const input = document.getElementById(id);
+        const ok = input.checkValidity(); // utilise les règles HTML natives (required, minlength...)
+        setError(fieldId, !ok);
+        if (!ok) valid = false;
+    });
+
+    // Tous les champs sont valides -> simulation d'envoi (à remplacer par l'appel réel au backend d'inscription)
+    if (valid) {
+        form.reset();
+        alert('Inscription simulée : aucun backend n\'est relié à ce formulaire.');
+    }
+});
