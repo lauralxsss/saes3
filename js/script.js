@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     genererCartes(marketData.actions, 'actions-container');
     genererCartes(marketData.indices, 'indices-container');
@@ -28,38 +29,96 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchFrenchNews();
 });
 
+
 async function fetchFrenchNews() {
     const container = document.getElementById('news-container');
-    const url = 'https://newsdata.io/api/1/latest?apikey=pub_4d6d2165e3f746d2bd6f579688055847&q=bourse&country=fr&language=fr';
 
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Erreur réseau");
-        const data = await response.json();
-        
+    // Le Plan B : De VRAIS liens vers les sites officiels en direct.
+    // Si l'API est bloquée, les étudiants pourront quand même cliquer et lire les vraies infos du jour.
+    const fallbackArticles = [
+        {
+            title: "🔴 En direct : Suivez l'évolution du CAC 40 et des actions",
+            link: "https://www.boursorama.com/bourse/actions/palmares/france/page-1",
+            source: "Boursorama",
+            image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
+        },
+        {
+            title: "Toutes les dernières actualités économiques et financières",
+            link: "https://www.lesechos.fr/finance-marches",
+            source: "Les Échos",
+            image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
+        },
+        {
+            title: "Crypto-monnaies : Le point sur le Bitcoin et l'Ethereum aujourd'hui",
+            link: "https://fr.cryptonews.com/",
+            source: "CryptoNews",
+            image: "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
+        },
+        {
+            title: "Analyse des marchés : Quelles sont les tendances de la semaine ?",
+            link: "https://www.zonebourse.com/actualite-bourse/",
+            source: "ZoneBourse",
+            image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
+        }
+    ];
+
+    // Fonction interne pour générer l'affichage HTML
+    const renderArticles = (articles, isFallback = false) => {
         container.innerHTML = '';
-        const articles = data.results.slice(0, 4);
-
-        articles.forEach(article => {
-            const dateObj = new Date(article.pubDate);
-            const date = dateObj.toLocaleDateString('fr-FR') + ' à ' + dateObj.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+        articles.forEach((article) => {
+            // Si on utilise le plan B, on affiche "En direct" à la place de l'heure
+            const dateText = isFallback ? "En direct" : article.dateStr;
             
             container.innerHTML += `
                 <div class="news-article">
-                    <a href="${article.link}" target="_blank">${article.title}</a>
-                    <div class="news-meta">
-                        <span>${article.source_id || "Actualité"}</span> • <span>${date}</span>
+                    <div class="news-image-container">
+                        <img src="${article.image}" alt="Actu" class="news-img">
                     </div>
-                </div>
-            `;
+                    <div class="news-content">
+                        <a href="${article.link}" target="_blank" style="text-decoration: none; font-weight: 500; transition: color 0.2s;">
+                            ${article.title}
+                        </a>
+                        <div class="news-meta"><span>${article.source}</span> • <span>${dateText}</span></div>
+                    </div>
+                </div>`;
         });
+    };
+
+    try {
+        // Tentative avec le flux RSS de Yahoo Finance et le proxy Codetabs (très peu bloqué)
+        const rssUrl = 'https://fr.finance.yahoo.com/actualites/rss';
+        const apiUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`;
+
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("Bloqué par le réseau ou le navigateur");
+
+        const text = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, "text/xml");
+
+        const items = Array.from(xmlDoc.querySelectorAll("item")).slice(0, 4);
+        if (items.length === 0) throw new Error("Flux vide");
+
+        // On formate les vrais articles récupérés
+        const liveArticles = items.map((item, index) => {
+            const dateObj = new Date(item.querySelector("pubDate")?.textContent);
+            return {
+                title: item.querySelector("title")?.textContent || "Titre indisponible",
+                link: item.querySelector("link")?.textContent || "#",
+                source: "Yahoo Finance",
+                dateStr: dateObj.toLocaleDateString('fr-FR') + ' à ' + dateObj.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}),
+                // On utilise les belles images de secours pour illustrer
+                image: fallbackArticles[index % fallbackArticles.length].image
+            };
+        });
+
+        // On affiche les vraies infos
+        renderArticles(liveArticles, false);
+
     } catch (error) {
-        container.innerHTML = `
-            <div class="news-article">
-                <a href="#" target="_blank">Les marchés européens ouvrent en hausse ce matin</a>
-                <div class="news-meta"><span>Actualité Bourse</span> • <span>À l'instant</span></div>
-            </div>
-        `;
+        console.warn("⚠️ API bloquée par le navigateur ou le Wi-Fi. Activation des liens de secours cliquables.");
+        // Si ça bloque, on affiche nos VRAIS LIENS vers Boursorama, Les Échos, etc.
+        renderArticles(fallbackArticles, true);
     }
 }
 
@@ -118,3 +177,49 @@ function genererCartes(donnees, containerId) {
         container.appendChild(card);
     });
 }
+
+// 2. Fonction pour simuler l'agenda économique
+function simulateCalendar() {
+    const container = document.getElementById('calendar-container');
+    container.innerHTML = '<p style="text-align:center; padding:15px; color:#94A3B8;"><i class="fa-solid fa-spinner fa-spin"></i> Actualisation...</p>';
+    
+    setTimeout(() => {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const nextDay = new Date(today);
+        nextDay.setDate(nextDay.getDate() + 2);
+        
+        const days = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
+        
+        container.innerHTML = `
+            <div class="calendar-item">
+                <div class="cal-date">${days[today.getDay()]}<br><span>14:30</span></div>
+                <div class="cal-event">
+                    <span class="event-title">Taux d'inflation (USA)</span>
+                    <span class="event-impact impact-high">Impact Fort</span>
+                </div>
+            </div>
+            <div class="calendar-item">
+                <div class="cal-date">${days[tomorrow.getDay()]}<br><span>09:00</span></div>
+                <div class="cal-event">
+                    <span class="event-title">Discours BCE (Europe)</span>
+                    <span class="event-impact impact-medium">Impact Moyen</span>
+                </div>
+            </div>
+            <div class="calendar-item">
+                <div class="cal-date">${days[nextDay.getDay()]}<br><span>22:00</span></div>
+                <div class="cal-event">
+                    <span class="event-title">Résultats financiers Trimestriels</span>
+                    <span class="event-impact impact-high">Impact Fort</span>
+                </div>
+            </div>`;
+    }, 800);
+}
+
+// Lancement au chargement
+document.addEventListener('DOMContentLoaded', () => {
+    fetchFrenchNews();
+    simulateCalendar();
+});
+
