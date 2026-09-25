@@ -18,6 +18,8 @@ body {
     background-color: var(--bg-main);
     color: var(--text-main);
     font-family: 'Inter', sans-serif;
+    /* La SEULE ligne nécessaire pour réparer le bandeau sans casser le reste : */
+    overflow-x: hidden; 
 }
 
 #app { 
@@ -31,7 +33,7 @@ body {
 }
 
 /* =========================================
-   NAVBAR
+   NAVBAR (Retour à ton design parfait)
    ========================================= */
 .navbar {
     display: flex;
@@ -52,7 +54,48 @@ body {
 .btn-login:hover { background-color: #2563EB; }
 
 /* =========================================
-   TICKER (Bandeau défilant)
+   DROPDOWN MENU
+   ========================================= */
+.dropdown { 
+    position: relative; 
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px 0;
+    margin: 0;
+    list-style: none;
+    min-width: 180px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.dropdown:hover .dropdown-menu { 
+    display: block; 
+}
+
+.dropdown-menu li a {
+    display: block;
+    padding: 10px 20px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: 0.2s;
+}
+
+.dropdown-menu li a:hover {
+    background-color: var(--bg-main);
+    color: var(--color-primary);
+}
+
+/* =========================================
+   TICKER (Bandeau - Retour à ton code d'origine)
    ========================================= */
 .market-ticker {
     background-color: #0F1219;
@@ -69,7 +112,7 @@ body {
 .ticker-item { display: flex; gap: 10px; align-items: center; }
 .ticker-name { color: var(--text-secondary); font-weight: 600; }
 .change-up { color: var(--color-up); font-weight: 500; }
-.change-down { color: var(--color-down); font-weight: 500; }
+.change-down { color: var(--color-down); font-weight: 500; font-family: 'Inter', sans-serif; }
 @keyframes scroll-ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 /* =========================================
@@ -116,7 +159,6 @@ body.trader-investir {
     align-items: baseline;
 }
     
-
 .voir-tout {
     font-size: 0.9rem;
     color: #3498db;
@@ -271,11 +313,12 @@ section h2 { font-size: 1.2rem; margin-bottom: 20px; color: var(--text-main); }
 .impact-high { background-color: rgba(239, 68, 68, 0.15); color: var(--color-down); border: 1px solid rgba(239, 68, 68, 0.3); }
 .impact-medium { background-color: rgba(245, 158, 11, 0.15); color: #F59E0B; border: 1px solid rgba(245, 158, 11, 0.3); }
 
-
+/* =========================================
+   FOOTER
+   ========================================= */
 .app-footer { margin-top: 60px; border-top: 1px solid var(--border-color); padding: 30px 0; font-size: 0.9rem; }
 .footer-content { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .footer-logo { font-weight: 700; color: var(--text-secondary); font-size: 1.2rem; }
 .footer-links a { color: var(--text-secondary); text-decoration: none; margin: 0 15px; }
 .footer-status { color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
 .footer-bottom { text-align: center; color: #475569; font-size: 0.8rem; }
-

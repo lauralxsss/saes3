@@ -10,18 +10,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Liens vers tes fichiers (doivent être dans le même dossier que ce HTML) -->
     <link href="css/style.css" rel="stylesheet">
     <script src="js/script.js" defer></script>
 </head>
 <body>
     
-    <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-logo"><i class="fa-solid fa-chart-line"></i> TradeLab</div>
         
         <ul class="nav-links">
-            <li><a href="#"><i class="fa-solid fa-arrow-trend-up"></i> Trader & Investir ▾</a></li>
+            <li class="dropdown">
+                <a href="#"><i class="fa-solid fa-arrow-trend-up"></i> Trader & Investir ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="actions.html"><i class="fa-solid fa-building"></i> Actions</a></li>
+                    <li><a href="indices.html"><i class="fa-solid fa-chart-pie"></i> Indices</a></li>
+                    <li><a href="devises.html"><i class="fa-solid fa-coins"></i> Devises</a></li>
+                </ul>
+            </li>
             <li><a href="#"><i class="fa-regular fa-newspaper"></i> Actus</a></li>
             <li><a href="#"><i class="fa-solid fa-trophy"></i> Classement</a></li>
         </ul>
@@ -31,7 +36,6 @@
         </div>
     </nav>
 
-    <!-- Bandeau Ticker Animé -->
     <div class="market-ticker">
         <div class="ticker-track">
             <div class="ticker-item"><span class="ticker-name">CAC 40</span> <span class="price">7 345,20 €</span> <span class="change-up">+0.5%</span></div>
@@ -50,7 +54,6 @@
 
     <div id="app">
         <main>
-            <!-- Header avec actions rapides -->
             <header class="dashboard-header">
                 <div class="header-titles">
                     <h1>Vue d'ensemble</h1>
@@ -64,10 +67,8 @@
                 </div>
             </header>
 
-            <!-- Layout en 2 colonnes -->
             <div class="dashboard-layout">
                 
-                <!-- Colonne Gauche -->
                 <div class="main-column">
                     <section class="trending-section">
                         <h2><i class="fa-solid fa-fire" style="color: #F59E0B;"></i> Actions populaires</h2>
@@ -130,7 +131,6 @@
                     </section>
                 </div>
 
-                <!-- Colonne Droite -->
                 <aside class="sidebar-column">
                     <div class="sidebar-widget">
                         <h3><i class="fa-solid fa-star"></i> Watchlist</h3>
