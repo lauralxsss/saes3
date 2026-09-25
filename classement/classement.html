@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeLab - Classement</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="../css/style.css" rel="stylesheet">
+    <script src="../js/script.js" defer></script>
+</head>
+<body>
+    
+    <nav class="navbar">
+        <div class="nav-logo" onclick="window.location.href='index.html'" style="cursor: pointer;"><i class="fa-solid fa-chart-line"></i> TradeLab</div>
+        
+        <ul class="nav-links">
+            <li class="dropdown">
+                <a href="../index.html"><i class="fa-solid fa-arrow-trend-up"></i> Trader & Investir ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="actions.html"><i class="fa-solid fa-building"></i> Actions</a></li>
+                    <li><a href="indices.html"><i class="fa-solid fa-chart-pie"></i> Indices</a></li>
+                    <li><a href="devises.html"><i class="fa-solid fa-coins"></i> Devises</a></li>
+                </ul>
+            </li>
+            <li><a href="index.html"><i class="fa-regular fa-newspaper"></i> Actus</a></li>
+            <li><a href="classement.html" style="color: var(--color-primary);"><i class="fa-solid fa-trophy"></i> Classement</a></li>
+        </ul>
+
+        <div class="nav-auth">
+<button class="btn-primary" onclick="window.location.href='connexion/connexion.html'">Connexion</button>        </div>
+    </nav>
+
+    <div class="market-ticker">
+        <div class="ticker-track">
+            <div class="ticker-item"><span class="ticker-name">CAC 40</span> <span class="price">7 345,20 €</span> <span class="change-up">+0.5%</span></div>
+            <div class="ticker-item"><span class="ticker-name">S&P 500</span> <span class="price">4 450,10 $</span> <span class="change-up">+1.2%</span></div>
+            <div class="ticker-item"><span class="ticker-name">NASDAQ</span> <span class="price">13 761,50 $</span> <span class="change-down">-0.3%</span></div>
+            <div class="ticker-item"><span class="ticker-name">DAX 40</span> <span class="price">15 840,30 €</span> <span class="change-up">+0.8%</span></div>
+            <div class="ticker-item"><span class="ticker-name">DOW JONES</span> <span class="price">34 500,20 $</span> <span class="change-down">-0.1%</span></div>
+            
+            <div class="ticker-item"><span class="ticker-name">CAC 40</span> <span class="price">7 345,20 €</span> <span class="change-up">+0.5%</span></div>
+            <div class="ticker-item"><span class="ticker-name">S&P 500</span> <span class="price">4 450,10 $</span> <span class="change-up">+1.2%</span></div>
+            <div class="ticker-item"><span class="ticker-name">NASDAQ</span> <span class="price">13 761,50 $</span> <span class="change-down">-0.3%</span></div>
+            <div class="ticker-item"><span class="ticker-name">DAX 40</span> <span class="price">15 840,30 €</span> <span class="change-up">+0.8%</span></div>
+            <div class="ticker-item"><span class="ticker-name">DOW JONES</span> <span class="price">34 500,20 $</span> <span class="change-down">-0.1%</span></div>
+        </div>
+    </div>
+
+    <div id="app">
+        <main>
+            <header class="dashboard-header">
+                <div class="header-titles">
+                    <h1><i class="fa-solid fa-trophy" style="color: #F59E0B;"></i> Classement Général</h1>
+                    <div class="market-status badge-open">
+                        <span class="status-dot"></span> <span id="mode-indicator">Mode : Temps Réel (Live)</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-outline" id="btn-live" onclick="switchMode('live')"><i class="fa-solid fa-bolt"></i> Temps Réel</button>
+                    <button class="btn-outline" id="btn-weekly" onclick="switchMode('weekly')"><i class="fa-regular fa-calendar-days"></i> Bilan Hebdomadaire</button>
+                </div>
+            </header>
+
+            <section class="podium-section">
+                <div class="podium-grid">
+                    <div class="podium-card rank-2">
+                        <div class="podium-medal"><i class="fa-solid fa-medal" style="color: #94A3B8;"></i> 2ème</div>
+                        <div class="podium-name">Lucas M.</div>
+                        <div class="podium-capital price">12 450,80 €</div>
+                        <div class="change-up">+24.5%</div>
+                    </div>
+
+                    <div class="podium-card rank-1">
+                        <div class="podium-medal"><i class="fa-solid fa-crown" style="color: #F59E0B;"></i> 1er</div>
+                        <div class="podium-name">Thomas V. (Équipe 4)</div>
+                        <div class="podium-capital price">14 820,50 €</div>
+                        <div class="change-up">+48.2%</div>
+                    </div>
+
+                    <div class="podium-card rank-3">
+                        <div class="podium-medal"><i class="fa-solid fa-medal" style="color: #B45309;"></i> 3ème</div>
+                        <div class="podium-name">Sarah D.</div>
+                        <div class="podium-capital price">11 930,10 €</div>
+                        <div class="change-up">+19.3%</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="portfolio-section">
+                <h2><i class="fa-solid fa-list-ol"></i> Tableau des scores</h2>
+                <div class="table-container">
+                    <table class="portfolio-table">
+                        <thead>
+                            <tr>
+                                <th>Rang</th>
+                                <th>Utilisateur / Équipe</th>
+                                <th>Trades réalisés</th>
+                                <th>Portefeuille Virtuel</th>
+                                <th>Performance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>#1</strong></td>
+                                <td><div class="asset-info"><strong>Thomas V.</strong><span>Équipe 4 (Votre projet)</span></div></td>
+                                <td>28</td>
+                                <td class="price">14 820,50 €</td>
+                                <td class="change-up">+48.2%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>#2</strong></td>
+                                <td><div class="asset-info"><strong>Lucas M.</strong><span>Équipe 2</span></div></td>
+                                <td>34</td>
+                                <td class="price">12 450,80 €</td>
+                                <td class="change-up">+24.5%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>#3</strong></td>
+                                <td><div class="asset-info"><strong>Sarah D.</strong><span>Équipe 6</span></div></td>
+                                <td>19</td>
+                                <td class="price">11 930,10 €</td>
+                                <td class="change-up">+19.3%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>#4</strong></td>
+                                <td><div class="asset-info"><strong>Mehdi B.</strong><span>Équipe 1</span></div></td>
+                                <td>22</td>
+                                <td class="price">10 420,00 €</td>
+                                <td class="change-up">+4.2%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>#5</strong></td>
+                                <td><div class="asset-info"><strong>Chloé P.</strong><span>Équipe 5</span></div></td>
+                                <td>15</td>
+                                <td class="price">9 850,30 €</td>
+                                <td class="change-down">-1.5%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="app-footer">
+        <div class="footer-content">
+            <div class="footer-logo"><i class="fa-solid fa-chart-line"></i> TradeLab</div>
+            <div class="footer-links"><a href="#">Conditions</a><a href="#">Confidentialité</a></div>
+            <div class="footer-status"><span class="status-dot"></span> Systèmes opérationnels</div>
+        </div>
+        <div class="footer-bottom">&copy; 2026 SAE Simulateur Boursier - Équipe 4. Projet étudiant.</div>
+    </footer>
+
+</body>
+</html>

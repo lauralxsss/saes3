@@ -29,39 +29,31 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchFrenchNews();
 });
 
-
+// --- 1. GESTION DES ACTUALITÉS ---
 async function fetchFrenchNews() {
     const container = document.getElementById('news-container');
+    if (!container) return; 
 
-    // Le Plan B : De VRAIS liens vers les sites officiels en direct.
-    // Si l'API est bloquée, les étudiants pourront quand même cliquer et lire les vraies infos du jour.
     const fallbackArticles = [
-        {
-            title: "🔴 En direct : Suivez l'évolution du CAC 40 et des actions",
-            link: "https://www.boursorama.com/bourse/actions/palmares/france/page-1",
-            source: "Boursorama",
-            image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
-        },
-        {
-            title: "Toutes les dernières actualités économiques et financières",
-            link: "https://www.lesechos.fr/finance-marches",
-            source: "Les Échos",
-            image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
-        },
-        {
-            title: "Crypto-monnaies : Le point sur le Bitcoin et l'Ethereum aujourd'hui",
-            link: "https://fr.cryptonews.com/",
-            source: "CryptoNews",
-            image: "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
-        },
-        {
-            title: "Analyse des marchés : Quelles sont les tendances de la semaine ?",
-            link: "https://www.zonebourse.com/actualite-bourse/",
-            source: "ZoneBourse",
-            image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60"
-        }
+        { title: "🔴 En direct : Suivez l'évolution du CAC 40 et des actions", link: "https://www.boursorama.com/", source: "Boursorama", image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=500&q=60" },
+        { title: "Toutes les dernières actualités économiques et financières", link: "https://www.lesechos.fr/", source: "Les Échos", image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=500&q=60" },
+        { title: "Analyse des marchés : Quelles sont les tendances de la semaine ?", link: "https://www.zonebourse.com/", source: "ZoneBourse", image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=500&q=60" }
     ];
 
+    container.innerHTML = '';
+    fallbackArticles.forEach((article) => {
+        container.innerHTML += `
+            <div class="news-article">
+                <div class="news-image-container"><img src="${article.image}" alt="Actu" class="news-img"></div>
+                <div class="news-content">
+                    <a href="${article.link}" target="_blank">${article.title}</a>
+                    <div class="news-meta"><span>${article.source}</span> • <span>En direct</span></div>
+                </div>
+            </div>`;
+    });
+}
+
+// --- 2. AGENDA ÉCONOMIQUE ---
     // Fonction interne pour générer l'affichage HTML
     const renderArticles = (articles, isFallback = false) => {
         container.innerHTML = '';
@@ -182,49 +174,113 @@ function genererCartes(donnees, containerId) {
 // 2. Fonction pour simuler l'agenda économique
 function simulateCalendar() {
     const container = document.getElementById('calendar-container');
-    container.innerHTML = '<p style="text-align:center; padding:15px; color:#94A3B8;"><i class="fa-solid fa-spinner fa-spin"></i> Actualisation...</p>';
+    if (!container) return; 
     
-    setTimeout(() => {
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const nextDay = new Date(today);
-        nextDay.setDate(nextDay.getDate() + 2);
-        
-        const days = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
-        
-        container.innerHTML = `
-            <div class="calendar-item">
-                <div class="cal-date">${days[today.getDay()]}<br><span>14:30</span></div>
-                <div class="cal-event">
-                    <span class="event-title">Taux d'inflation (USA)</span>
-                    <span class="event-impact impact-high">Impact Fort</span>
-                </div>
-            </div>
-            <div class="calendar-item">
-                <div class="cal-date">${days[tomorrow.getDay()]}<br><span>09:00</span></div>
-                <div class="cal-event">
-                    <span class="event-title">Discours BCE (Europe)</span>
-                    <span class="event-impact impact-medium">Impact Moyen</span>
-                </div>
-            </div>
-            <div class="calendar-item">
-                <div class="cal-date">${days[nextDay.getDay()]}<br><span>22:00</span></div>
-                <div class="cal-event">
-                    <span class="event-title">Résultats financiers Trimestriels</span>
-                    <span class="event-impact impact-high">Impact Fort</span>
-                </div>
-            </div>`;
-    }, 800);
+    const days = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
+    const today = new Date();
+    const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    container.innerHTML = `
+        <div class="calendar-item">
+            <div class="cal-date">${days[today.getDay()]}<br><span>14:30</span></div>
+            <div class="cal-event"><span class="event-title">Taux d'inflation (USA)</span><span class="event-impact impact-high">Impact Fort</span></div>
+        </div>
+        <div class="calendar-item">
+            <div class="cal-date">${days[tomorrow.getDay()]}<br><span>09:00</span></div>
+            <div class="cal-event"><span class="event-title">Discours BCE (Europe)</span><span class="event-impact impact-medium">Impact Moyen</span></div>
+        </div>`;
 }
 
-// Lancement au chargement
+// --- 3. SIMULATEUR DE MARCHÉ "TRADINGVIEW" (Effet Flash) ---
+let marketInterval;
+let isLive = false;
+
+// Fonction pour faire flasher un élément en vert ou rouge
+function flashElement(element, isUp) {
+    const flashClass = isUp ? 'flash-up' : 'flash-down';
+    element.classList.remove('flash-up', 'flash-down');
+    void element.offsetWidth; // Force le reflow pour relancer l'animation
+    element.classList.add(flashClass);
+    setTimeout(() => element.classList.remove(flashClass), 1000);
+}
+
+// Modifie légèrement les prix au hasard
+function tickMarket() {
+    if (!isLive) return;
+
+    // Cible les éléments contenant des pourcentages (+X.X% ou -X.X%)
+    const changeElements = document.querySelectorAll('.change-up, .change-down');
+    
+    // On ne fait bouger que 2 ou 3 éléments à la fois pour plus de réalisme
+    const elementsToTick = Array.from(changeElements).sort(() => 0.5 - Math.random()).slice(0, 3);
+
+    elementsToTick.forEach(el => {
+        // Extraction du nombre actuel (ex: +4.52%)
+        let text = el.innerText.trim();
+        let value = parseFloat(text.replace(/[^0-9.-]+/g, ""));
+        
+        if (!isNaN(value)) {
+            // Variation aléatoire entre -0.05 et +0.05
+            let variation = (Math.random() * 0.1) - 0.05;
+            let newValue = (value + variation).toFixed(2);
+            let isPositive = newValue >= 0;
+            
+            // Mise à jour du texte et de la classe
+            el.innerText = (isPositive ? '+' : '') + newValue + '%';
+            el.className = isPositive ? 'change-up' : 'change-down';
+            
+            // On déclenche l'animation visuelle de Flash
+            flashElement(el, isPositive);
+        }
+    });
+}
+
+function switchMode(mode) {
+    const btnLive = document.getElementById('btn-live');
+    const btnWeekly = document.getElementById('btn-weekly');
+    const indicator = document.getElementById('mode-indicator');
+    
+    if (!btnLive || !btnWeekly) return;
+
+    if (mode === 'live') {
+        isLive = true;
+        btnLive.style.background = 'linear-gradient(135deg, #2962FF, #1E4BD8)';
+        btnLive.style.color = 'white';
+        btnLive.style.border = 'none';
+        btnWeekly.style.background = 'transparent';
+        btnWeekly.style.color = 'var(--text-main)';
+        btnWeekly.style.border = '1px solid var(--border-color)';
+        if(indicator) indicator.innerHTML = "<span class='status-dot'></span> Mode : Temps Réel (Live)";
+        
+        // Lancer les "ticks" du marché
+        marketInterval = setInterval(tickMarket, 1500);
+    } else {
+        isLive = false;
+        clearInterval(marketInterval);
+        
+        btnWeekly.style.background = 'var(--color-primary)';
+        btnWeekly.style.color = 'white';
+        btnWeekly.style.border = 'none';
+        btnLive.style.background = 'transparent';
+        btnLive.style.color = 'var(--text-main)';
+        btnLive.style.border = '1px solid var(--border-color)';
+        if(indicator) indicator.innerHTML = "<span class='status-dot' style='background: #787B86; box-shadow: none;'></span> Mode : Bilan Semaine 4";
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     fetchFrenchNews();
     simulateCalendar();
+    
+    // Activer le mode Live par défaut si les boutons existent
+    if (document.getElementById('btn-live')) {
+        switchMode('live');
+    } else {
+        // Si on est sur l'accueil, on active l'animation de marché quand même !
+        isLive = true;
+        marketInterval = setInterval(tickMarket, 2000);
+    }
 });
-
-
 
 document.addEventListener('DOMContentLoaded', async () => {
     const extendedActions = [
