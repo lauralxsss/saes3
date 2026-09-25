@@ -242,7 +242,7 @@ body.trader-investir {
     background-color: #1a252f;
 }
 
-<<<<<<< HEAD
+HEAD
 .header-actions { display: flex; gap: 15px; }
 .btn-primary { background-color: var(--color-primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
 .btn-outline { background-color: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
@@ -323,7 +323,7 @@ section h2 { font-size: 1.2rem; margin-bottom: 20px; color: var(--text-main); }
 .footer-links a { color: var(--text-secondary); text-decoration: none; margin: 0 15px; }
 .footer-status { color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
 .footer-bottom { text-align: center; color: #475569; font-size: 0.8rem; }
-=======
+
 
 /* --------------------------------------- Page connexion -------------------------------------- */
 
@@ -942,4 +942,5 @@ body.inscription{margin:0;padding:0;}
   }
 }
 
->>>>>>> aa2065c (css inscription et connexion mis dans le fichier commun)
+
+/* --------------------------------------------- */
