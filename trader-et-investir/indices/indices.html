@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indices - TradeLab</title>
+    <link href="/css/style.css" rel="stylesheet">
+    <script src="/js/script.js" async></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">TradeLab</div>
+        
+        <ul class="nav-links">
+            <li class="dropdown">
+                <a href="#">Trader & Investir ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Actions</a></li>
+                    <li><a href="#">Indices</a></li>
+                    <li><a href="#">Devises</a></li>
+                    <li><a href="#">Marchés</a></li>
+                </ul>
+            </li>
+
+            <!-- Le menu Portefeuille a été retiré d'ici -->
+
+            <li><a href="#">Actus</a></li>
+            <li><a href="#">Classement</a></li>
+            <li><a href="#">Conseils boursiers</a></li>
+        </ul>
+
+        <!-- Zone d'authentification et Profil -->
+        <div class="nav-auth">
+            <!-- Bouton classique -->
+            <button id="login-btn" class="btn-login">Connexion</button>
+
+            <!-- Profil connecté (Caché par défaut) -->
+            <div id="user-menu" style="display: none;">
+                <div class="nav-balance price">100 000,00 €</div>
+                
+                <div class="dropdown">
+                    <div class="profile-trigger">
+                        <img src="https://ui-avatars.com/api/?name=Alex+Trader&background=3B82F6&color=fff" alt="Profil" class="profile-pic">
+                        <span class="profile-name">Alex Trader ▾</span>
+                    </div>
+                    <!-- Menu du profil mis à jour avec le portefeuille -->
+                    <ul class="dropdown-menu profile-menu">
+                        <!-- Section Portefeuille -->
+                        <li><a href="#" style="font-weight: 600; color: var(--color-primary);">Mon Portefeuille</a></li>
+                        <li><a href="#">Graphique des actions</a></li>
+                        <li><a href="#">Historique des opérations</a></li>
+                        <li><a href="#">Recharger le solde</a></li>
+                        
+                        <div class="menu-divider"></div>
+                        
+                        <!-- Section Paramètres -->
+                        <li><a href="#">Préférences</a></li>
+                        <li><a href="#">Paramètres du compte</a></li>
+                        
+                        <div class="menu-divider"></div>
+                        
+                        <!-- Déconnexion -->
+                        <li><a href="#" id="logout-btn" style="color: var(--color-down);">Déconnexion</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <p>Indices</p>
+</body>
+</html>

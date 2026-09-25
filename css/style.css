@@ -237,3 +237,93 @@ h2 { font-size: 1.2rem; margin-bottom: 20px; color: var(--text-secondary); }
     font-weight: 500;
     font-family: 'Inter', sans-serif;
 }
+
+
+
+
+
+
+
+
+.voir-tout {
+    font-size: 0.9rem;
+    color: #3498db;
+    text-decoration: none;
+}
+
+.voir-tout:hover {
+    text-decoration: underline;
+}
+
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.asset-name {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.asset-ticker {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.history {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.history div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.positive { color: #27ae60; font-weight: bold; }
+.negative { color: #c0392b; font-weight: bold; }
+
+.btn-trade {
+    margin-top: auto;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-trade:hover {
+    background-color: #1a252f;
+}

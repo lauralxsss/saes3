@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trader et Investir - Simulation Boursière</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/script.js" async defer></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-logo">TradeLab</div>
+        
+        <ul class="nav-links">
+            <li class="dropdown">
+                <a href="#">Trader & Investir ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Actions</a></li>
+                    <li><a href="#">Indices</a></li>
+                    <li><a href="#">Devises</a></li>
+                    <li><a href="#">Marchés</a></li>
+                </ul>
+            </li>
+
+            <!-- Le menu Portefeuille a été retiré d'ici -->
+
+            <li><a href="#">Actus</a></li>
+            <li><a href="#">Classement</a></li>
+            <li><a href="#">Conseils boursiers</a></li>
+        </ul>
+
+        <!-- Zone d'authentification et Profil -->
+        <div class="nav-auth">
+            <!-- Bouton classique -->
+            <button id="login-btn" class="btn-login">Connexion</button>
+
+            <!-- Profil connecté (Caché par défaut) -->
+            <div id="user-menu" style="display: none;">
+                <div class="nav-balance price">100 000,00 €</div>
+                
+                <div class="dropdown">
+                    <div class="profile-trigger">
+                        <img src="https://ui-avatars.com/api/?name=Alex+Trader&background=3B82F6&color=fff" alt="Profil" class="profile-pic">
+                        <span class="profile-name">Alex Trader ▾</span>
+                    </div>
+                    <!-- Menu du profil mis à jour avec le portefeuille -->
+                    <ul class="dropdown-menu profile-menu">
+                        <!-- Section Portefeuille -->
+                        <li><a href="#" style="font-weight: 600; color: var(--color-primary);">Mon Portefeuille</a></li>
+                        <li><a href="#">Graphique des actions</a></li>
+                        <li><a href="#">Historique des opérations</a></li>
+                        <li><a href="#">Recharger le solde</a></li>
+                        
+                        <div class="menu-divider"></div>
+                        
+                        <!-- Section Paramètres -->
+                        <li><a href="#">Préférences</a></li>
+                        <li><a href="#">Paramètres du compte</a></li>
+                        
+                        <div class="menu-divider"></div>
+                        
+                        <!-- Déconnexion -->
+                        <li><a href="#" id="logout-btn" style="color: var(--color-down);">Déconnexion</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Trader et Investir</h1>
+        <p style="text-align: center; color: #7f8c8d;">Aperçu des marchés financiers pour votre simulation.</p>
+
+        <h2>
+            Actions en vue 
+            <a href="actions.html" class="voir-tout">Voir toutes les actions &rarr;</a>
+        </h2>
+        <div class="grid-cards" id="actions-container"></div>
+
+        <h2>
+            Indices mondiaux
+            <a href="indices.html" class="voir-tout">Voir tous les indices &rarr;</a>
+        </h2>
+        <div class="grid-cards" id="indices-container"></div>
+
+        <h2>
+            Devises
+            <a href="devises.html" class="voir-tout">Voir toutes les devises &rarr;</a>
+        </h2>
+        <div class="grid-cards" id="devises-container"></div>
+    </div>
+
+    <script>
+        const marketData = {
+            actions: [
+                { nom: "Apple Inc.", ticker: "AAPL", prix: 175.50, devise: "€", hist: { "1J": "+1.2%", "7J": "+3.5%", "1M": "-2.1%", "6M": "+12.4%" } },
+                { nom: "LVMH", ticker: "MC.PA", prix: 840.20, devise: "€", hist: { "1J": "-0.8%", "7J": "-1.5%", "1M": "+4.2%", "6M": "+8.1%" } },
+                { nom: "TotalEnergies", ticker: "TTE", prix: 62.30, devise: "€", hist: { "1J": "+0.5%", "7J": "+2.1%", "1M": "+5.6%", "6M": "-1.2%" } }
+            ],
+            indices: [
+                { nom: "CAC 40", ticker: "^FCHI", prix: 7350.45, devise: "pts", hist: { "1J": "+0.4%", "7J": "-0.2%", "1M": "+2.8%", "6M": "+5.4%" } },
+                { nom: "S&P 500", ticker: "^GSPC", prix: 4500.10, devise: "pts", hist: { "1J": "+1.1%", "7J": "+2.3%", "1M": "-1.0%", "6M": "+10.2%" } }
+            ],
+            devises: [
+                { nom: "Euro / Dollar", ticker: "EUR/USD", prix: 1.0850, devise: "$", hist: { "1J": "-0.2%", "7J": "+0.5%", "1M": "-1.1%", "6M": "+2.3%" } },
+                { nom: "Euro / Yen", ticker: "EUR/JPY", prix: 158.40, devise: "¥", hist: { "1J": "+0.7%", "7J": "+1.2%", "1M": "+3.4%", "6M": "+6.8%" } }
+            ]
+        };
+
+        function formatVariation(valeur) {
+            const isPositive = valeur.startsWith('+');
+            const colorClass = isPositive ? 'positive' : 'negative';
+            return `<span class="${colorClass}">${valeur}</span>`;
+        }
+
+        function genererCartes(donnees, containerId) {
+            const container = document.getElementById(containerId);
+            
+            donnees.forEach(actif => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="asset-name">${actif.nom}</span>
+                        <span class="asset-ticker">${actif.ticker}</span>
+                    </div>
+                    <div class="price">${actif.prix.toFixed(2)} ${actif.devise}</div>
+                    
+                    <div class="history">
+                        <div><span>1 Jour:</span> ${formatVariation(actif.hist["1J"])}</div>
+                        <div><span>7 Jours:</span> ${formatVariation(actif.hist["7J"])}</div>
+                        <div><span>1 Mois:</span> ${formatVariation(actif.hist["1M"])}</div>
+                        <div><span>6 Mois:</span> ${formatVariation(actif.hist["6M"])}</div>
+                    </div>
+
+                    <button class="btn-trade" onclick="alert('Ouvrir le module de passage d\\'ordre pour ${actif.ticker}')">
+                        Trader ${actif.ticker}
+                    </button>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            genererCartes(marketData.actions, 'actions-container');
+            genererCartes(marketData.indices, 'indices-container');
+            genererCartes(marketData.devises, 'devises-container');
+        });
+    </script>
+</body>
+</html>
