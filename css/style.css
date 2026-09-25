@@ -245,6 +245,34 @@ h2 { font-size: 1.2rem; margin-bottom: 20px; color: var(--text-secondary); }
 
 
 
+body.trader-investir {
+    background-color: #f4f6f8;
+    color: #333;
+    line-height: 1.6;
+}
+
+.trader-investir .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.trader-investir h1 {
+    text-align: center;
+    margin: 30px 0;
+    color: #2c3e50;
+}
+
+.trader-investir h2 {
+    margin: 40px 0 15px 0;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+    
+
 .voir-tout {
     font-size: 0.9rem;
     color: #3498db;
