@@ -3,122 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trade Lab - Accueil</title>
+    <title>TradeLab - Accueil</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link href="/css/style.css" rel="stylesheet">
-    <script src="/js/script.js" defer></script>
+    <!-- Liens vers tes fichiers (doivent être dans le même dossier que ce HTML) -->
+    <link href="css/style.css" rel="stylesheet">
+    <script src="js/script.js" defer></script>
 </head>
 <body>
     
-   <nav class="navbar">
-        <div class="nav-logo">TradeLab</div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-logo"><i class="fa-solid fa-chart-line"></i> TradeLab</div>
         
         <ul class="nav-links">
-            <li class="dropdown">
-                <a href="#">Trader & Investir ▾</a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Actions</a></li>
-                    <li><a href="#">Indices</a></li>
-                    <li><a href="#">Devises</a></li>
-                    <li><a href="#">Marchés</a></li>
-                </ul>
-            </li>
-
-            <!-- Le menu Portefeuille a été retiré d'ici -->
-
-            <li><a href="#">Actus</a></li>
-            <li><a href="#">Classement</a></li>
-            <li><a href="#">Conseils boursiers</a></li>
+            <li><a href="#"><i class="fa-solid fa-arrow-trend-up"></i> Trader & Investir ▾</a></li>
+            <li><a href="#"><i class="fa-regular fa-newspaper"></i> Actus</a></li>
+            <li><a href="#"><i class="fa-solid fa-trophy"></i> Classement</a></li>
         </ul>
 
-        <!-- Zone d'authentification et Profil -->
         <div class="nav-auth">
-            <!-- Bouton classique -->
-            <button id="login-btn" class="btn-login">Connexion</button>
-
-            <!-- Profil connecté (Caché par défaut) -->
-            <div id="user-menu" style="display: none;">
-                <div class="nav-balance price">100 000,00 €</div>
-                
-                <div class="dropdown">
-                    <div class="profile-trigger">
-                        <img src="https://ui-avatars.com/api/?name=Alex+Trader&background=3B82F6&color=fff" alt="Profil" class="profile-pic">
-                        <span class="profile-name">Alex Trader ▾</span>
-                    </div>
-                    <!-- Menu du profil mis à jour avec le portefeuille -->
-                    <ul class="dropdown-menu profile-menu">
-                        <!-- Section Portefeuille -->
-                        <li><a href="#" style="font-weight: 600; color: var(--color-primary);">Mon Portefeuille</a></li>
-                        <li><a href="#">Graphique des actions</a></li>
-                        <li><a href="#">Historique des opérations</a></li>
-                        <li><a href="#">Recharger le solde</a></li>
-                        
-                        <div class="menu-divider"></div>
-                        
-                        <!-- Section Paramètres -->
-                        <li><a href="#">Préférences</a></li>
-                        <li><a href="#">Paramètres du compte</a></li>
-                        
-                        <div class="menu-divider"></div>
-                        
-                        <!-- Déconnexion -->
-                        <li><a href="#" id="logout-btn" style="color: var(--color-down);">Déconnexion</a></li>
-                    </ul>
-                </div>
-            </div>
+            <button class="btn-login">Connexion</button>
         </div>
     </nav>
 
-    <!-- Contenu principal de la page -->
+    <!-- Bandeau Ticker Animé -->
+    <div class="market-ticker">
+        <div class="ticker-track">
+            <div class="ticker-item"><span class="ticker-name">CAC 40</span> <span class="price">7 345,20 €</span> <span class="change-up">+0.5%</span></div>
+            <div class="ticker-item"><span class="ticker-name">S&P 500</span> <span class="price">4 450,10 $</span> <span class="change-up">+1.2%</span></div>
+            <div class="ticker-item"><span class="ticker-name">NASDAQ</span> <span class="price">13 761,50 $</span> <span class="change-down">-0.3%</span></div>
+            <div class="ticker-item"><span class="ticker-name">BTC/USD</span> <span class="price">64 230,00 $</span> <span class="change-up">+2.4%</span></div>
+            <div class="ticker-item"><span class="ticker-name">EUR/USD</span> <span class="price">1.0845 $</span> <span class="change-down">-0.1%</span></div>
+            
+            <div class="ticker-item"><span class="ticker-name">CAC 40</span> <span class="price">7 345,20 €</span> <span class="change-up">+0.5%</span></div>
+            <div class="ticker-item"><span class="ticker-name">S&P 500</span> <span class="price">4 450,10 $</span> <span class="change-up">+1.2%</span></div>
+            <div class="ticker-item"><span class="ticker-name">NASDAQ</span> <span class="price">13 761,50 $</span> <span class="change-down">-0.3%</span></div>
+            <div class="ticker-item"><span class="ticker-name">BTC/USD</span> <span class="price">64 230,00 $</span> <span class="change-up">+2.4%</span></div>
+            <div class="ticker-item"><span class="ticker-name">EUR/USD</span> <span class="price">1.0845 $</span> <span class="change-down">-0.1%</span></div>
+        </div>
+    </div>
+
     <div id="app">
         <main>
-            <p>Statut du marché : <span style="color: var(--color-up); font-weight: 500;">Ouvert</span></p>
-            <section class="trending-section">
-                <h2>Actions à la une</h2>
-                <div class="trending-grid">
-                    <!-- Carte Action 1 -->
-                    <div class="stock-card">
-                        <div class="stock-header">
-                            <span class="stock-name">Apple Inc.</span>
-                            <span class="stock-ticker">AAPL</span>
-                        </div>
-                        <div class="stock-price price">173,50 $</div>
-                        <div class="stock-change change-up">+ 1,25 %</div>
-                    </div>
-
-                    <!-- Carte Action 2 -->
-                    <div class="stock-card">
-                        <div class="stock-header">
-                            <span class="stock-name">LVMH</span>
-                            <span class="stock-ticker">MC.PA</span>
-                        </div>
-                        <div class="stock-price price">845,20 €</div>
-                        <div class="stock-change change-down">- 0,85 %</div>
-                    </div>
-
-                    <!-- Carte Action 3 -->
-                    <div class="stock-card">
-                        <div class="stock-header">
-                            <span class="stock-name">Tesla</span>
-                            <span class="stock-ticker">TSLA</span>
-                        </div>
-                        <div class="stock-price price">214,80 $</div>
-                        <div class="stock-change change-up">+ 3,40 %</div>
+            <!-- Header avec actions rapides -->
+            <header class="dashboard-header">
+                <div class="header-titles">
+                    <h1>Vue d'ensemble</h1>
+                    <div class="market-status badge-open">
+                        <span class="status-dot"></span> Marchés Ouverts
                     </div>
                 </div>
-            </section>
-            <section class="news-section">
-                <h2>En direct des marchés</h2>
-                <div id="news-container">
-                    <p class="loading-text">Chargement des actualités en cours...</p>
+                <div class="header-actions">
+                    <button class="btn-outline"><i class="fa-solid fa-plus"></i> Dépôt virtuel</button>
+                    <button class="btn-primary"><i class="fa-solid fa-bolt"></i> Nouveau Trade</button>
                 </div>
-            </section>
+            </header>
+
+            <!-- Layout en 2 colonnes -->
+            <div class="dashboard-layout">
+                
+                <!-- Colonne Gauche -->
+                <div class="main-column">
+                    <section class="trending-section">
+                        <h2><i class="fa-solid fa-fire" style="color: #F59E0B;"></i> Actions populaires</h2>
+                        <div class="trending-grid">
+                            <div class="stock-card">
+                                <div class="stock-header">
+                                    <span class="stock-name"><i class="fa-brands fa-apple"></i> Apple</span>
+                                    <span class="stock-ticker">AAPL</span>
+                                </div>
+                                <div class="stock-price price">173,50 $</div>
+                                <div class="stock-change change-up"><i class="fa-solid fa-caret-up"></i> 1,25 %</div>
+                            </div>
+                            <div class="stock-card">
+                                <div class="stock-header">
+                                    <span class="stock-name">LVMH</span>
+                                    <span class="stock-ticker">MC.PA</span>
+                                </div>
+                                <div class="stock-price price">845,20 €</div>
+                                <div class="stock-change change-down"><i class="fa-solid fa-caret-down"></i> 0,85 %</div>
+                            </div>
+                            <div class="stock-card">
+                                <div class="stock-header">
+                                    <span class="stock-name">Tesla</span>
+                                    <span class="stock-ticker">TSLA</span>
+                                </div>
+                                <div class="stock-price price">214,80 $</div>
+                                <div class="stock-change change-up"><i class="fa-solid fa-caret-up"></i> 3,40 %</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="movers-section">
+                        <h2><i class="fa-solid fa-arrow-right-arrow-left"></i> Palmarès du jour</h2>
+                        <div class="movers-grid">
+                            <div class="movers-box winners">
+                                <h3><i class="fa-solid fa-arrow-trend-up" style="color: var(--color-up);"></i> Plus fortes hausses</h3>
+                                <ul class="movers-list">
+                                    <li><div class="mover-info"><strong>NVIDIA</strong> <span>NVDA</span></div><div class="mover-price">460,18 $ <span class="change-up">+4.52%</span></div></li>
+                                    <li><div class="mover-info"><strong>Netflix</strong> <span>NFLX</span></div><div class="mover-price">398,50 $ <span class="change-up">+2.80%</span></div></li>
+                                    <li><div class="mover-info"><strong>Capgemini</strong> <span>CAP.PA</span></div><div class="mover-price">165,20 € <span class="change-up">+1.95%</span></div></li>
+                                </ul>
+                            </div>
+                            
+                            <div class="movers-box losers">
+                                <h3><i class="fa-solid fa-arrow-trend-down" style="color: var(--color-down);"></i> Plus fortes baisses</h3>
+                                <ul class="movers-list">
+                                    <li><div class="mover-info"><strong>Renault</strong> <span>RNO.PA</span></div><div class="mover-price">38,15 € <span class="change-down">-3.12%</span></div></li>
+                                    <li><div class="mover-info"><strong>Meta</strong> <span>META</span></div><div class="mover-price">295,10 $ <span class="change-down">-2.40%</span></div></li>
+                                    <li><div class="mover-info"><strong>Carrefour</strong> <span>CA.PA</span></div><div class="mover-price">16,80 € <span class="change-down">-1.15%</span></div></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="news-section">
+                        <h2><i class="fa-solid fa-globe"></i> Fil d'actualité financier</h2>
+                        <div id="news-container">
+                            <p class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Chargement des actualités...</p>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Colonne Droite -->
+                <aside class="sidebar-column">
+                    <div class="sidebar-widget">
+                        <h3><i class="fa-solid fa-star"></i> Watchlist</h3>
+                        <div class="watchlist-list">
+                            <div class="watchlist-item"><div class="wl-info"><span class="wl-name">NVIDIA</span><span class="wl-ticker">NVDA</span></div><div class="wl-stats"><span class="price">460,18 $</span><span class="change-up">+4.2%</span></div></div>
+                            <div class="watchlist-item"><div class="wl-info"><span class="wl-name">TotalEnergies</span><span class="wl-ticker">TTE.PA</span></div><div class="wl-stats"><span class="price">61,40 €</span><span class="change-down">-1.1%</span></div></div>
+                            <div class="watchlist-item"><div class="wl-info"><span class="wl-name">Microsoft</span><span class="wl-ticker">MSFT</span></div><div class="wl-stats"><span class="price">332,58 $</span><span class="change-up">+0.8%</span></div></div>
+                        </div>
+                        <button class="btn-full-width">Voir tout</button>
+                    </div>
+
+                    <div class="sidebar-widget">
+                        <h3><i class="fa-solid fa-scale-balanced"></i> Sentiment du marché</h3>
+                        <div class="sentiment-bar-container">
+                            <div class="sentiment-bar"><div class="sentiment-bullish" style="width: 68%;"></div><div class="sentiment-bearish" style="width: 32%;"></div></div>
+                            <div class="sentiment-labels"><span class="change-up">68% Haussier</span><span class="change-down">32% Baissier</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Agenda Économique dynamique -->
+                    <div class="sidebar-widget">
+                        <h3><i class="fa-regular fa-calendar-days"></i> Agenda Économique</h3>
+                        <div class="calendar-list" id="calendar-container">
+                            <!-- Sera rempli par le JavaScript -->
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
         </main>
     </div>
+
+    <!-- Footer pro -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            <div class="footer-logo"><i class="fa-solid fa-chart-line"></i> TradeLab</div>
+            <div class="footer-links"><a href="#">Conditions</a><a href="#">Confidentialité</a></div>
+            <div class="footer-status"><span class="status-dot"></span> Systèmes opérationnels</div>
+        </div>
+        <div class="footer-bottom">&copy; 2026 SAE Simulateur Boursier - Équipe 4. Projet étudiant.</div>
+    </footer>
 
 </body>
 </html>
