@@ -178,6 +178,7 @@ function genererCartes(donnees, containerId) {
     });
 }
 
+
 // 2. Fonction pour simuler l'agenda économique
 function simulateCalendar() {
     const container = document.getElementById('calendar-container');
@@ -223,3 +224,154 @@ document.addEventListener('DOMContentLoaded', () => {
     simulateCalendar();
 });
 
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const extendedActions = [
+        { nom: "Apple Inc.", ticker: "AAPL", prix: 175.50, devise: "$", hist: { "1J": "+1.2%", "7J": "+3.5%", "1M": "-2.1%", "6M": "+12.4%" } },
+        { nom: "LVMH", ticker: "MC.PA", prix: 840.20, devise: "€", hist: { "1J": "-0.8%", "7J": "-1.5%", "1M": "+4.2%", "6M": "+8.1%" } },
+        { nom: "TotalEnergies", ticker: "TTE", prix: 62.30, devise: "€", hist: { "1J": "+0.5%", "7J": "+2.1%", "1M": "+5.6%", "6M": "-1.2%" } },
+        { nom: "Microsoft", ticker: "MSFT", prix: 330.10, devise: "$", hist: { "1J": "+2.5%", "7J": "+1.1%", "1M": "+4.5%", "6M": "+15.2%" } },
+        { nom: "Tesla", ticker: "TSLA", prix: 210.80, devise: "$", hist: { "1J": "-1.2%", "7J": "-4.5%", "1M": "+8.2%", "6M": "-5.1%" } },
+        { nom: "Amazon", ticker: "AMZN", prix: 135.40, devise: "$", hist: { "1J": "+0.9%", "7J": "+2.8%", "1M": "-1.5%", "6M": "+9.4%" } },
+        { nom: "NVIDIA", ticker: "NVDA", prix: 450.20, devise: "$", hist: { "1J": "+3.1%", "7J": "+6.2%", "1M": "+12.5%", "6M": "+45.8%" } },
+        { nom: "Alphabet", ticker: "GOOGL", prix: 130.50, devise: "$", hist: { "1J": "+0.4%", "7J": "+1.5%", "1M": "+2.1%", "6M": "+11.2%" } }
+    ];
+
+    const extendedIndices = [
+        { nom: "CAC 40", ticker: "^FCHI", prix: 7350.45, devise: "pts", hist: { "1J": "+0.4%", "7J": "-0.2%", "1M": "+2.8%", "6M": "+5.4%" } },
+        { nom: "S&P 500", ticker: "^GSPC", prix: 4500.10, devise: "pts", hist: { "1J": "+1.1%", "7J": "+2.3%", "1M": "-1.0%", "6M": "+10.2%" } },
+        { nom: "NASDAQ", ticker: "^IXIC", prix: 14000.20, devise: "pts", hist: { "1J": "+1.5%", "7J": "+3.1%", "1M": "+2.5%", "6M": "+15.8%" } },
+        { nom: "Dow Jones", ticker: "^DJI", prix: 34500.80, devise: "pts", hist: { "1J": "+0.2%", "7J": "+0.5%", "1M": "-0.5%", "6M": "+4.2%" } },
+        { nom: "DAX", ticker: "^GDAXI", prix: 15800.60, devise: "pts", hist: { "1J": "+0.8%", "7J": "+1.2%", "1M": "+3.1%", "6M": "+7.5%" } },
+        { nom: "FTSE 100", ticker: "^FTSE", prix: 7400.30, devise: "pts", hist: { "1J": "-0.1%", "7J": "-0.5%", "1M": "+1.2%", "6M": "+2.1%" } },
+        { nom: "Nikkei 225", ticker: "^N225", prix: 32000.50, devise: "pts", hist: { "1J": "+1.2%", "7J": "+2.5%", "1M": "+4.8%", "6M": "+18.2%" } },
+        { nom: "Hang Seng", ticker: "^HSI", prix: 18000.10, devise: "pts", hist: { "1J": "-1.5%", "7J": "-3.2%", "1M": "-5.5%", "6M": "-12.4%" } }
+    ];
+
+    const fallbackDevises = [
+        { nom: "Euro / Dollar", ticker: "EUR/USD", prix: 1.0850, devise: "$", hist: { "1J": "-0.2%", "7J": "+0.5%", "1M": "-1.1%", "6M": "+2.3%" } },
+        { nom: "Euro / Yen", ticker: "EUR/JPY", prix: 158.40, devise: "¥", hist: { "1J": "+0.7%", "7J": "+1.2%", "1M": "+3.4%", "6M": "+6.8%" } },
+        { nom: "Livre / Dollar", ticker: "GBP/USD", prix: 1.2540, devise: "$", hist: { "1J": "+0.1%", "7J": "-0.4%", "1M": "+1.1%", "6M": "+3.3%" } },
+        { nom: "Euro / Livre", ticker: "EUR/GBP", prix: 0.8650, devise: "£", hist: { "1J": "-0.1%", "7J": "+0.2%", "1M": "-0.5%", "6M": "-1.2%" } },
+        { nom: "Dollar / Yen", ticker: "USD/JPY", prix: 145.20, devise: "¥", hist: { "1J": "+0.5%", "7J": "+1.1%", "1M": "+2.5%", "6M": "+8.4%" } },
+        { nom: "Aussie / Dollar", ticker: "AUD/USD", prix: 0.6420, devise: "$", hist: { "1J": "-0.4%", "7J": "-1.2%", "1M": "-2.1%", "6M": "-4.5%" } },
+        { nom: "Euro / Suisse", ticker: "EUR/CHF", prix: 0.9540, devise: "Fr", hist: { "1J": "+0.2%", "7J": "+0.1%", "1M": "-0.8%", "6M": "-2.3%" } },
+        { nom: "Dollar / CAD", ticker: "USD/CAD", prix: 1.3520, devise: "$", hist: { "1J": "+0.3%", "7J": "+0.8%", "1M": "+1.5%", "6M": "+2.8%" } }
+    ];
+
+    const fallbackMarches = [
+        { nom: "Or", ticker: "XAU/USD", prix: 1950.40, devise: "$", hist: { "1J": "+0.5%", "7J": "+1.2%", "1M": "-2.4%", "6M": "+5.8%" } },
+        { nom: "Pétrole WTI", ticker: "CL=F", prix: 85.20, devise: "$", hist: { "1J": "-1.2%", "7J": "+3.5%", "1M": "+8.2%", "6M": "+12.4%" } },
+        { nom: "Bitcoin", ticker: "BTC", prix: 42000.50, devise: "$", hist: { "1J": "+2.1%", "7J": "-4.5%", "1M": "+15.2%", "6M": "+45.8%" } },
+        { nom: "Ethereum", ticker: "ETH", prix: 2200.10, devise: "$", hist: { "1J": "+1.5%", "7J": "-2.8%", "1M": "+10.5%", "6M": "+38.4%" } },
+        { nom: "Argent", ticker: "XAG/USD", prix: 23.50, devise: "$", hist: { "1J": "-0.4%", "7J": "+0.8%", "1M": "-4.1%", "6M": "+2.1%" } },
+        { nom: "Cuivre", ticker: "HG=F", prix: 3.80, devise: "$", hist: { "1J": "+0.2%", "7J": "-1.5%", "1M": "+2.2%", "6M": "-1.8%" } },
+        { nom: "Gaz Naturel", ticker: "NG=F", prix: 2.90, devise: "$", hist: { "1J": "-2.5%", "7J": "-5.2%", "1M": "+12.4%", "6M": "-15.2%" } },
+        { nom: "Blé", ticker: "ZW=F", prix: 590.25, devise: "¢", hist: { "1J": "+1.1%", "7J": "+2.4%", "1M": "-3.8%", "6M": "-10.5%" } }
+    ];
+
+    const actionsContainer = document.getElementById('actions-container');
+    const indicesContainer = document.getElementById('indices-container');
+    
+    if (actionsContainer) actionsContainer.innerHTML = '';
+    if (indicesContainer) indicesContainer.innerHTML = '';
+
+    genererCartesModernes(extendedActions, 'actions-container');
+    genererCartesModernes(extendedIndices, 'indices-container');
+
+    const devisesContainer = document.getElementById('devises-container');
+    const marchesContainer = document.getElementById('marches-container');
+    
+    if (devisesContainer) devisesContainer.innerHTML = '';
+    if (marchesContainer) marchesContainer.innerHTML = '';
+
+    try {
+        const response = await fetch("https://api.binance.com/api/v3/ticker/24hr");
+        const data = await response.json();
+
+        const marchesSymbols = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "ADAUSDT", "SOLUSDT", "DOGEUSDT", "DOTUSDT"];
+        const devisesSymbols = ["EURUSDT", "GBPUSDT", "AUDUSDT", "NZDUSDT"]; 
+
+        const marchesData = data.filter(d => marchesSymbols.includes(d.symbol)).map(formatBinanceData);
+        let devisesData = data.filter(d => devisesSymbols.includes(d.symbol)).map(formatBinanceData);
+
+        if(devisesData.length < 8) {
+            devisesData = [...devisesData, ...fallbackDevises].slice(0, 8);
+        }
+
+        genererCartesModernes(devisesData, 'devises-container');
+        genererCartesModernes(marchesData, 'marches-container');
+    } catch (error) {
+        genererCartesModernes(fallbackDevises, 'devises-container');
+        genererCartesModernes(fallbackMarches, 'marches-container');
+    }
+
+    initialiserCarrousels();
+});
+
+function formatBinanceData(item) {
+    const price = parseFloat(item.lastPrice);
+    const change = parseFloat(item.priceChangePercent);
+    const sign = change >= 0 ? '+' : '';
+    return {
+        nom: item.symbol.replace('USDT', ''),
+        ticker: item.symbol,
+        prix: price,
+        devise: "$",
+        hist: {
+            "1J": sign + change.toFixed(2) + "%",
+            "7J": "N/D",
+            "1M": "N/D",
+            "6M": "N/D"
+        }
+    };
+}
+
+function genererCartesModernes(donnees, containerId) {
+    const container = document.getElementById(containerId);
+    if(!container) return;
+    
+    donnees.forEach(actif => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        card.innerHTML = `
+            <div class="card-header">
+                <span class="asset-name">${actif.nom}</span>
+                <span class="asset-ticker">${actif.ticker}</span>
+            </div>
+            <div class="price">${actif.prix.toFixed(2)} ${actif.devise}</div>
+            
+            <div class="history">
+                <div><span>1 Jour:</span> ${formatVariation(actif.hist["1J"])}</div>
+                <div><span>7 Jours:</span> ${formatVariation(actif.hist["7J"])}</div>
+                <div><span>1 Mois:</span> ${formatVariation(actif.hist["1M"])}</div>
+                <div><span>6 Mois:</span> ${formatVariation(actif.hist["6M"])}</div>
+            </div>
+
+            <a href="#" class="btn-trade">Trader ${actif.ticker}</a>
+        `;
+        
+        container.appendChild(card);
+    });
+}
+
+function initialiserCarrousels() {
+    const prevBtns = document.querySelectorAll('.prev-btn');
+    const nextBtns = document.querySelectorAll('.next-btn');
+
+    prevBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const track = document.getElementById(btn.getAttribute('data-target'));
+            track.scrollBy({ left: -320, behavior: 'smooth' });
+        });
+    });
+
+    nextBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const track = document.getElementById(btn.getAttribute('data-target'));
+            track.scrollBy({ left: 320, behavior: 'smooth' });
+        });
+    });
+}
