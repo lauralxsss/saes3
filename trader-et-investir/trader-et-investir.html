@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trader et Investir - Simulation Boursière</title>
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="trader-investir">
 
@@ -23,20 +22,15 @@
                 </ul>
             </li>
 
-            <!-- Le menu Portefeuille a été retiré d'ici -->
-
             <li><a href="#">Actus</a></li>
             <li><a href="#">Classement</a></li>
             <li><a href="#">Conseils boursiers</a></li>
         </ul>
 
-        <!-- Zone d'authentification et Profil -->
         <div class="nav-auth">
-            <!-- Bouton classique -->
             <button id="login-btn" class="btn-login">Connexion</button>
 
-            <!-- Profil connecté (Caché par défaut) -->
-            <div id="user-menu" style="display: none;">
+            <div id="user-menu" class="hidden-element">
                 <div class="nav-balance price">100 000,00 €</div>
                 
                 <div class="dropdown">
@@ -44,24 +38,20 @@
                         <img src="https://ui-avatars.com/api/?name=Alex+Trader&background=3B82F6&color=fff" alt="Profil" class="profile-pic">
                         <span class="profile-name">Alex Trader ▾</span>
                     </div>
-                    <!-- Menu du profil mis à jour avec le portefeuille -->
                     <ul class="dropdown-menu profile-menu">
-                        <!-- Section Portefeuille -->
-                        <li><a href="#" style="font-weight: 600; color: var(--color-primary);">Mon Portefeuille</a></li>
+                        <li><a href="#" class="portfolio-link">Mon Portefeuille</a></li>
                         <li><a href="#">Graphique des actions</a></li>
                         <li><a href="#">Historique des opérations</a></li>
                         <li><a href="#">Recharger le solde</a></li>
                         
                         <div class="menu-divider"></div>
                         
-                        <!-- Section Paramètres -->
                         <li><a href="#">Préférences</a></li>
                         <li><a href="#">Paramètres du compte</a></li>
                         
                         <div class="menu-divider"></div>
                         
-                        <!-- Déconnexion -->
-                        <li><a href="#" id="logout-btn" style="color: var(--color-down);">Déconnexion</a></li>
+                        <li><a href="#" id="logout-btn" class="logout-link">Déconnexion</a></li>
                     </ul>
                 </div>
             </div>
@@ -70,26 +60,49 @@
 
     <div class="container">
         <h1>Trader et Investir</h1>
-        <p style="text-align: center; color: #7f8c8d;">Aperçu des marchés financiers pour votre simulation.</p>
+        <p class="subtitle-text">Aperçu des marchés financiers pour votre simulation.</p>
 
         <h2>
             Actions en vue 
             <a href="actions.html" class="voir-tout">Voir toutes les actions &rarr;</a>
         </h2>
-        <div class="grid-cards" id="actions-container"></div>
+        <div class="carousel-wrapper">
+            <button class="carousel-btn prev-btn" data-target="actions-container">&#10094;</button>
+            <div class="carousel-track" id="actions-container"></div>
+            <button class="carousel-btn next-btn" data-target="actions-container">&#10095;</button>
+        </div>
 
         <h2>
             Indices mondiaux
             <a href="indices.html" class="voir-tout">Voir tous les indices &rarr;</a>
         </h2>
-        <div class="grid-cards" id="indices-container"></div>
+        <div class="carousel-wrapper">
+            <button class="carousel-btn prev-btn" data-target="indices-container">&#10094;</button>
+            <div class="carousel-track" id="indices-container"></div>
+            <button class="carousel-btn next-btn" data-target="indices-container">&#10095;</button>
+        </div>
 
         <h2>
             Devises
             <a href="devises.html" class="voir-tout">Voir toutes les devises &rarr;</a>
         </h2>
-        <div class="grid-cards" id="devises-container"></div>
+        <div class="carousel-wrapper">
+            <button class="carousel-btn prev-btn" data-target="devises-container">&#10094;</button>
+            <div class="carousel-track" id="devises-container"></div>
+            <button class="carousel-btn next-btn" data-target="devises-container">&#10095;</button>
+        </div>
+
+        <h2>
+            Marchés (Crypto & Commodities)
+            <a href="marches.html" class="voir-tout">Voir tous les marchés &rarr;</a>
+        </h2>
+        <div class="carousel-wrapper">
+            <button class="carousel-btn prev-btn" data-target="marches-container">&#10094;</button>
+            <div class="carousel-track" id="marches-container"></div>
+            <button class="carousel-btn next-btn" data-target="marches-container">&#10095;</button>
+        </div>
     </div>
+    
     <script src="/js/script.js"></script>
 </body>
 </html>
