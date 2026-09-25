@@ -242,6 +242,7 @@ body.trader-investir {
     background-color: #1a252f;
 }
 
+<<<<<<< HEAD
 .header-actions { display: flex; gap: 15px; }
 .btn-primary { background-color: var(--color-primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
 .btn-outline { background-color: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
@@ -322,3 +323,623 @@ section h2 { font-size: 1.2rem; margin-bottom: 20px; color: var(--text-main); }
 .footer-links a { color: var(--text-secondary); text-decoration: none; margin: 0 15px; }
 .footer-status { color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
 .footer-bottom { text-align: center; color: #475569; font-size: 0.8rem; }
+=======
+
+/* --------------------------------------- Page connexion -------------------------------------- */
+
+.connexion{
+  --bg:#1A2649;
+  --panel:#212F58;
+  --field:#182140;
+  --text:#E2E8F0;
+  --text-muted:#8C97B8;
+  --green:#22C55E;
+  --red:#EF4444;
+  --line:rgba(226,232,240,0.14);
+}
+
+.connexion *{box-sizing:border-box;}
+body.connexion{margin:0;padding:0;}
+
+.connexion{
+  font-family:'Montserrat', sans-serif;
+  color:var(--text);
+  background:var(--bg);
+  min-height:100vh;
+}
+.connexion a{color:inherit;}
+
+.connexion .layout{
+  display:grid;
+  grid-template-columns:minmax(280px,38%) 1fr;
+  min-height:100vh;
+}
+
+.connexion .brand{
+  background:var(--bg);
+  padding:64px 48px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  position:relative;
+  border-right:1px solid var(--line);
+  overflow:hidden;
+}
+
+.connexion .spark{
+  position:absolute;
+  bottom:0; left:0; right:0;
+  opacity:0.9;
+}
+
+.connexion .wordmark{
+  font-family:'Poppins', sans-serif;
+  font-weight:600;
+  font-size:clamp(1.9rem, 3vw + 1rem, 2.5rem);
+  line-height:1.1;
+  letter-spacing:-0.01em;
+  margin:0;
+  position:relative;
+  z-index:1;
+}
+
+.connexion .brand-tagline{
+  font-size:1.02rem;
+  line-height:1.6;
+  color:var(--text-muted);
+  max-width:32ch;
+  margin-top:16px;
+  position:relative;
+  z-index:1;
+}
+
+.connexion .ticker{
+  font-family:'Courier Prime', monospace;
+  font-size:0.85rem;
+  color:var(--green);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  position:relative;
+  z-index:1;
+}
+
+.connexion .ticker .dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--green);
+  flex:none;
+}
+
+.connexion .brand-foot{
+  font-size:0.85rem;
+  color:var(--text-muted);
+  opacity:0.7;
+  position:relative;
+  z-index:1;
+}
+
+.connexion .form-panel{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:48px 32px;
+  background:var(--panel);
+}
+
+.connexion .form-wrap{
+  width:100%;
+  max-width:400px;
+}
+
+.connexion h1.form-title{
+  font-family:'Poppins', sans-serif;
+  font-weight:600;
+  font-size:1.9rem;
+  margin:0 0 6px;
+  color:var(--text);
+}
+
+.connexion .form-sub{
+  color:var(--text-muted);
+  margin:0 0 36px;
+  font-size:0.98rem;
+}
+
+.connexion .field{
+  margin-bottom:22px;
+}
+
+.connexion .field label{
+  display:block;
+  font-size:0.88rem;
+  font-weight:500;
+  margin-bottom:7px;
+  color:var(--text);
+}
+
+.connexion .field input{
+  width:100%;
+  padding:12px 14px;
+  font-size:1rem;
+  font-family:inherit;
+  color:var(--text);
+  background:var(--field);
+  border:1px solid var(--line);
+  border-radius:6px;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+
+.connexion .field input::placeholder{
+  color:#5C6688;
+}
+
+.connexion .field input:focus{
+  outline:none;
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(34,197,94,0.18);
+}
+
+.connexion .field-error{
+  display:none;
+  font-size:0.85rem;
+  color:var(--red);
+  margin-top:6px;
+}
+
+.connexion .field.has-error .field-error{
+  display:block;
+}
+
+.connexion .field.has-error input{
+  border-color:var(--red);
+}
+
+.connexion .password-row{
+  position:relative;
+}
+
+.connexion .toggle-visibility{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:6px;
+  color:var(--text-muted);
+  display:flex;
+}
+
+.connexion .toggle-visibility:hover{
+  color:var(--text);
+}
+
+.connexion .password-row input{
+  padding-right:42px;
+}
+
+.connexion .row-between{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:-10px;
+  margin-bottom:26px;
+}
+
+.connexion .link-quiet{
+  font-size:0.88rem;
+  color:var(--green);
+  text-decoration:none;
+  border-bottom:1px solid transparent;
+}
+
+.connexion .link-quiet:hover{
+  border-bottom-color:var(--green);
+}
+
+.connexion button.submit{
+  width:100%;
+  padding:13px 16px;
+  font-family:inherit;
+  font-size:1rem;
+  font-weight:600;
+  color:var(--bg);
+  background:var(--green);
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  transition:filter .15s ease;
+}
+
+.connexion button.submit:hover{
+  filter:brightness(1.08);
+}
+
+.connexion button.submit:focus-visible{
+  outline:3px solid var(--green);
+  outline-offset:2px;
+}
+
+.connexion .divider{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin:30px 0 22px;
+  color:var(--text-muted);
+  font-size:0.85rem;
+}
+
+.connexion .divider::before,
+.connexion .divider::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:var(--line);
+}
+
+.connexion .signup-cta{
+  text-align:center;
+  font-size:0.94rem;
+  color:var(--text-muted);
+}
+
+.connexion .signup-cta a{
+  color:var(--green);
+  font-weight:600;
+  text-decoration:none;
+  border-bottom:1px solid var(--green);
+}
+
+.connexion .signup-cta a:hover{
+  color:var(--text);
+  border-bottom-color:var(--text);
+}
+
+@media (prefers-reduced-motion: reduce){
+  .connexion *{
+    transition:none !important;
+  }
+}
+
+@media (max-width:860px){
+  .connexion .layout{
+    grid-template-columns:1fr;
+  }
+
+  .connexion .brand{
+    padding:32px 28px;
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    border-right:none;
+    border-bottom:1px solid var(--line);
+  }
+
+  .connexion .spark,
+  .connexion .brand-tagline{
+    display:none;
+  }
+
+  .connexion .wordmark{
+    font-size:1.4rem;
+  }
+
+  .connexion .form-panel{
+    padding:40px 24px 56px;
+  }
+}
+
+
+
+
+
+
+/* ----------------------------------------------------- Page inscription ---------------------------------------------------------- */
+
+.inscription{
+  --bg:#1A2649;
+  --panel:#212F58;
+  --field:#182140;
+  --text:#E2E8F0;
+  --text-muted:#8C97B8;
+  --green:#22C55E;
+  --red:#EF4444;
+  --line:rgba(226,232,240,0.14);
+}
+
+.inscription *{box-sizing:border-box;}
+body.inscription{margin:0;padding:0;}
+
+.inscription a{color:inherit;}
+
+.inscription .layout{
+  display:grid;
+  grid-template-columns:minmax(280px,38%) 1fr;
+  min-height:100vh;
+}
+
+/* ---- Left brand panel ---- */
+.inscription .brand{
+  background:var(--bg);
+  padding:64px 48px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  position:relative;
+  border-right:1px solid var(--line);
+  overflow:hidden;
+}
+
+.inscription .spark{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  opacity:0.9;
+}
+
+.inscription .wordmark{
+  font-family:'Poppins', sans-serif;
+  font-weight:600;
+  font-size:clamp(1.9rem, 3vw + 1rem, 2.5rem);
+  line-height:1.1;
+  letter-spacing:-0.01em;
+  margin:0;
+  position:relative;
+  z-index:1;
+}
+
+.inscription .brand-tagline{
+  font-size:1.02rem;
+  line-height:1.6;
+  color:var(--text-muted);
+  max-width:32ch;
+  margin-top:16px;
+  position:relative;
+  z-index:1;
+}
+
+.inscription .ticker{
+  font-family:'Courier Prime', monospace;
+  font-size:0.85rem;
+  color:var(--green);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  position:relative;
+  z-index:1;
+}
+
+.inscription .ticker .dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--green);
+  flex:none;
+}
+
+.inscription .brand-foot{
+  font-size:0.85rem;
+  color:var(--text-muted);
+  opacity:0.7;
+  position:relative;
+  z-index:1;
+}
+
+/* ---- Right form panel ---- */
+.inscription .form-panel{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:48px 32px;
+  background:var(--panel);
+}
+
+.inscription .form-wrap{
+  width:100%;
+  max-width:440px;
+}
+
+.inscription h1.form-title{
+  font-family:'Poppins', sans-serif;
+  font-weight:600;
+  font-size:1.9rem;
+  margin:0 0 6px;
+  color:var(--text);
+}
+
+.inscription .form-sub{
+  color:var(--text-muted);
+  margin:0 0 34px;
+  font-size:0.98rem;
+}
+
+.inscription .field-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.inscription .field{
+  margin-bottom:20px;
+}
+
+.inscription .field label{
+  display:block;
+  font-size:0.88rem;
+  font-weight:500;
+  margin-bottom:7px;
+  color:var(--text);
+}
+
+.inscription .field input{
+  width:100%;
+  padding:12px 14px;
+  font-size:1rem;
+  font-family:inherit;
+  color:var(--text);
+  background:var(--field);
+  border:1px solid var(--line);
+  border-radius:6px;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+
+.inscription .field input::placeholder{
+  color:#5C6688;
+}
+
+.inscription .field input:focus{
+  outline:none;
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(34,197,94,0.18);
+}
+
+.inscription .field-error{
+  display:none;
+  font-size:0.85rem;
+  color:var(--red);
+  margin-top:6px;
+}
+
+.inscription .field.has-error .field-error{
+  display:block;
+}
+
+.inscription .field.has-error input{
+  border-color:var(--red);
+}
+
+.inscription .field-hint{
+  font-size:0.8rem;
+  color:var(--text-muted);
+  margin-top:6px;
+}
+
+.inscription .password-row{
+  position:relative;
+}
+
+.inscription .toggle-visibility{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:6px;
+  color:var(--text-muted);
+  display:flex;
+}
+
+.inscription .toggle-visibility:hover{
+  color:var(--text);
+}
+
+.inscription .password-row input{
+  padding-right:42px;
+}
+
+.inscription button.submit{
+  width:100%;
+  padding:13px 16px;
+  font-family:inherit;
+  font-size:1rem;
+  font-weight:600;
+  color:var(--bg);
+  background:var(--green);
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  margin-top:6px;
+  transition:filter .15s ease;
+}
+
+.inscription button.submit:hover{
+  filter:brightness(1.08);
+}
+
+.inscription button.submit:focus-visible{
+  outline:3px solid var(--green);
+  outline-offset:2px;
+}
+
+.inscription .divider{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin:28px 0 22px;
+  color:var(--text-muted);
+  font-size:0.85rem;
+}
+
+.inscription .divider::before,
+.inscription .divider::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:var(--line);
+}
+
+.inscription .login-cta{
+  text-align:center;
+  font-size:0.94rem;
+  color:var(--text-muted);
+}
+
+.inscription .login-cta a{
+  color:var(--green);
+  font-weight:600;
+  text-decoration:none;
+  border-bottom:1px solid var(--green);
+}
+
+.inscription .login-cta a:hover{
+  color:var(--text);
+  border-bottom-color:var(--text);
+}
+
+@media (prefers-reduced-motion: reduce){
+  .inscription *{
+    transition:none !important;
+  }
+}
+
+@media (max-width:860px){
+  .inscription .layout{
+    grid-template-columns:1fr;
+  }
+
+  .inscription .brand{
+    padding:32px 28px;
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    border-right:none;
+    border-bottom:1px solid var(--line);
+  }
+
+  .inscription .spark,
+  .inscription .brand-tagline{
+    display:none;
+  }
+
+  .inscription .wordmark{
+    font-size:1.4rem;
+  }
+
+  .inscription .form-panel{
+    padding:40px 24px 56px;
+  }
+}
+
+@media (max-width:480px){
+  .inscription .field-row{
+    grid-template-columns:1fr;
+    gap:0;
+  }
+}
+
+>>>>>>> aa2065c (css inscription et connexion mis dans le fichier commun)
