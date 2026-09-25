@@ -15,6 +15,7 @@
 </head>
 <body>
     
+    <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-logo"><i class="fa-solid fa-chart-line"></i> TradeLab</div>
         
@@ -32,23 +33,26 @@
         </ul>
 
         <div class="nav-auth">
-            <button class="btn-login">Connexion</button>
+            <button class="btn-login" onclick="window.location.href='connexion/connexion.html'">Connexion</button>
         </div>
     </nav>
 
+    <!-- Bandeau Ticker Animé (100% Entreprises & Indices) -->
     <div class="market-ticker">
         <div class="ticker-track">
+            <!-- Groupe 1 -->
             <div class="ticker-item"><span class="ticker-name">CAC 40</span> <span class="price">7 345,20 €</span> <span class="change-up">+0.5%</span></div>
             <div class="ticker-item"><span class="ticker-name">S&P 500</span> <span class="price">4 450,10 $</span> <span class="change-up">+1.2%</span></div>
             <div class="ticker-item"><span class="ticker-name">NASDAQ</span> <span class="price">13 761,50 $</span> <span class="change-down">-0.3%</span></div>
-            <div class="ticker-item"><span class="ticker-name">BTC/USD</span> <span class="price">64 230,00 $</span> <span class="change-up">+2.4%</span></div>
-            <div class="ticker-item"><span class="ticker-name">EUR/USD</span> <span class="price">1.0845 $</span> <span class="change-down">-0.1%</span></div>
+            <div class="ticker-item"><span class="ticker-name">DAX 40</span> <span class="price">15 840,30 €</span> <span class="change-up">+0.8%</span></div>
+            <div class="ticker-item"><span class="ticker-name">DOW JONES</span> <span class="price">34 500,20 $</span> <span class="change-down">-0.1%</span></div>
             
+            <!-- Groupe 2 (Duplicata) -->
             <div class="ticker-item"><span class="ticker-name">CAC 40</span> <span class="price">7 345,20 €</span> <span class="change-up">+0.5%</span></div>
             <div class="ticker-item"><span class="ticker-name">S&P 500</span> <span class="price">4 450,10 $</span> <span class="change-up">+1.2%</span></div>
             <div class="ticker-item"><span class="ticker-name">NASDAQ</span> <span class="price">13 761,50 $</span> <span class="change-down">-0.3%</span></div>
-            <div class="ticker-item"><span class="ticker-name">BTC/USD</span> <span class="price">64 230,00 $</span> <span class="change-up">+2.4%</span></div>
-            <div class="ticker-item"><span class="ticker-name">EUR/USD</span> <span class="price">1.0845 $</span> <span class="change-down">-0.1%</span></div>
+            <div class="ticker-item"><span class="ticker-name">DAX 40</span> <span class="price">15 840,30 €</span> <span class="change-up">+0.8%</span></div>
+            <div class="ticker-item"><span class="ticker-name">DOW JONES</span> <span class="price">34 500,20 $</span> <span class="change-down">-0.1%</span></div>
         </div>
     </div>
 
@@ -70,43 +74,55 @@
             <div class="dashboard-layout">
                 
                 <div class="main-column">
-                    <section class="trending-section">
-                        <h2><i class="fa-solid fa-fire" style="color: #F59E0B;"></i> Actions populaires</h2>
-                        <div class="trending-grid">
-                            <div class="stock-card">
-                                <div class="stock-header">
-                                    <span class="stock-name"><i class="fa-brands fa-apple"></i> Apple</span>
-                                    <span class="stock-ticker">AAPL</span>
-                                </div>
-                                <div class="stock-price price">173,50 $</div>
-                                <div class="stock-change change-up"><i class="fa-solid fa-caret-up"></i> 1,25 %</div>
-                            </div>
-                            <div class="stock-card">
-                                <div class="stock-header">
-                                    <span class="stock-name">LVMH</span>
-                                    <span class="stock-ticker">MC.PA</span>
-                                </div>
-                                <div class="stock-price price">845,20 €</div>
-                                <div class="stock-change change-down"><i class="fa-solid fa-caret-down"></i> 0,85 %</div>
-                            </div>
-                            <div class="stock-card">
-                                <div class="stock-header">
-                                    <span class="stock-name">Tesla</span>
-                                    <span class="stock-ticker">TSLA</span>
-                                </div>
-                                <div class="stock-price price">214,80 $</div>
-                                <div class="stock-change change-up"><i class="fa-solid fa-caret-up"></i> 3,40 %</div>
-                            </div>
+                    <!-- Positions en cours -->
+                    <section class="portfolio-section">
+                        <h2><i class="fa-solid fa-briefcase"></i> Positions en cours</h2>
+                        <div class="table-container">
+                            <table class="portfolio-table">
+                                <thead>
+                                    <tr>
+                                        <th>Actif</th>
+                                        <th>Qté</th>
+                                        <th>PRU</th>
+                                        <th>Cours Actuel</th>
+                                        <th>+/- Latente</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><div class="asset-info"><strong>Airbus</strong><span>AIR.PA</span></div></td>
+                                        <td>20</td>
+                                        <td>125,40 €</td>
+                                        <td class="price">132,10 €</td>
+                                        <td class="change-up">+134,00 € (5.3%)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="asset-info"><strong>L'Oréal</strong><span>OR.PA</span></div></td>
+                                        <td>5</td>
+                                        <td>410,20 €</td>
+                                        <td class="price">398,50 €</td>
+                                        <td class="change-down">-58,50 € (-2.8%)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="asset-info"><strong>Amazon</strong><span>AMZN</span></div></td>
+                                        <td>35</td>
+                                        <td>130,00 $</td>
+                                        <td class="price">138,50 $</td>
+                                        <td class="change-up">+297,50 $ (6.5%)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </section>
 
+                    <!-- Palmarès du jour (Corrigé) -->
                     <section class="movers-section">
                         <h2><i class="fa-solid fa-arrow-right-arrow-left"></i> Palmarès du jour</h2>
                         <div class="movers-grid">
                             <div class="movers-box winners">
                                 <h3><i class="fa-solid fa-arrow-trend-up" style="color: var(--color-up);"></i> Plus fortes hausses</h3>
                                 <ul class="movers-list">
-                                    <li><div class="mover-info"><strong>NVIDIA</strong> <span>NVDA</span></div><div class="mover-price">460,18 $ <span class="change-up">+4.52%</span></div></li>
+                                    <li><div class="mover-info"><strong>Tesla</strong> <span>TSLA</span></div><div class="mover-price">245,18 $ <span class="change-up">+4.52%</span></div></li>
                                     <li><div class="mover-info"><strong>Netflix</strong> <span>NFLX</span></div><div class="mover-price">398,50 $ <span class="change-up">+2.80%</span></div></li>
                                     <li><div class="mover-info"><strong>Capgemini</strong> <span>CAP.PA</span></div><div class="mover-price">165,20 € <span class="change-up">+1.95%</span></div></li>
                                 </ul>
@@ -123,6 +139,7 @@
                         </div>
                     </section>
 
+                    <!-- Fil d'actualité -->
                     <section class="news-section">
                         <h2><i class="fa-solid fa-globe"></i> Fil d'actualité financier</h2>
                         <div id="news-container">
@@ -132,16 +149,18 @@
                 </div>
 
                 <aside class="sidebar-column">
+                    <!-- Watchlist -->
                     <div class="sidebar-widget">
                         <h3><i class="fa-solid fa-star"></i> Watchlist</h3>
                         <div class="watchlist-list">
-                            <div class="watchlist-item"><div class="wl-info"><span class="wl-name">NVIDIA</span><span class="wl-ticker">NVDA</span></div><div class="wl-stats"><span class="price">460,18 $</span><span class="change-up">+4.2%</span></div></div>
-                            <div class="watchlist-item"><div class="wl-info"><span class="wl-name">TotalEnergies</span><span class="wl-ticker">TTE.PA</span></div><div class="wl-stats"><span class="price">61,40 €</span><span class="change-down">-1.1%</span></div></div>
-                            <div class="watchlist-item"><div class="wl-info"><span class="wl-name">Microsoft</span><span class="wl-ticker">MSFT</span></div><div class="wl-stats"><span class="price">332,58 $</span><span class="change-up">+0.8%</span></div></div>
+                            <div class="watchlist-item"><div class="wl-info"><span class="wl-name">LVMH</span><span class="wl-ticker">MC.PA</span></div><div class="wl-stats"><span class="price">845,20 €</span><span class="change-up">+1.2%</span></div></div>
+                            <div class="watchlist-item"><div class="wl-info"><span class="wl-name">Alphabet (Google)</span><span class="wl-ticker">GOOGL</span></div><div class="wl-stats"><span class="price">136,40 $</span><span class="change-down">-0.5%</span></div></div>
+                            <div class="watchlist-item"><div class="wl-info"><span class="wl-name">BNP Paribas</span><span class="wl-ticker">BNP.PA</span></div><div class="wl-stats"><span class="price">58,12 €</span><span class="change-up">+2.1%</span></div></div>
                         </div>
                         <button class="btn-full-width">Voir tout</button>
                     </div>
 
+                    <!-- Sentiment -->
                     <div class="sidebar-widget">
                         <h3><i class="fa-solid fa-scale-balanced"></i> Sentiment du marché</h3>
                         <div class="sentiment-bar-container">
@@ -154,7 +173,7 @@
                     <div class="sidebar-widget">
                         <h3><i class="fa-regular fa-calendar-days"></i> Agenda Économique</h3>
                         <div class="calendar-list" id="calendar-container">
-                            <!-- Sera rempli par le JavaScript -->
+                            <!-- Rempli par script.js -->
                         </div>
                     </div>
                 </aside>
@@ -163,7 +182,6 @@
         </main>
     </div>
 
-    <!-- Footer pro -->
     <footer class="app-footer">
         <div class="footer-content">
             <div class="footer-logo"><i class="fa-solid fa-chart-line"></i> TradeLab</div>
