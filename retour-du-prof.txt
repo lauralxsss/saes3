@@ -1,0 +1,51 @@
+DATE RDV : 25/09/2026 à 10h05
+
+Faut se mettre à la place du prof pour penser aux implémentations et fonctionnalités
+
+RGPD (Identifiant/Mot de passe provisoire ?) à automatiser ?
+- générer automatiquement OU importer les données (csv, à la main)
+
+Durant l'été le portefeuille est sensé évolué => automatisation passive
+
+Historique des actions/ventes avec un commentaire obligatoire sur les ordres effectués
+
+Yahoo Finance ; données gratuites mais en décalage, update hebdomadaires
+
+
+Le prof veut : 
+- Créer des groupes d'étudiants
+- Panel prof/admin où il peut tout faire/modif/etc
+- une vérification visuelle de l'avancement du projet 
+- actualités à filtrer ? (à faire plus tard car compliqué)
+
+Portefeuille :
+- Ajout de commentaires
+- ratios, indicateurs
+- historique de l'action (24h, 3j, 7j, 1mo, 6mo, 1an par exemple)
+- actualités des avis/notes/scores
+- module "trouver une entreprise" pour acheter des actions 
+    - implémentation d'une barre de recherche
+    - peut mener vers https://stockanalysis.com
+    - pas besoin de recup TOUTES les infos sur ce module
+
+A avoir : 
+- capitalisation boursière (=valeur)
+- résultat, évolution du résultat
+- dividendes (valeur, %), évolution des dividendes
+- tri par secteur (ia, pas ia ; full tech et pas de crypto)
+
+
+Actions tendances c'est pas ouf;
+Plutôt faire actions potentielles (genre y'a une nouvelle invention etc ca va impacter le prix de l'action)
+
+Indicateurs qui permet de comparer valeure boursière et valeur de l'entreprise (PER)
+Ratio actifs divisé par capitalisation ; info à recup sur StockAnalysis
+
+Pas de page spécifique pour chaque action ; Affichage global des actions
+Implémentation d'une info-bulle pour les infos sur l'entreprise etc
+
+Idées : 
+- All Time High de action/devise/indice/marché
+- action/devise/indice/marché likés
+- wishlist pour action/devise/indice/marché pour lesquelles on a pas encore le budget
+
