@@ -1,4 +1,6 @@
-// Données fictives (Placeholder)
+// ==========================================
+// DONNÉES GLOBALES (Cartes)
+// ==========================================
 const marketData = {
     actions: [
         { nom: "Apple Inc.", ticker: "AAPL", prix: 175.50, devise: "$", hist: { "1J": "+1.2%", "7J": "+3.5%", "1M": "-2.1%", "6M": "+12.4%" } },
@@ -29,32 +31,9 @@ const marketData = {
         { nom: "Pétrole WTI", ticker: "CL=F", prix: 85.20, devise: "$", hist: { "1J": "-1.2%", "7J": "+3.5%", "1M": "+8.2%", "6M": "+12.4%" } }
     ]
 };
-// ==========================================
-// DONNÉES GLOBALES (Cartes)
-// ==========================================
-const marketData = {
-    actions: [
-        { nom: "Apple Inc.", ticker: "AAPL", prix: 175.50, devise: "$", hist: { "1J": "+1.2%", "7J": "+3.5%", "1M": "-2.1%", "6M": "+12.4%" } },
-        { nom: "LVMH", ticker: "MC.PA", prix: 840.20, devise: "€", hist: { "1J": "-0.8%", "7J": "-1.5%", "1M": "+4.2%", "6M": "+8.1%" } },
-        { nom: "TotalEnergies", ticker: "TTE", prix: 62.30, devise: "€", hist: { "1J": "+0.5%", "7J": "+2.1%", "1M": "+5.6%", "6M": "-1.2%" } },
-        { nom: "Microsoft", ticker: "MSFT", prix: 330.10, devise: "$", hist: { "1J": "+2.5%", "7J": "+1.1%", "1M": "+4.5%", "6M": "+15.2%" } }
-    ],
-    indices: [
-        { nom: "CAC 40", ticker: "^FCHI", prix: 7350.45, devise: "pts", hist: { "1J": "+0.4%", "7J": "-0.2%", "1M": "+2.8%", "6M": "+5.4%" } },
-        { nom: "S&P 500", ticker: "^GSPC", prix: 4500.10, devise: "pts", hist: { "1J": "+1.1%", "7J": "+2.3%", "1M": "-1.0%", "6M": "+10.2%" } }
-    ],
-    devises: [
-        { nom: "Euro / Dollar", ticker: "EUR/USD", prix: 1.0850, devise: "$", hist: { "1J": "-0.2%", "7J": "+0.5%", "1M": "-1.1%", "6M": "+2.3%" } },
-        { nom: "Euro / Yen", ticker: "EUR/JPY", prix: 158.40, devise: "¥", hist: { "1J": "+0.7%", "7J": "+1.2%", "1M": "+3.4%", "6M": "+6.8%" } }
-    ],
-    marches: [
-        { nom: "Or", ticker: "XAU/USD", prix: 1950.40, devise: "$", hist: { "1J": "+0.5%", "7J": "+1.2%", "1M": "-2.4%", "6M": "+5.8%" } },
-        { nom: "Pétrole WTI", ticker: "CL=F", prix: 85.20, devise: "$", hist: { "1J": "-1.2%", "7J": "+3.5%", "1M": "+8.2%", "6M": "+12.4%" } }
-    ]
-};
 
 // ==========================================
-// 1. ACTUALITÉS & AGENDA (Relais Serveur ou Codetabs)
+// 1. ACTUALITÉS & AGENDA (via notre serveur)
 // ==========================================
 async function fetchFrenchNews() {
     const container = document.getElementById('news-container');
@@ -101,6 +80,7 @@ async function fetchFrenchNews() {
         });
         renderArticles(liveArticles, false);
     } catch (error) {
+        console.warn("API actus indisponible.", error);
         renderArticles(fallbackArticles, true);
     }
 }
@@ -110,10 +90,9 @@ async function fetchEconomicCalendar() {
     if (!container) return;
 
     try {
-        const targetUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
-        const apiUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`;
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error("Bloqué");
+        // ✅ On passe par notre propre serveur (/api/calendar), pas par un proxy externe direct depuis le navigateur
+        const response = await fetch('/api/calendar');
+        if (!response.ok) throw new Error("HTTP " + response.status);
         const events = await response.json();
 
         const filteredEvents = events.filter(e => (e.impact === 'High' || e.impact === 'Medium') && ['USD','EUR','FR','DE'].includes(e.country));
@@ -137,7 +116,7 @@ async function fetchEconomicCalendar() {
                 </div>`;
         });
     } catch (error) {
-        // Fallback propre
+        console.warn("API agenda indisponible.", error);
         container.innerHTML = `<p style="font-size:0.9rem; color:var(--text-secondary); text-align:center;">Aucun événement majeur à venir.</p>`;
     }
 }
@@ -268,7 +247,7 @@ function initLeaderboard() {
         const top3Section = document.getElementById('top3-section');
         top3Section.innerHTML = '';
         if (count === 0) { top3Section.classList.add('hidden'); return; }
-        
+
         top3Section.classList.remove('hidden');
         filteredTraders.slice(0, 3).forEach((p, i) => {
             const color = ['gold', 'silver', 'bronze'][i];
@@ -290,7 +269,7 @@ function initLeaderboard() {
         const emptyState = document.getElementById('empty-state');
         const tableInfo = document.getElementById('page-range');
         const tableHeader = document.querySelector('thead');
-        
+
         tbody.innerHTML = '';
         if (count === 0) {
             emptyState.classList.remove('hidden');
@@ -299,7 +278,7 @@ function initLeaderboard() {
             updatePaginationButtons();
             return;
         }
-        
+
         emptyState.classList.add('hidden');
         tableHeader.classList.remove('hidden');
 
@@ -342,132 +321,8 @@ function initLeaderboard() {
 }
 
 // ==========================================
-// INITIALISATION GLOBALE DU SITE
+// 5. ADMINISTRATION DES SESSIONS (page admin uniquement)
 // ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    // Lancement des modules Accueil
-    fetchFrenchNews();
-    fetchEconomicCalendar();
-    
-    // Simulations Marché
-    isLive = true;
-    marketInterval = setInterval(tickMarket, 2000);
-    genererCartesModernes(marketData.actions, 'actions-container');
-    genererCartesModernes(marketData.indices, 'indices-container');
-    genererCartesModernes(marketData.devises, 'devises-container');
-    genererCartesModernes(marketData.marches, 'marches-container');
-    initialiserCarrousels();
-
-    // Lancement de la logique Classement (seulement si la page est chargée)
-    if (document.getElementById('leaderboard-body')) {
-        initLeaderboard();
-    }
-
-    // Gestion des formulaires Auth
-    const toggleBtn = document.getElementById('toggle-password');
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            const pwd = document.getElementById('password');
-            const isHidden = pwd.type === 'password';
-            pwd.type = isHidden ? 'text' : 'password';
-        });
-    }
-});
-document.addEventListener('DOMContentLoaded', () => {
-    loadAdminSessions();
-
-    // Gestion des écouteurs d'événements pour la modale
-    const createModal = document.getElementById('create-modal');
-    document.getElementById('open-modal-btn').addEventListener('click', () => {
-        createModal.classList.remove('hidden');
-    });
-    document.getElementById('close-modal-btn').addEventListener('click', () => {
-        createModal.classList.add('hidden');
-    });
-
-    // Soumission du formulaire de création
-    document.getElementById('session-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const body = {
-            name: document.getElementById('session-name').value,
-            startDate: document.getElementById('start-date').value,
-            endDate: document.getElementById('end-date').value,
-            initialCapital: document.getElementById('initial-capital').value
-        };
-
-        const res = await fetch('/api/admin/sessions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-
-        if (res.ok) {
-            createModal.classList.add('hidden');
-            loadAdminSessions();
-        }
-    });
-
-    // Rafraîchissement automatique toutes les 5 secondes pour la vue temps réel
-    setInterval(loadAdminSessions, 5000);
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadAdminSessions();
-
-    const createModal = document.getElementById('create-modal');
-    const openModalBtn = document.getElementById('open-modal-btn');
-    const closeModalBtn = document.getElementById('close-modal-btn');
-    const sessionForm = document.getElementById('session-form');
-
-    // Gestion de la modale
-    if (openModalBtn && createModal) {
-        openModalBtn.addEventListener('click', () => {
-            createModal.classList.remove('hidden');
-        });
-    }
-
-    if (closeModalBtn && createModal) {
-        closeModalBtn.addEventListener('click', () => {
-            createModal.classList.add('hidden');
-        });
-    }
-
-    // Création d'une session via le formulaire
-    if (sessionForm) {
-        sessionForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const body = {
-                name: document.getElementById('session-name').value,
-                startDate: document.getElementById('start-date').value,
-                endDate: document.getElementById('end-date').value,
-                initialCapital: document.getElementById('initial-capital').value
-            };
-
-            try {
-                const res = await fetch('/api/admin/sessions', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-
-                const data = await res.json();
-                if (res.ok && data.success) {
-                    createModal.classList.add('hidden');
-                    sessionForm.reset();
-                    loadAdminSessions();
-                } else {
-                    alert(data.message || "Erreur lors de la création de la session.");
-                }
-            } catch (err) {
-                console.error("Erreur réseau :", err);
-                alert("Erreur de connexion au serveur.");
-            }
-        });
-    }
-
-    setInterval(loadAdminSessions, 5000);
-});
-
 async function loadAdminSessions() {
     try {
         const res = await fetch('/api/admin/sessions');
@@ -482,7 +337,7 @@ async function loadAdminSessions() {
 function renderSessions(sessions) {
     const container = document.getElementById('sessions-container');
     if (!container) return;
-    
+
     container.innerHTML = '';
 
     if (!sessions || sessions.length === 0) {
@@ -493,7 +348,7 @@ function renderSessions(sessions) {
     sessions.forEach(session => {
         const card = document.createElement('div');
         card.className = `session-fin-card ${!session.isActive ? 'closed' : ''}`;
-        
+
         let studentsHtml = '';
         if (session.participants && session.participants.length > 0) {
             studentsHtml = session.participants.map(p => `
@@ -516,7 +371,6 @@ function renderSessions(sessions) {
                     <span class="level-badge ${session.isActive ? 'expert' : 'debutant'}">${session.isActive ? 'Active' : 'Clôturée'}</span>
                 </div>
 
-                <!-- CODE DE SESSION UNIQUE -->
                 <div class="session-code-display">
                     <div>
                         <span class="session-code-label">Code d'accès unique</span>
@@ -531,7 +385,7 @@ function renderSessions(sessions) {
                     <span>Participants inscrits</span>
                     <strong>${session.participants ? session.participants.length : 0}</strong>
                 </div>
-                
+
                 <div class="session-students-box">
                     <div class="student-mini-list">
                         ${studentsHtml}
@@ -565,7 +419,6 @@ function renderSessions(sessions) {
     });
 }
 
-// Fonction pour clôturer une session
 async function closeSession(id) {
     if (confirm("Voulez-vous vraiment clôturer cette session ?")) {
         try {
@@ -576,3 +429,98 @@ async function closeSession(id) {
         }
     }
 }
+
+function initAdminSessionsPage() {
+    loadAdminSessions();
+
+    const createModal = document.getElementById('create-modal');
+    const openModalBtn = document.getElementById('open-modal-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const sessionForm = document.getElementById('session-form');
+
+    if (openModalBtn && createModal) {
+        openModalBtn.addEventListener('click', () => {
+            createModal.classList.remove('hidden');
+        });
+    }
+
+    if (closeModalBtn && createModal) {
+        closeModalBtn.addEventListener('click', () => {
+            createModal.classList.add('hidden');
+        });
+    }
+
+    if (sessionForm) {
+        sessionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = {
+                name: document.getElementById('session-name').value,
+                startDate: document.getElementById('start-date').value,
+                endDate: document.getElementById('end-date').value,
+                initialCapital: document.getElementById('initial-capital').value
+            };
+
+            try {
+                const res = await fetch('/api/admin/sessions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    createModal.classList.add('hidden');
+                    sessionForm.reset();
+                    loadAdminSessions();
+                } else {
+                    alert(data.message || "Erreur lors de la création de la session.");
+                }
+            } catch (err) {
+                console.error("Erreur réseau :", err);
+                alert("Erreur de connexion au serveur.");
+            }
+        });
+    }
+
+    setInterval(loadAdminSessions, 5000);
+}
+
+// ==========================================
+// INITIALISATION GLOBALE DU SITE (un seul point d'entrée)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Accueil : actus + agenda
+    fetchFrenchNews();
+    fetchEconomicCalendar();
+
+    // Simulateur de marché (ticker en direct)
+    isLive = true;
+    marketInterval = setInterval(tickMarket, 2000);
+
+    // Cartes trader/investir
+    genererCartesModernes(marketData.actions, 'actions-container');
+    genererCartesModernes(marketData.indices, 'indices-container');
+    genererCartesModernes(marketData.devises, 'devises-container');
+    genererCartesModernes(marketData.marches, 'marches-container');
+    initialiserCarrousels();
+
+    // Page Classement (seulement si les éléments existent)
+    if (document.getElementById('leaderboard-body')) {
+        initLeaderboard();
+    }
+
+    // Page Admin Sessions (seulement si les éléments existent)
+    if (document.getElementById('sessions-container')) {
+        initAdminSessionsPage();
+    }
+
+    // Pages Connexion / Inscription : afficher/masquer le mot de passe
+    const toggleBtn = document.getElementById('toggle-password');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            const pwd = document.getElementById('password');
+            const isHidden = pwd.type === 'password';
+            pwd.type = isHidden ? 'text' : 'password';
+        });
+    }
+});
