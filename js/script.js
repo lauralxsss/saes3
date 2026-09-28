@@ -63,30 +63,36 @@ async function fetchFrenchNews() {
     };
 
     try {
-        // ✅ On appelle notre propre serveur, plus de CORS possible
         const response = await fetch('/api/news');
         if (!response.ok) throw new Error("Requête HTTP échouée : " + response.status);
 
-        const data = await response.json();
-        if (!data.items || data.items.length === 0) {
-            throw new Error("Flux vide");
-        }
+        // Lecture du XML renvoyé par notre serveur
+        const text = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, "text/xml");
+        
+        // Récupération des 3 premiers articles
+        const items = Array.from(xmlDoc.querySelectorAll("item")).slice(0, 3);
+        if (items.length === 0) throw new Error("Flux vide");
 
-        const liveArticles = data.items.map((item, index) => {
-            const dateObj = new Date(item.pubDate);
+        const liveArticles = items.map((item, index) => {
+            const pubDate = item.querySelector("pubDate")?.textContent;
+            const dateObj = new Date(pubDate);
             return {
-                title: item.title || "Titre indisponible",
-                link: item.link || "#",
-                source: "Le Monde",
+                title: item.querySelector("title")?.textContent || "Titre indisponible",
+                link: item.querySelector("link")?.textContent || "#",
+                source: "Yahoo Finance",
                 dateStr: dateObj.toLocaleDateString('fr-FR') + ' à ' + dateObj.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}),
                 image: fallbackArticles[index % fallbackArticles.length].image
             };
         });
+        
         renderArticles(liveArticles, false);
     } catch (error) {
         console.warn("API actus indisponible. Activation des liens de secours.", error);
         renderArticles(fallbackArticles, true);
     }
+}
 
 // ==========================================
 // 2. AGENDA ÉCONOMIQUE EN TEMPS RÉEL
@@ -98,7 +104,6 @@ async function fetchEconomicCalendar() {
     container.innerHTML = '<p style="text-align:center; padding:15px; color:var(--text-secondary);"><i class="fa-solid fa-spinner fa-spin"></i> Chargement de l\'agenda...</p>';
 
     try {
-        // ✅ On appelle notre propre serveur, plus de CORS possible
         const response = await fetch('/api/calendar');
         if (!response.ok) throw new Error("HTTP " + response.status);
 
@@ -171,7 +176,7 @@ async function fetchEconomicCalendar() {
 }
 
 // ==========================================
-// 3. SIMULATEUR DE MARCHÉ (Effet Flash & Boutons Live/Hebdo)
+// 3. SIMULATEUR DE MARCHÉ (Effet Flash)
 // ==========================================
 let marketInterval;
 let isLive = false;
@@ -292,15 +297,15 @@ function initialiserCarrousels() {
 }
 
 // ==========================================
-// 5. INITIALISATION GLOBALE (Au chargement de la page)
+// 5. INITIALISATION GLOBALE
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     fetchFrenchNews();
     fetchEconomicCalendar();
 
-    // ⚠️ AJOUT : rafraîchissement automatique pour rester "en temps et en heure"
-    setInterval(fetchFrenchNews, 5 * 60 * 1000);       // actus : toutes les 5 minutes
-    setInterval(fetchEconomicCalendar, 30 * 60 * 1000); // agenda : toutes les 30 minutes
+    // Rafraîchissement automatique
+    setInterval(fetchFrenchNews, 5 * 60 * 1000);       // toutes les 5 mins
+    setInterval(fetchEconomicCalendar, 30 * 60 * 1000); // toutes les 30 mins
 
     if (document.getElementById('btn-live')) {
         switchMode('live');
