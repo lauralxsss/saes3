@@ -662,3 +662,57 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+
+// ==========================================
+// Portefeuille : Gestion des graphiques
+// ==========================================
+
+    document.addEventListener("DOMContentLoaded", function() {
+    // 1. Graphique d'Évolution de la Valeur du Portefeuille (Courbe)
+    const ctxPerf = document.getElementById('portfolioPerformanceChart');
+    
+    if (ctxPerf) {
+        const contextPerf = ctxPerf.getContext('2d');
+        
+        // Dégradé sous la courbe
+        const gradient = contextPerf.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(34, 197, 94, 0.35)');
+        gradient.addColorStop(1, 'rgba(34, 197, 94, 0.0)');
+
+        new Chart(contextPerf, {
+            type: 'line',
+            data: {
+                labels: ['Janv', 'Févr', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept'],
+                datasets: [{
+                    label: 'Valeur du portefeuille (€)',
+                    data: [100000, 101200, 99800, 103500, 106000, 104200, 109800, 112000, 114250],
+                    borderColor: '#22C55E',
+                    borderWidth: 2,
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: '#22C55E',
+                    pointRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { color: '#2A2E39' },
+                        ticks: { color: '#94A3B8' }
+                    },
+                    y: {
+                        grid: { color: '#2A2E39' },
+                        ticks: { color: '#94A3B8' }
+                    }
+                }
+            }
+        });
+    }
+});
