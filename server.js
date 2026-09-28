@@ -343,11 +343,9 @@ app.get('/api/sessions/:sessionId/leaderboard', (req, res) => {
 // PAGE HTML
 // ==========================================
 
-app.get('*', (req, res) => {
-
-    res.sendFile(
-        path.join(__dirname, 'index.html')
-    );
+// Route par défaut moderne pour les Single Page Applications (SPA)
+app.get('/{*path}', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // ==========================================
