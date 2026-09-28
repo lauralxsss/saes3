@@ -37,110 +37,34 @@
         <h1>Trader et Investir</h1>
         <p class="subtitle-text">Aperçu des marchés financiers pour votre simulation.</p>
 
-        <h2>Actions en vue (8 actifs)</h2>
+        <h2>
+            Actions en vue 
+            <a href="actions/" class="voir-tout">Voir toutes les actions</a>
+        </h2>
         <div class="carousel-wrapper">
-            <div class="carousel-track">
-                <div class="card">
-                    <div class="card-header">
-                        <span class="asset-name">Apple Inc.</span>
-                        <span class="asset-ticker">AAPL</span></div>
-                        <div class="price">175.50 $</div>
-                        <div class="history"><div><span>1J:</span> 
-                            <span class="positive">+1.2%</span></div>
-                        <div><span>7J:</span> 
-                            <span class="positive">+3.5%</span></div><div><span>1M:</span> <span class="negative">-2.1%</span></div><div><span>6M:</span> <span class="positive">+12.4%</span></div></div><a href="#" class="btn-trade">Trader AAPL</a></div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="asset-name">LVMH</span>
-                        <span class="asset-ticker">MC.PA</span></div>
-                        <div class="price">840.20 €</div>
-                        <div class="history"><div><span>1J:</span> 
-                            <span class="negative">-0.8%</span></div>
-                        <div><span>7J:</span> 
-                            <span class="negative">-1.5%</span></div><div><span>1M:</span> <span class="positive">+4.2%</span></div><div><span>6M:</span> <span class="positive">+8.1%</span></div></div><a href="#" class="btn-trade">Trader MC.PA</a></div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="asset-name">Microsoft</span>
-                        <span class="asset-ticker">MSFT</span></div>
-                        <div class="price">330.10 $</div>
-                        <div class="history"><div><span>1J:</span> 
-                            <span class="positive">+2.5%</span></div>
-                        <div><span>7J:</span> 
-                            <span class="positive">+1.1%</span></div><div><span>1M:</span> <span class="positive">+4.5%</span></div><div><span>6M:</span> <span class="positive">+15.2%</span></div></div><a href="#" class="btn-trade">Trader MSFT</a></div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="asset-name">Tesla</span>
-                        <span class="asset-ticker">TSLA</span></div>
-                        <div class="price">210.80 $</div>
-                        <div class="history"><div><span>1J:</span> 
-                            <span class="negative">-1.2%</span></div>
-                        <div><span>7J:</span> 
-                            <span class="negative">-4.5%</span></div><div><span>1M:</span> <span class="positive">+8.2%</span></div><div><span>6M:</span> <span class="negative">-5.1%</span></div></div><a href="#" class="btn-trade">Trader TSLA</a></div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="asset-name">Amazon</span>
-                        <span class="asset-ticker">AMZN</span></div>
-                        <div class="price">135.40 $</div>
-                        <div class="history"><div><span>1J:</span> 
-                            <span class="positive">+0.9%</span></div>
-                        <div><span>7J:</span> 
-                            <span class="positive">+2.8%</span></div><div><span>1M:</span> <span class="negative">-1.5%</span></div><div><span>6M:</span> <span class="positive">+9.4%</span></div></div><a href="#" class="btn-trade">Trader AMZN</a></div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="asset-name">NVIDIA</span>
-                        <span class="asset-ticker">NVDA</span></div>
-                        <div class="price">450.20 $</div>
-                        <div class="history"><div><span>1J:</span> 
-                            <span class="positive">+3.1%</span></div>
-                        <div><span>7J:</span> 
-                            <span class="positive">+6.2%</span></div><div><span>1M:</span> <span class="positive">+12.5%</span></div><div><span>6M:</span> <span class="positive">+45.8%</span></div></div><a href="#" class="btn-trade">Trader NVDA</a></div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="asset-name">Alphabet</span>
-                        <span class="asset-ticker">GOOGL</span></div>
-                        <div class="price">130.50 $</div>
-                        <div class="history"><div><span>1J:</span> 
-                            <span class="positive">+0.4%</span></div>
-                        <div><span>7J:</span> 
-                            <span class="positive">+1.5%</span></div><div><span>1M:</span> <span class="positive">+2.1%</span></div><div><span>6M:</span> <span class="positive">+11.2%</span></div></div><a href="#" class="btn-trade">Trader GOOGL</a></div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="asset-name">TotalEnergies</span>
-                        <span class="asset-ticker">TTE</span></div>
-                        <div class="price">62.30 €</div>
-                        <div class="history"><div><span>1J:</span> 
-                            <span class="positive">+0.5%</span></div>
-                        <div><span>7J:</span> 
-                            <span class="positive">+2.1%</span></div><div><span>1M:</span> <span class="positive">+5.6%</span></div><div><span>6M:</span> <span class="negative">-1.2%</span></div></div><a href="#" class="btn-trade">Trader TTE</a></div>
-            </div>
+            <button class="carousel-btn prev-btn" data-target="actions-container">&#10094;</button>
+            <div class="carousel-track" id="actions-container"></div>
+            <button class="carousel-btn next-btn" data-target="actions-container">&#10095;</button>
         </div>
 
-        <h2>Indices mondiaux (8 actifs)</h2>
+        <h2>
+            Indices mondiaux
+            <a href="indices/" class="voir-tout">Voir tous les indices</a>
+        </h2>
         <div class="carousel-wrapper">
-            <div class="carousel-track">
-                <div class="card"><div class="card-header"><span class="asset-name">CAC 40</span><span class="asset-ticker">^FCHI</span></div><div class="price">7350.45 pts</div><div class="history"><div><span>1J:</span> <span class="positive">+0.4%</span></div><div><span>7J:</span> <span class="negative">-0.2%</span></div><div><span>1M:</span> <span class="positive">+2.8%</span></div><div><span>6M:</span> <span class="positive">+5.4%</span></div></div><a href="#" class="btn-trade">Trader ^FCHI</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">S&P 500</span><span class="asset-ticker">^GSPC</span></div><div class="price">4500.10 pts</div><div class="history"><div><span>1J:</span> <span class="positive">+1.1%</span></div><div><span>7J:</span> <span class="positive">+2.3%</span></div><div><span>1M:</span> <span class="negative">-1.0%</span></div><div><span>6M:</span> <span class="positive">+10.2%</span></div></div><a href="#" class="btn-trade">Trader ^GSPC</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">NASDAQ</span><span class="asset-ticker">^IXIC</span></div><div class="price">14000.20 pts</div><div class="history"><div><span>1J:</span> <span class="positive">+1.5%</span></div><div><span>7J:</span> <span class="positive">+3.1%</span></div><div><span>1M:</span> <span class="positive">+2.5%</span></div><div><span>6M:</span> <span class="positive">+15.8%</span></div></div><a href="#" class="btn-trade">Trader ^IXIC</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">Dow Jones</span><span class="asset-ticker">^DJI</span></div><div class="price">34500.80 pts</div><div class="history"><div><span>1J:</span> <span class="positive">+0.2%</span></div><div><span>7J:</span> <span class="positive">+0.5%</span></div><div><span>1M:</span> <span class="negative">-0.5%</span></div><div><span>6M:</span> <span class="positive">+4.2%</span></div></div><a href="#" class="btn-trade">Trader ^DJI</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">DAX</span><span class="asset-ticker">^GDAXI</span></div><div class="price">15800.60 pts</div><div class="history"><div><span>1J:</span> <span class="positive">+0.8%</span></div><div><span>7J:</span> <span class="positive">+1.2%</span></div><div><span>1M:</span> <span class="positive">+3.1%</span></div><div><span>6M:</span> <span class="positive">+7.5%</span></div></div><a href="#" class="btn-trade">Trader ^GDAXI</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">FTSE 100</span><span class="asset-ticker">^FTSE</span></div><div class="price">7400.30 pts</div><div class="history"><div><span>1J:</span> <span class="negative">-0.1%</span></div><div><span>7J:</span> <span class="negative">-0.5%</span></div><div><span>1M:</span> <span class="positive">+1.2%</span></div><div><span>6M:</span> <span class="positive">+2.1%</span></div></div><a href="#" class="btn-trade">Trader ^FTSE</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">Nikkei 225</span><span class="asset-ticker">^N225</span></div><div class="price">32000.50 pts</div><div class="history"><div><span>1J:</span> <span class="positive">+1.2%</span></div><div><span>7J:</span> <span class="positive">+2.5%</span></div><div><span>1M:</span> <span class="positive">+4.8%</span></div><div><span>6M:</span> <span class="positive">+18.2%</span></div></div><a href="#" class="btn-trade">Trader ^N225</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">Hang Seng</span><span class="asset-ticker">^HSI</span></div><div class="price">18000.10 pts</div><div class="history"><div><span>1J:</span> <span class="negative">-1.5%</span></div><div><span>7J:</span> <span class="negative">-3.2%</span></div><div><span>1M:</span> <span class="negative">-5.5%</span></div><div><span>6M:</span> <span class="negative">-12.4%</span></div></div><a href="#" class="btn-trade">Trader ^HSI</a></div>
-            </div>
+            <button class="carousel-btn prev-btn" data-target="indices-container">&#10094;</button>
+            <div class="carousel-track" id="indices-container"></div>
+            <button class="carousel-btn next-btn" data-target="indices-container">&#10095;</button>
         </div>
 
-        <h2>Devises (8 actifs)</h2>
+        <h2>
+            Devises
+            <a href="devises/" class="voir-tout">Voir toutes les devises</a>
+        </h2>
         <div class="carousel-wrapper">
-            <div class="carousel-track">
-                <div class="card"><div class="card-header"><span class="asset-name">Euro / Dollar</span><span class="asset-ticker">EUR/USD</span></div><div class="price">1.0850 $</div><div class="history"><div><span>1J:</span> <span class="negative">-0.2%</span></div><div><span>7J:</span> <span class="positive">+0.5%</span></div><div><span>1M:</span> <span class="negative">-1.1%</span></div><div><span>6M:</span> <span class="positive">+2.3%</span></div></div><a href="#" class="btn-trade">Trader EUR/USD</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">Euro / Yen</span><span class="asset-ticker">EUR/JPY</span></div><div class="price">158.40 ¥</div><div class="history"><div><span>1J:</span> <span class="positive">+0.7%</span></div><div><span>7J:</span> <span class="positive">+1.2%</span></div><div><span>1M:</span> <span class="positive">+3.4%</span></div><div><span>6M:</span> <span class="positive">+6.8%</span></div></div><a href="#" class="btn-trade">Trader EUR/JPY</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">Livre / Dollar</span><span class="asset-ticker">GBP/USD</span></div><div class="price">1.2540 $</div><div class="history"><div><span>1J:</span> <span class="positive">+0.1%</span></div><div><span>7J:</span> <span class="negative">-0.4%</span></div><div><span>1M:</span> <span class="positive">+1.1%</span></div><div><span>6M:</span> <span class="positive">+3.3%</span></div></div><a href="#" class="btn-trade">Trader GBP/USD</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">Euro / Livre</span><span class="asset-ticker">EUR/GBP</span></div><div class="price">0.8650 £</div><div class="history"><div><span>1J:</span> <span class="negative">-0.1%</span></div><div><span>7J:</span> <span class="positive">+0.2%</span></div><div><span>1M:</span> <span class="negative">-0.5%</span></div><div><span>6M:</span> <span class="negative">-1.2%</span></div></div><a href="#" class="btn-trade">Trader EUR/GBP</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">Dollar / Yen</span><span class="asset-ticker">USD/JPY</span></div><div class="price">145.20 ¥</div><div class="history"><div><span>1J:</span> <span class="positive">+0.5%</span></div><div><span>7J:</span> <span class="positive">+1.1%</span></div><div><span>1M:</span> <span class="positive">+2.5%</span></div><div><span>6M:</span> <span class="positive">+8.4%</span></div></div><a href="#" class="btn-trade">Trader USD/JPY</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">Aussie / Dollar</span><span class="asset-ticker">AUD/USD</span></div><div class="price">0.6420 $</div><div class="history"><div><span>1J:</span> <span class="negative">-0.4%</span></div><div><span>7J:</span> <span class="negative">-1.2%</span></div><div><span>1M:</span> <span class="negative">-2.1%</span></div><div><span>6M:</span> <span class="negative">-4.5%</span></div></div><a href="#" class="btn-trade">Trader AUD/USD</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">Euro / Suisse</span><span class="asset-ticker">EUR/CHF</span></div><div class="price">0.9540 CHF</div><div class="history"><div><span>1J:</span> <span class="positive">+0.2%</span></div><div><span>7J:</span> <span class="positive">+0.1%</span></div><div><span>1M:</span> <span class="negative">-0.8%</span></div><div><span>6M:</span> <span class="negative">-2.3%</span></div></div><a href="#" class="btn-trade">Trader EUR/CHF</a></div>
-                <div class="card"><div class="card-header"><span class="asset-name">Dollar / CAD</span><span class="asset-ticker">USD/CAD</span></div><div class="price">1.3520 $</div><div class="history"><div><span>1J:</span> <span class="positive">+0.3%</span></div><div><span>7J:</span> <span class="positive">+0.8%</span></div><div><span>1M:</span> <span class="positive">+1.5%</span></div><div><span>6M:</span> <span class="positive">+2.8%</span></div></div><a href="#" class="btn-trade">Trader USD/CAD</a></div>
-            </div>
+            <button class="carousel-btn prev-btn" data-target="devises-container">&#10094;</button>
+            <div class="carousel-track" id="devises-container"></div>
+            <button class="carousel-btn next-btn" data-target="devises-container">&#10095;</button>
         </div>
     </div>
     
