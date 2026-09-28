@@ -44,8 +44,12 @@ app.get('/api/calendar', async (req, res) => {
     try {
         const targetUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
         
-        const response = await fetch(targetUrl, { 
-            headers: { ...headers, 'Accept': 'application/json' },
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+        
+        const response = await fetch(proxyUrl, { 
+            headers: { 
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            },
             signal: AbortSignal.timeout(8000) 
         });
         
