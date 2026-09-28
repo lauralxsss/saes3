@@ -958,3 +958,37 @@ body.trader-investir
 .session-students-title { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 10px; display: flex; justify-content: space-between; }
 .student-mini-list { max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
 .student-row-item { display: flex; justify-content: space-between; font-size: 0.85rem; background: rgba(255,255,255,0.02); padding: 6px 10px; border-radius: 4px; align-items: center; }
+
+/* =========================================
+   PARCOURS REJOINDRE SIMULATION (Fintech UX)
+   ========================================= */
+.auth-body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background-color: var(--bg-main); padding: 20px; }
+.auth-container { width: 100%; max-width: 440px; }
+.auth-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 32px; box-shadow: var(--shadow-panel); }
+.auth-logo { font-size: 1.25rem; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 24px; cursor: pointer; }
+.auth-logo i { color: #2962FF; }
+.auth-title { font-size: 1.4rem; font-weight: 600; color: #fff; margin: 0 0 6px 0; }
+.auth-subtitle { font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 24px 0; line-height: 1.4; }
+.auth-form { display: flex; flex-direction: column; gap: 16px; }
+.auth-submit-btn { width: 100%; padding: 12px; font-size: 0.95rem; font-weight: 500; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; }
+.auth-footer { margin-top: 24px; text-align: center; border-top: 1px solid var(--border-color); padding-top: 16px; }
+.auth-footer a { font-size: 0.8rem; color: var(--text-secondary); text-decoration: none; }
+.auth-footer a:hover { color: #fff; }
+
+/* Input Code spécifique */
+.input-session-code { text-transform: uppercase; font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 2px; font-size: 1.1rem; text-align: center; }
+
+/* Alertes d'erreur */
+.alert-error { background: rgba(242, 54, 69, 0.1); border: 1px solid rgba(242, 54, 69, 0.3); color: var(--color-down); padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+.alert-error.hidden { display: none !important; }
+
+/* Carte de Prévisualisation (Étape 2) */
+.simulation-preview { display: flex; flex-direction: column; gap: 16px; }
+.simulation-preview.hidden { display: none !important; }
+.preview-header { background: rgba(41, 98, 255, 0.1); border: 1px solid rgba(41, 98, 255, 0.2); padding: 16px; border-radius: 8px; }
+.preview-badge { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: #2962FF; font-weight: 600; display: block; margin-bottom: 4px; }
+.preview-title { font-size: 1.1rem; font-weight: 600; color: #fff; margin: 0; }
+.preview-details { display: flex; flex-direction: column; gap: 10px; background: var(--bg-main); border: 1px solid var(--border-color); padding: 16px; border-radius: 8px; }
+.preview-row { display: flex; justify-content: space-between; font-size: 0.85rem; }
+.preview-label { color: var(--text-secondary); }
+.preview-val { color: #fff; font-weight: 500; }

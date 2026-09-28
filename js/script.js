@@ -514,3 +514,151 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ==========================================
+// PARCOURS ÉLÈVE : GESTION DE LA PAGE REJOINDRE
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const codeForm = document.getElementById('code-form');
+    if (!codeForm) return; // S'exécute uniquement sur la page rejoindre.html
+
+    const codeInput = document.getElementById('session-code');
+    const errorAlert = document.getElementById('error-alert');
+    const errorMessage = document.getElementById('error-message');
+    const validateBtn = document.getElementById('validate-btn');
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+    
+    const previewBox = document.getElementById('simulation-preview');
+    const prevName = document.getElementById('prev-name');
+    const prevInstitution = document.getElementById('prev-institution');
+    const prevDates = document.getElementById('prev-dates');
+    const prevCapital = document.getElementById('prev-capital');
+    const studentNameInput = document.getElementById('student-name');
+    const startBtn = document.getElementById('start-btn');
+    const backBtn = document.getElementById('back-btn');
+
+    let currentValidatedSession = null;
+
+    // 1. Soumission du code (Étape 1)
+    codeForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorAlert.classList.add('hidden');
+        
+        const code = codeInput.value.trim();
+        if (!code) {
+            showError("Veuillez entrer un code de session.");
+            return;
+        }
+
+        // État de chargement professionnel
+        setLoading(true);
+
+        try {
+            const response = await fetch('/api/student/verify-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                showError(data.message || "Code invalide ou expiré. Vérifiez votre code et réessayez.");
+                setLoading(false);
+                return;
+            }
+
+            // Succès : Stockage temporaire et affichage du récapitulatif
+            currentValidatedSession = data.session;
+            
+            prevName.innerText = data.session.name;
+            prevInstitution.innerText = data.session.institution || "TradeLab Academic";
+            prevDates.innerText = `Du ${data.session.startDate} au ${data.session.endDate}`;
+            prevCapital.innerText = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(data.session.initialCapital);
+
+            codeForm.classList.add('hidden');
+            previewBox.classList.remove('hidden');
+
+        } catch (err) {
+            console.error("Erreur réseau:", err);
+            showError("Erreur de communication avec le serveur. Veuillez réessayer.");
+        } finally {
+            setLoading(false);
+        }
+    });
+
+    // 2. Démarrage de la simulation (Étape 2)
+    startBtn.addEventListener('click', async () => {
+        const studentName = studentNameInput.value.trim();
+        if (!studentName) {
+            alert("Veuillez entrer votre nom ou pseudo pour commencer.");
+            studentNameInput.focus();
+            return;
+        }
+
+        if (!currentValidatedSession) return;
+
+        startBtn.innerText = "Initialisation...";
+        startBtn.disabled = true;
+
+        try {
+            const response = await fetch('/api/student/start-simulation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sessionId: currentValidatedSession.id,
+                    studentName: studentName
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                alert(data.message || "Impossible de démarrer la simulation.");
+                startBtn.innerText = "Commencer la simulation";
+                startBtn.disabled = false;
+                return;
+            }
+
+            // PERSISTANCE SÉCURISÉE (localStorage pour éviter la perte de session au rafraîchissement)
+            localStorage.setItem('tradelab_active_session_id', data.sessionId);
+            localStorage.setItem('tradelab_active_session_name', data.sessionName);
+            localStorage.setItem('tradelab_participant', JSON.stringify(data.participant));
+
+            // Redirection vers le tableau de bord de la simulation (Première étape)
+            window.location.href = '../index.html';
+
+        } catch (err) {
+            console.error("Erreur d'initialisation:", err);
+            alert("Erreur serveur lors de la création de votre session.");
+            startBtn.innerText = "Commencer la simulation";
+            startBtn.disabled = false;
+        }
+    });
+
+    // 3. Bouton pour corriger / saisir un autre code
+    backBtn.addEventListener('click', () => {
+        previewBox.classList.add('hidden');
+        codeForm.classList.remove('hidden');
+        codeInput.value = '';
+        codeInput.focus();
+    });
+
+    function showError(msg) {
+        errorMessage.innerText = msg;
+        errorAlert.classList.remove('hidden');
+    }
+
+    function setLoading(isLoading) {
+        if (isLoading) {
+            validateBtn.disabled = true;
+            btnText.classList.add('hidden');
+            btnSpinner.classList.remove('hidden');
+        } else {
+            validateBtn.disabled = false;
+            btnText.classList.remove('hidden');
+            btnSpinner.classList.add('hidden');
+        }
+    }
+});

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeLab - Rejoindre une simulation</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="../css/style.css" rel="stylesheet">
+    <script src="../js/script.js" defer></script>
+</head>
+<body class="pro-layout auth-body">
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo" onclick="window.location.href='../index.html'">
+                <i class="fa-solid fa-chart-line"></i> TradeLab
+            </div>
+
+            <h1 class="auth-title">Rejoindre une simulation</h1>
+            <p class="auth-subtitle">Entrez le code unique fourni par votre enseignant pour accéder à votre espace de trading.</p>
+
+            <!-- ÉTAPE 1 : SAISIE DU CODE -->
+            <form id="code-form" class="auth-form">
+                <div class="field">
+                    <label for="session-code">Code de session</label>
+                    <input type="text" id="session-code" class="input-session-code" placeholder="Ex: B7K4P9" autocomplete="off" required>
+                </div>
+
+                <div id="error-alert" class="alert-error hidden">
+                    <i class="fa-solid fa-circle-exclamation"></i> <span id="error-message">Message d'erreur</span>
+                </div>
+
+                <button type="submit" id="validate-btn" class="btn-primary auth-submit-btn">
+                    <span id="btn-text">Valider le code</span>
+                    <i id="btn-spinner" class="fa-solid fa-spinner fa-spin hidden"></i>
+                </button>
+            </form>
+
+            <!-- ÉTAPE 2 : RÉCAPITULATIF DE LA SIMULATION (Caché par défaut) -->
+            <div id="simulation-preview" class="simulation-preview hidden">
+                <div class="preview-header">
+                    <span class="preview-badge">Session vérifiée</span>
+                    <h3 id="prev-name" class="preview-title">Nom de la simulation</h3>
+                </div>
+
+                <div class="preview-details">
+                    <div class="preview-row">
+                        <span class="preview-label">Établissement</span>
+                        <span id="prev-institution" class="preview-val">TradeLab Academic</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">Période</span>
+                        <span id="prev-dates" class="preview-val">Du 01/10/2026 au 31/10/2026</span>
+                    </div>
+                    <div class="preview-row">
+                        <span class="preview-label">Capital initial</span>
+                        <span id="prev-capital" class="preview-val num-font">100 000,00 €</span>
+                    </div>
+                </div>
+
+                <div class="field" style="margin-top: 16px;">
+                    <label for="student-name">Votre nom / pseudo</label>
+                    <input type="text" id="student-name" placeholder="Ex: Thomas Martin" required>
+                </div>
+
+                <button type="button" id="start-btn" class="btn-primary auth-submit-btn" style="margin-top: 16px;">
+                    Commencer la simulation
+                </button>
+                <button type="button" id="back-btn" class="btn-outline" style="width: 100%; margin-top: 8px;">
+                    Saisir un autre code
+                </button>
+            </div>
+
+            <div class="auth-footer">
+                <a href="../connexion/connexion.html">Accès Administrateur / Enseignant</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

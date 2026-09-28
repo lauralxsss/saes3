@@ -384,3 +384,90 @@ app.listen(PORT, () => {
     console.log('====================================');
     console.log('');
 });
+
+// ==========================================
+// PARCOURS ÉLÈVE : VALIDATION DU CODE DE SESSION
+// ==========================================
+
+// Étape 1 : Vérification et prévisualisation du code
+app.post('/api/student/verify-code', (req, res) => {
+    try {
+        const { code } = req.body;
+        
+        if (!code || !code.trim()) {
+            return res.status(400).json({ success: false, error: 'empty', message: "Veuillez entrer un code de session." });
+        }
+
+        const cleanCode = code.toUpperCase().trim();
+        const session = sessions.find(s => s.code === cleanCode);
+
+        if (!session) {
+            return res.status(404).json({ success: false, error: 'invalid', message: "Code invalide ou expiré. Vérifiez votre code et réessayez." });
+        }
+
+        if (!session.isActive) {
+            return res.status(400).json({ success: false, error: 'deactivated', message: "Cette session a été désactivée ou est terminée." });
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+        if (session.endDate && today > session.endDate) {
+            return res.status(400).json({ success: false, error: 'expired', message: "Ce code a expiré." });
+        }
+
+        // Renvoie uniquement les informations publiques et nécessaires au récapitulatif
+        res.json({
+            success: true,
+            session: {
+                id: session.id,
+                name: session.name,
+                startDate: session.startDate,
+                endDate: session.endDate,
+                initialCapital: session.initialCapital,
+                institution: "TradeLab Academic Platform"
+            }
+        });
+    } catch (error) {
+        console.error("Erreur validation code:", error);
+        res.status(500).json({ success: false, error: 'server_error', message: "Erreur serveur lors de la validation." });
+    }
+});
+
+// Étape 2 : Initialisation officielle de la session de l'étudiant
+app.post('/api/student/start-simulation', (req, res) => {
+    try {
+        const { sessionId, studentName } = req.body;
+        const session = sessions.find(s => s.id === sessionId);
+
+        if (!session || !session.isActive) {
+            return res.status(400).json({ success: false, message: "Session invalide ou inactive." });
+        }
+
+        const name = studentName && studentName.trim() ? studentName.trim() : `Étudiant_${Math.floor(Math.random() * 900 + 100)}`;
+        const email = `${name.toLowerCase().replace(/\s+/g, '')}@etudiant.fr`;
+
+        // Vérifie si l'étudiant est déjà enregistré dans cette session
+        let participant = session.participants.find(p => p.email === email);
+        if (!participant) {
+            participant = {
+                id: `el_${Date.now()}`,
+                name: name,
+                email: email,
+                value: session.initialCapital,
+                cash: session.initialCapital,
+                positions: 0,
+                status: "🟢 Connecté"
+            };
+            session.participants.push(participant);
+        }
+
+        res.json({
+            success: true,
+            sessionId: session.id,
+            sessionName: session.name,
+            participant: participant
+        });
+    } catch (error) {
+        console.error("Erreur démarrage simulation:", error);
+        res.status(500).json({ success: false, message: "Impossible d'initialiser la simulation." });
+    }
+});
