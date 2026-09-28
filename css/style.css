@@ -150,8 +150,16 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 .mover-price { text-align: right; font-size: 0.95rem; font-weight: 500; }
 
 .sidebar-widget { padding: 25px; margin-bottom: 25px; }
-.watchlist-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid rgba(42, 46, 57, 0.3); transition: 0.2s; }
-.watchlist-item:hover { background-color: var(--bg-hover); border-radius: 8px; padding: 14px 10px; margin: 0 -10px; }
+.watchlist-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px solid rgba(42, 46, 57, 0.3); transition: 0.2s; border-radius: 8px; margin: 0 -10px; }
+.watchlist-item:hover { background-color: var(--bg-hover); }
+
+.wl-info { display: flex; flex-direction: column; gap: 2px; }
+.wl-name { font-weight: 600; font-size: 0.95rem; color: #fff; }
+.wl-ticker { font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; width: fit-content; }
+.wl-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+
+.btn-full-width { width: 100%; background-color: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; cursor: pointer; margin-top: 15px; transition: 0.3s; font-weight: 600; }
+.btn-full-width:hover { background-color: var(--bg-hover); color: var(--text-main); }
 
 /* Podium (Page Classement) */
 .podium-grid { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 20px; align-items: end; margin-top: 30px; margin-bottom: 40px; }
