@@ -1,30 +1,20 @@
 // ==========================================
-// DONNÉES GLOBALES (Cartes)
+// 1. DONNÉES GLOBALES (Marchés & Actifs)
 // ==========================================
 const marketData = {
     actions: [
         { nom: "Apple Inc.", ticker: "AAPL", prix: 175.50, devise: "$", hist: { "1J": "+1.2%", "7J": "+3.5%", "1M": "-2.1%", "6M": "+12.4%" } },
         { nom: "LVMH", ticker: "MC.PA", prix: 840.20, devise: "€", hist: { "1J": "-0.8%", "7J": "-1.5%", "1M": "+4.2%", "6M": "+8.1%" } },
         { nom: "TotalEnergies", ticker: "TTE", prix: 62.30, devise: "€", hist: { "1J": "+0.5%", "7J": "+2.1%", "1M": "+5.6%", "6M": "-1.2%" } },
-        { nom: "Microsoft", ticker: "MSFT", prix: 330.10, devise: "$", hist: { "1J": "+2.5%", "7J": "+1.1%", "1M": "+4.5%", "6M": "+15.2%" } },
-        { nom: "Tesla", ticker: "TSLA", prix: 210.80, devise: "$", hist: { "1J": "-1.2%", "7J": "-4.5%", "1M": "+8.2%", "6M": "-5.1%" } },
-        { nom: "Amazon", ticker: "AMZN", prix: 135.40, devise: "$", hist: { "1J": "+0.9%", "7J": "+2.8%", "1M": "-1.5%", "6M": "+9.4%" } },
-        { nom: "NVIDIA", ticker: "NVDA", prix: 450.20, devise: "$", hist: { "1J": "+3.1%", "7J": "+6.2%", "1M": "+12.5%", "6M": "+45.8%" } },
-        { nom: "Alphabet", ticker: "GOOGL", prix: 130.50, devise: "$", hist: { "1J": "+0.4%", "7J": "+1.5%", "1M": "+2.1%", "6M": "+11.2%" } }
+        { nom: "Microsoft", ticker: "MSFT", prix: 330.10, devise: "$", hist: { "1J": "+2.5%", "7J": "+1.1%", "1M": "+4.5%", "6M": "+15.2%" } }
     ],
     indices: [
         { nom: "CAC 40", ticker: "^FCHI", prix: 7350.45, devise: "pts", hist: { "1J": "+0.4%", "7J": "-0.2%", "1M": "+2.8%", "6M": "+5.4%" } },
-        { nom: "S&P 500", ticker: "^GSPC", prix: 4500.10, devise: "pts", hist: { "1J": "+1.1%", "7J": "+2.3%", "1M": "-1.0%", "6M": "+10.2%" } },
-        { nom: "NASDAQ", ticker: "^IXIC", prix: 14000.20, devise: "pts", hist: { "1J": "+1.5%", "7J": "+3.1%", "1M": "+2.5%", "6M": "+15.8%" } },
-        { nom: "Dow Jones", ticker: "^DJI", prix: 34500.80, devise: "pts", hist: { "1J": "+0.2%", "7J": "+0.5%", "1M": "-0.5%", "6M": "+4.2%" } },
-        { nom: "DAX", ticker: "^GDAXI", prix: 15800.60, devise: "pts", hist: { "1J": "+0.8%", "7J": "+1.2%", "1M": "+3.1%", "6M": "+7.5%" } },
-        { nom: "FTSE 100", ticker: "^FTSE", prix: 7400.30, devise: "pts", hist: { "1J": "-0.1%", "7J": "-0.5%", "1M": "+1.2%", "6M": "+2.1%" } }
+        { nom: "S&P 500", ticker: "^GSPC", prix: 4500.10, devise: "pts", hist: { "1J": "+1.1%", "7J": "+2.3%", "1M": "-1.0%", "6M": "+10.2%" } }
     ],
     devises: [
         { nom: "Euro / Dollar", ticker: "EUR/USD", prix: 1.0850, devise: "$", hist: { "1J": "-0.2%", "7J": "+0.5%", "1M": "-1.1%", "6M": "+2.3%" } },
-        { nom: "Euro / Yen", ticker: "EUR/JPY", prix: 158.40, devise: "¥", hist: { "1J": "+0.7%", "7J": "+1.2%", "1M": "+3.4%", "6M": "+6.8%" } },
-        { nom: "Livre / Dollar", ticker: "GBP/USD", prix: 1.2540, devise: "$", hist: { "1J": "+0.1%", "7J": "-0.4%", "1M": "+1.1%", "6M": "+3.3%" } },
-        { nom: "Euro / Livre", ticker: "EUR/GBP", prix: 0.8650, devise: "£", hist: { "1J": "-0.1%", "7J": "+0.2%", "1M": "-0.5%", "6M": "-1.2%" } }
+        { nom: "Euro / Yen", ticker: "EUR/JPY", prix: 158.40, devise: "¥", hist: { "1J": "+0.7%", "7J": "+1.2%", "1M": "+3.4%", "6M": "+6.8%" } }
     ],
     marches: [
         { nom: "Or", ticker: "XAU/USD", prix: 1950.40, devise: "$", hist: { "1J": "+0.5%", "7J": "+1.2%", "1M": "-2.4%", "6M": "+5.8%" } },
@@ -33,7 +23,7 @@ const marketData = {
 };
 
 // ==========================================
-// 1. ACTUALITÉS & AGENDA (via notre serveur)
+// 2. ACTUALITÉS & AGENDA ÉCONOMIQUE
 // ==========================================
 async function fetchFrenchNews() {
     const container = document.getElementById('news-container');
@@ -52,7 +42,7 @@ async function fetchFrenchNews() {
                 <div class="news-article">
                     <div class="news-image-container"><img src="${article.image}" alt="Actu" class="news-img"></div>
                     <div class="news-content">
-                        <a href="${article.link}" target="_blank" style="text-decoration: none; font-weight: 500; transition: color 0.2s;">${article.title}</a>
+                        <a href="${article.link}" target="_blank" style="text-decoration: none; font-weight: 500;">${article.title}</a>
                         <div class="news-meta"><span>${article.source}</span> • <span>${dateText}</span></div>
                     </div>
                 </div>`;
@@ -80,7 +70,6 @@ async function fetchFrenchNews() {
         });
         renderArticles(liveArticles, false);
     } catch (error) {
-        console.warn("API actus indisponible.", error);
         renderArticles(fallbackArticles, true);
     }
 }
@@ -90,9 +79,10 @@ async function fetchEconomicCalendar() {
     if (!container) return;
 
     try {
-        // ✅ On passe par notre propre serveur (/api/calendar), pas par un proxy externe direct depuis le navigateur
-        const response = await fetch('/api/calendar');
-        if (!response.ok) throw new Error("HTTP " + response.status);
+        const targetUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
+        const apiUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`;
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error("Bloqué");
         const events = await response.json();
 
         const filteredEvents = events.filter(e => (e.impact === 'High' || e.impact === 'Medium') && ['USD','EUR','FR','DE'].includes(e.country));
@@ -116,21 +106,19 @@ async function fetchEconomicCalendar() {
                 </div>`;
         });
     } catch (error) {
-        console.warn("API agenda indisponible.", error);
         container.innerHTML = `<p style="font-size:0.9rem; color:var(--text-secondary); text-align:center;">Aucun événement majeur à venir.</p>`;
     }
 }
 
 // ==========================================
-// 2. SIMULATEUR DE MARCHÉ (Effet Flash)
+// 3. SIMULATEUR DE MARCHÉ (Effet Flash)
 // ==========================================
 let marketInterval;
 let isLive = false;
 
 function formatVariation(valeur) {
     const isPositive = valeur.startsWith('+');
-    const colorClass = isPositive ? 'positive' : 'negative';
-    return `<span class="${colorClass}">${valeur}</span>`;
+    return `<span class="${isPositive ? 'positive' : 'negative'}">${valeur}</span>`;
 }
 
 function flashElement(element, isUp) {
@@ -159,9 +147,6 @@ function tickMarket() {
     });
 }
 
-// ==========================================
-// 3. CARTES ET CAROUSEL
-// ==========================================
 function genererCartesModernes(donnees, containerId) {
     const container = document.getElementById(containerId);
     if(!container) return;
@@ -198,7 +183,7 @@ function initialiserCarrousels() {
 }
 
 // ==========================================
-// 4. CLASSEMENT DYNAMIQUE (Uniquement sur la page Classement)
+// 4. CLASSEMENT DYNAMIQUE (Page Classement)
 // ==========================================
 function initLeaderboard() {
     const INITIAL_CAPITAL = 100000;
@@ -216,7 +201,6 @@ function initLeaderboard() {
             if (!response.ok) throw new Error("HTTP erreur");
             processData(await response.json());
         } catch (error) {
-            console.warn("Impossible de récupérer les joueurs, affichage vide.");
             processData([]);
         }
     }
@@ -245,9 +229,10 @@ function initLeaderboard() {
 
     function renderTop3(count) {
         const top3Section = document.getElementById('top3-section');
+        if (!top3Section) return;
         top3Section.innerHTML = '';
         if (count === 0) { top3Section.classList.add('hidden'); return; }
-
+        
         top3Section.classList.remove('hidden');
         filteredTraders.slice(0, 3).forEach((p, i) => {
             const color = ['gold', 'silver', 'bronze'][i];
@@ -269,7 +254,8 @@ function initLeaderboard() {
         const emptyState = document.getElementById('empty-state');
         const tableInfo = document.getElementById('page-range');
         const tableHeader = document.querySelector('thead');
-
+        
+        if (!tbody) return;
         tbody.innerHTML = '';
         if (count === 0) {
             emptyState.classList.remove('hidden');
@@ -278,7 +264,7 @@ function initLeaderboard() {
             updatePaginationButtons();
             return;
         }
-
+        
         emptyState.classList.add('hidden');
         tableHeader.classList.remove('hidden');
 
@@ -303,9 +289,12 @@ function initLeaderboard() {
     }
 
     function updatePaginationButtons() {
+        const prev = document.getElementById('btn-prev');
+        const next = document.getElementById('btn-next');
+        if (!prev || !next) return;
         const totalPages = Math.ceil(filteredTraders.length / rowsPerPage);
-        document.getElementById('btn-prev').disabled = currentPage === 1;
-        document.getElementById('btn-next').disabled = currentPage === totalPages || totalPages === 0;
+        prev.disabled = currentPage === 1;
+        next.disabled = currentPage === totalPages || totalPages === 0;
     }
 
     document.getElementById('trader-search')?.addEventListener('input', (e) => {
@@ -321,725 +310,207 @@ function initLeaderboard() {
 }
 
 // ==========================================
-// ADMINISTRATION DES SESSIONS
+// 5. GESTION DE L'ESPACE ADMIN (Sessions & Codes)
 // ==========================================
-
-async function loadAdminSessions() {
-
-    const container =
-        document.getElementById('sessions-container');
-
+function initAdminSessions() {
+    const container = document.getElementById('sessions-container');
     if (!container) return;
 
+    const createModal = document.getElementById('create-modal');
+    const openModalBtn = document.getElementById('open-modal-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const sessionForm = document.getElementById('session-form');
+
+    const today = new Date().toISOString().split('T')[0];
+    const nextMonth = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
+    
+    if (startDateInput && !startDateInput.value) startDateInput.value = today;
+    if (endDateInput && !endDateInput.value) endDateInput.value = nextMonth;
+
+    if (openModalBtn && createModal) {
+        openModalBtn.addEventListener('click', () => createModal.classList.remove('hidden'));
+    }
+    if (closeModalBtn && createModal) {
+        closeModalBtn.addEventListener('click', () => createModal.classList.add('hidden'));
+    }
+
+    if (sessionForm) {
+        sessionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = {
+                name: document.getElementById('session-name').value,
+                startDate: startDateInput.value,
+                endDate: endDateInput.value,
+                initialCapital: document.getElementById('initial-capital').value
+            };
+
+            try {
+                const res = await fetch('/api/admin/sessions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    createModal.classList.add('hidden');
+                    sessionForm.reset();
+                    startDateInput.value = today;
+                    endDateInput.value = nextMonth;
+                    loadAdminSessions();
+                } else {
+                    alert(data.message || "Erreur lors de la création de la session.");
+                }
+            } catch (err) {
+                console.error("Erreur réseau :", err);
+            }
+        });
+    }
+
+    loadAdminSessions();
+    setInterval(loadAdminSessions, 5000);
+}
+
+async function loadAdminSessions() {
+    const container = document.getElementById('sessions-container');
+    if (!container) return;
     try {
-
-        const response =
-            await fetch('/api/admin/sessions');
-
-        if (!response.ok) {
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-        }
-
-        const sessions =
-            await response.json();
-
-        console.log("Sessions reçues :", sessions);
-
-        renderSessions(sessions);
-
-    } catch (error) {
-
-        console.error(
-            "❌ Impossible de charger les sessions :",
-            error
-        );
-
-        container.innerHTML = `
-            <div class="empty-state">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-
-                <p>
-                    Impossible de contacter le serveur.
-                </p>
-
-                <small>
-                    Vérifie que Node.js est bien démarré.
-                </small>
-            </div>
-        `;
+        const res = await fetch('/api/admin/sessions');
+        if (!res.ok) throw new Error("Erreur de récupération");
+        const sessions = await res.json();
+        renderAdminSessions(sessions);
+    } catch (err) {
+        console.error("Erreur chargement sessions", err);
     }
 }
 
-
-// ==========================================
-// AFFICHAGE DES SESSIONS
-// ==========================================
-
-function renderSessions(sessions) {
-
-    const container =
-        document.getElementById('sessions-container');
-
+function renderAdminSessions(sessions) {
+    const container = document.getElementById('sessions-container');
     if (!container) return;
-
     container.innerHTML = '';
 
-    if (!sessions.length) {
-
-        container.innerHTML = `
-            <div class="empty-state">
-                <i class="fa-solid fa-folder-open"></i>
-                <p>Aucune session créée.</p>
-            </div>
-        `;
-
+    if (!sessions || sessions.length === 0) {
+        container.innerHTML = `<p class="text-secondary">Aucune session active.</p>`;
         return;
     }
 
     sessions.forEach(session => {
-
-        const card =
-            document.createElement('div');
-
-        card.className =
-            `session-fin-card ${
-                session.isActive ? '' : 'closed'
-            }`;
-
-        const participants =
-            session.participants || [];
-
-        let studentsHTML = '';
-
-        if (participants.length === 0) {
-
-            studentsHTML = `
-                <div
-                    class="text-secondary"
-                    style="
-                        text-align:center;
-                        padding:10px;
-                        font-size:0.85rem;
-                    "
-                >
-                    Aucun élève inscrit pour le moment.
+        const card = document.createElement('div');
+        card.className = `session-fin-card ${!session.isActive ? 'closed' : ''}`;
+        
+        let studentsHtml = '';
+        if (session.participants && session.participants.length > 0) {
+            studentsHtml = session.participants.map(p => `
+                <div class="student-row-item">
+                    <span><strong>${p.name}</strong> <span class="text-secondary">(${p.email || 'N/A'})</span></span>
+                    <span class="num-font">${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(p.value)}</span>
                 </div>
-            `;
-
+            `).join('');
         } else {
-
-            studentsHTML =
-                participants.map(student => {
-
-                    const value =
-                        new Intl.NumberFormat(
-                            'fr-FR',
-                            {
-                                style: 'currency',
-                                currency: 'EUR'
-                            }
-                        ).format(student.value);
-
-                    return `
-                        <div class="student-row-item">
-
-                            <span>
-                                <strong>
-                                    ${escapeHTML(student.name)}
-                                </strong>
-
-                                <span class="text-secondary">
-                                    (${escapeHTML(student.email)})
-                                </span>
-                            </span>
-
-                            <span class="num-font">
-                                ${value}
-                            </span>
-
-                        </div>
-                    `;
-
-                }).join('');
+            studentsHtml = `<div class="text-secondary" style="font-size: 0.85rem; text-align: center; padding: 10px 0;">Aucun élève inscrit pour le moment.</div>`;
         }
 
         card.innerHTML = `
-
             <div>
-
                 <div class="session-fin-top">
-
                     <div>
-
-                        <h3 class="session-fin-name">
-                            ${escapeHTML(session.name)}
-                        </h3>
-
-                        <span class="session-fin-dates">
-                            Du ${session.startDate}
-                            au ${session.endDate}
-                        </span>
-
+                        <h3 class="session-fin-name">${session.name}</h3>
+                        <span class="session-fin-dates">Du ${session.startDate} au ${session.endDate}</span>
                     </div>
-
-                    <span
-                        class="level-badge ${
-                            session.isActive
-                                ? 'expert'
-                                : 'debutant'
-                        }"
-                    >
-                        ${
-                            session.isActive
-                                ? 'Active'
-                                : 'Clôturée'
-                        }
-                    </span>
-
+                    <span class="level-badge ${session.isActive ? 'expert' : 'debutant'}">${session.isActive ? 'Active' : 'Clôturée'}</span>
                 </div>
-
-
-                <!-- CODE -->
 
                 <div class="session-code-display">
-
                     <div>
-
-                        <span class="session-code-label">
-                            Code d'accès
-                        </span>
-
-                        <span class="session-code-val">
-                            ${session.code}
-                        </span>
-
+                        <span class="session-code-label">Code d'accès unique</span>
+                        <span class="session-code-val">${session.code}</span>
                     </div>
-
-                    <button
-                        type="button"
-                        class="btn-outline copy-btn"
-                        data-code="${session.code}"
-                    >
-                        <i class="fa-solid fa-copy"></i>
-                        Copier
+                    <button class="btn-outline copy-btn" data-code="${session.code}" style="padding: 6px 12px; font-size: 0.8rem;">
+                        <i class="fa-solid fa-copy"></i> Copier
                     </button>
-
                 </div>
 
-
-                <!-- PARTICIPANTS -->
-
-                <div
-                    style="
-                        margin-bottom:12px;
-                        font-size:0.9rem;
-                        color:#fff;
-                        display:flex;
-                        justify-content:space-between;
-                    "
-                >
-
-                    <span>
-                        Participants inscrits
-                    </span>
-
-                    <strong>
-                        ${participants.length}
-                    </strong>
-
+                <div style="margin-bottom: 12px; font-size: 0.9rem; font-weight: 500; color: #fff; display: flex; justify-content: space-between;">
+                    <span>Participants inscrits</span>
+                    <strong>${session.participants ? session.participants.length : 0}</strong>
                 </div>
-
-
+                
                 <div class="session-students-box">
-
                     <div class="student-mini-list">
-
-                        ${studentsHTML}
-
+                        ${studentsHtml}
                     </div>
-
                 </div>
-
             </div>
 
-
-            <!-- ACTIONS -->
-
-            ${
-                session.isActive
-
-                ? `
-
-                    <div
-                        style="
-                            margin-top:20px;
-                            border-top:1px solid var(--border-color);
-                            padding-top:12px;
-                            display:flex;
-                            justify-content:flex-end;
-                        "
-                    >
-
-                        <button
-                            type="button"
-                            class="btn-danger-outline close-session-btn"
-                            data-id="${session.id}"
-                            style="
-                                padding:6px 12px;
-                                font-size:0.8rem;
-                            "
-                        >
-                            Clôturer la session
-                        </button>
-
-                    </div>
-
-                `
-
-                : ''
-            }
-
+            <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: flex-end;">
+                ${session.isActive ? `<button class="btn-danger-outline close-session-btn" data-id="${session.id}" style="padding: 6px 12px; font-size: 0.8rem;">Clôturer la session</button>` : ''}
+            </div>
         `;
 
-
-        // ======================================
-        // COPIER LE CODE
-        // ======================================
-
-        const copyButton =
-            card.querySelector('.copy-btn');
-
-        copyButton.addEventListener(
-            'click',
-            async () => {
-
-                const code =
-                    copyButton.dataset.code;
-
-                try {
-
-                    await navigator.clipboard
-                        .writeText(code);
-
-                    copyButton.innerHTML =
-                        `<i class="fa-solid fa-check"></i> Copié`;
-
-                    setTimeout(() => {
-
-                        copyButton.innerHTML =
-                            `<i class="fa-solid fa-copy"></i> Copier`;
-
-                    }, 1500);
-
-                } catch (error) {
-
-                    // Fallback
-                    window.prompt(
-                        "Copiez ce code :",
-                        code
-                    );
-                }
-            }
-        );
-
-
-        // ======================================
-        // FERMER SESSION
-        // ======================================
-
-        const closeButton =
-            card.querySelector(
-                '.close-session-btn'
-            );
-
-        if (closeButton) {
-
-            closeButton.addEventListener(
-                'click',
-                async () => {
-
-                    const id =
-                        closeButton.dataset.id;
-
-                    await closeSession(id);
-                }
-            );
+        const copyBtn = card.querySelector('.copy-btn');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                const codeToCopy = copyBtn.getAttribute('data-code');
+                navigator.clipboard.writeText(codeToCopy);
+                alert(`Code ${codeToCopy} copié dans le presse-papier !`);
+            });
         }
 
+        const closeBtn = card.querySelector('.close-session-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                closeSession(closeBtn.getAttribute('data-id'));
+            });
+        }
 
         container.appendChild(card);
     });
 }
 
-
-// ==========================================
-// CRÉER UNE SESSION
-// ==========================================
-
-async function createSession() {
-
-    const nameInput =
-        document.getElementById('session-name');
-
-    const startInput =
-        document.getElementById('start-date');
-
-    const endInput =
-        document.getElementById('end-date');
-
-    const capitalInput =
-        document.getElementById('initial-capital');
-
-    const name =
-        nameInput.value.trim();
-
-    const startDate =
-        startInput.value;
-
-    const endDate =
-        endInput.value;
-
-    const initialCapital =
-        Number(capitalInput.value);
-
-
-    // Validation côté navigateur
-
-    if (!name) {
-        alert("Veuillez saisir un nom de session.");
-        nameInput.focus();
-        return;
-    }
-
-    if (!startDate || !endDate) {
-        alert("Veuillez sélectionner les dates.");
-        return;
-    }
-
-    if (endDate < startDate) {
-        alert(
-            "La date de fin doit être après la date de début."
-        );
-        return;
-    }
-
-    if (
-        !Number.isFinite(initialCapital) ||
-        initialCapital <= 0
-    ) {
-        alert(
-            "Le capital initial doit être supérieur à 0."
-        );
-        capitalInput.focus();
-        return;
-    }
-
-
-    const submitButton =
-        document.querySelector(
-            '#session-form button[type="submit"]'
-        );
-
-    const originalText =
-        submitButton.innerHTML;
-
-    submitButton.disabled = true;
-
-    submitButton.innerHTML =
-        `<i class="fa-solid fa-spinner fa-spin"></i> Création...`;
-
-
-    try {
-
-        console.log(
-            "Création de la session...",
-            {
-                name,
-                startDate,
-                endDate,
-                initialCapital
-            }
-        );
-
-
-        const response =
-            await fetch(
-                '/api/admin/sessions',
-                {
-                    method: 'POST',
-
-                    headers: {
-                        'Content-Type':
-                            'application/json'
-                    },
-
-                    body: JSON.stringify({
-                        name,
-                        startDate,
-                        endDate,
-                        initialCapital
-                    })
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        console.log(
-            "Réponse serveur :",
-            data
-        );
-
-
-        if (!response.ok || !data.success) {
-
-            throw new Error(
-                data.message ||
-                "Erreur lors de la création."
-            );
-        }
-
-
-        // ====================================
-        // SUCCÈS
-        // ====================================
-
-        console.log(
-            "✅ SESSION CRÉÉE",
-            data.session
-        );
-
-
-        // Fermer la modale
-        document
-            .getElementById('create-modal')
-            .classList.add('hidden');
-
-
-        // Reset
-        document
-            .getElementById('session-form')
-            .reset();
-
-
-        // Affichage immédiat
-        await loadAdminSessions();
-
-
-        // Montrer le code
-        alert(
-            `Session créée !\n\nCode d'accès : ${data.session.code}`
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "❌ Erreur création session :",
-            error
-        );
-
-        alert(
-            `Impossible de créer la session.\n\n${error.message}`
-        );
-
-    } finally {
-
-        submitButton.disabled = false;
-
-        submitButton.innerHTML =
-            originalText;
-    }
-}
-
-
-// ==========================================
-// FERMER UNE SESSION
-// ==========================================
-
 async function closeSession(id) {
-
-    if (
-        !confirm(
-            "Voulez-vous vraiment clôturer cette session ?"
-        )
-    ) {
-        return;
-    }
-
-    try {
-
-        const response =
-            await fetch(
-                `/api/admin/sessions/${id}/close`,
-                {
-                    method: 'POST'
-                }
-            );
-
-        const data =
-            await response.json();
-
-        if (!response.ok || !data.success) {
-
-            throw new Error(
-                data.message ||
-                "Impossible de clôturer la session."
-            );
+    if (confirm("Voulez-vous vraiment clôturer cette session ?")) {
+        try {
+            await fetch(`/api/admin/sessions/${id}/close`, { method: 'POST' });
+            loadAdminSessions();
+        } catch (err) {
+            console.error("Erreur fermeture session", err);
         }
-
-        await loadAdminSessions();
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "Erreur : " + error.message
-        );
     }
 }
 
-
 // ==========================================
-// INITIALISATION ADMIN
-// ==========================================
-
-function initAdminSessionsPage() {
-
-    console.log(
-        "🚀 Initialisation page administration"
-    );
-
-
-    const modal =
-        document.getElementById('create-modal');
-
-    const openButton =
-        document.getElementById('open-modal-btn');
-
-    const closeButton =
-        document.getElementById('close-modal-btn');
-
-    const form =
-        document.getElementById('session-form');
-
-
-    // Charger les sessions
-    loadAdminSessions();
-
-
-    // Ouvrir
-    openButton?.addEventListener(
-        'click',
-        () => {
-
-            modal.classList.remove('hidden');
-
-            document
-                .getElementById('session-name')
-                ?.focus();
-        }
-    );
-
-
-    // Fermer
-    closeButton?.addEventListener(
-        'click',
-        () => {
-
-            modal.classList.add('hidden');
-        }
-    );
-
-
-    // Fermer en cliquant sur le fond
-    modal?.addEventListener(
-        'click',
-        (event) => {
-
-            if (event.target === modal) {
-                modal.classList.add('hidden');
-            }
-        }
-    );
-
-
-    // Création
-    form?.addEventListener(
-        'submit',
-        async (event) => {
-
-            event.preventDefault();
-
-            await createSession();
-        }
-    );
-
-
-    // Actualisation
-    setInterval(
-        loadAdminSessions,
-        5000
-    );
-}
-
-
-// ==========================================
-// SÉCURITÉ AFFICHAGE
-// ==========================================
-
-function escapeHTML(value) {
-
-    return String(value)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
-
-
-// ==========================================
-// INITIALISATION GLOBALE DU SITE (un seul point d'entrée)
+// 6. INITIALISATION GLOBALE DU SITE
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Accueil : actus + agenda
+    // 1. Modules communs (Accueil & Widgets)
     fetchFrenchNews();
     fetchEconomicCalendar();
 
-    // Simulateur de marché (ticker en direct)
+    // 2. Simulateur de marché (Flash)
     isLive = true;
     marketInterval = setInterval(tickMarket, 2000);
-
-    // Cartes trader/investir
     genererCartesModernes(marketData.actions, 'actions-container');
     genererCartesModernes(marketData.indices, 'indices-container');
     genererCartesModernes(marketData.devises, 'devises-container');
     genererCartesModernes(marketData.marches, 'marches-container');
     initialiserCarrousels();
 
-    // Page Classement (seulement si les éléments existent)
+    // 3. Modules conditionnels (selon la page active)
     if (document.getElementById('leaderboard-body')) {
         initLeaderboard();
     }
-
-    // Page Admin Sessions (seulement si les éléments existent)
     if (document.getElementById('sessions-container')) {
-        initAdminSessionsPage();
+        initAdminSessions();
     }
 
-    // Pages Connexion / Inscription : afficher/masquer le mot de passe
+    // 4. Gestion de la visibilité des mots de passe (Auth)
     const toggleBtn = document.getElementById('toggle-password');
     if (toggleBtn) {
         toggleBtn.addEventListener('click', () => {
             const pwd = document.getElementById('password');
-            const isHidden = pwd.type === 'password';
-            pwd.type = isHidden ? 'text' : 'password';
+            if (pwd) pwd.type = pwd.type === 'password' ? 'text' : 'password';
         });
     }
 });
