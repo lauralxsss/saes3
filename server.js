@@ -51,8 +51,7 @@ app.get('/api/calendar', async (req, res) => {
     }
 });
 
-// Route par défaut (redirige vers l'accueil)
-app.get('*', (req, res) => {
+app.get(/.*/, (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
