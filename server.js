@@ -1,56 +1,23 @@
 const express = require('express');
 const path = require('path');
+
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
+
+// ==========================================
+// MIDDLEWARES
+// ==========================================
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '')));
 
-// Faux navigateur pour les requêtes externes
-const headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-    'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7'
-};
+// Fichiers statiques
+app.use(express.static(__dirname));
 
 // ==========================================
-// API ACTUALITÉS
+// DONNÉES EN MÉMOIRE
 // ==========================================
-app.get('/api/news', async (req, res) => {
-    try {
-        const rssUrl = 'https://www.lefigaro.fr/rss/figaro_economie.xml';
-        const response = await fetch(rssUrl, { headers, signal: AbortSignal.timeout(8000) });
-        if (!response.ok) throw new Error(`Erreur réseau: ${response.status}`);
-        const xml = await response.text();
-        res.type('application/xml').send(xml);
-    } catch (error) {
-        console.error("Erreur serveur actus :", error.message);
-        res.status(500).json({ error: "Impossible de récupérer les actualités" });
-    }
-});
 
-// ==========================================
-// API AGENDA ÉCONOMIQUE
-// ==========================================
-app.get('/api/calendar', async (req, res) => {
-    try {
-        const targetUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-        const response = await fetch(proxyUrl, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(8000) });
-        if (!response.ok) throw new Error(`Erreur réseau: ${response.status}`);
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        console.error("Erreur serveur agenda :", error.message);
-        res.status(500).json({ error: "Impossible de récupérer l'agenda" });
-    }
-});
-
-
-// ==========================================
-// BASES DE DONNÉES EN MÉMOIRE (Sessions & Participants)
-// ==========================================
 let sessions = [
     {
         id: "sess_1",
@@ -61,129 +28,309 @@ let sessions = [
         initialCapital: 100000,
         adminId: "admin_prof1",
         isActive: true,
+
         participants: [
-            { id: "el_1", name: "Thomas Martin", email: "thomas@iut.fr", value: 100000, cash: 100000, positions: 0, status: "Connecté" },
-            { id: "el_2", name: "Emma Dupont", email: "emma@iut.fr", value: 103240, cash: 3240, positions: 3, status: "Connectée" },
-            { id: "el_3", name: "Lucas Bernard", email: "lucas@iut.fr", value: 98750, cash: 8750, positions: 1, status: "Connecté" }
+            {
+                id: "el_1",
+                name: "Thomas Martin",
+                email: "thomas@iut.fr",
+                value: 100000,
+                cash: 100000,
+                positions: 0,
+                status: "Connecté"
+            },
+            {
+                id: "el_2",
+                name: "Emma Dupont",
+                email: "emma@iut.fr",
+                value: 103240,
+                cash: 3240,
+                positions: 3,
+                status: "Connectée"
+            },
+            {
+                id: "el_3",
+                name: "Lucas Bernard",
+                email: "lucas@iut.fr",
+                value: 98750,
+                cash: 8750,
+                positions: 1,
+                status: "Connecté"
+            }
         ]
     }
 ];
 
-// Fonction robuste pour générer un code unique à 6 caractères (ex: B7K4P9)
+// ==========================================
+// GÉNÉRATION CODE SESSION
+// ==========================================
+
 function generateSecureCode() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = '';
-    for (let i = 0; i < 6; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+    let code;
+
+    do {
+        code = '';
+
+        for (let i = 0; i < 6; i++) {
+            const index = Math.floor(Math.random() * chars.length);
+            code += chars[index];
+        }
+
+    } while (sessions.some(session => session.code === code));
+
     return code;
 }
 
+// ==========================================
+// TEST SERVEUR
+// ==========================================
+
+app.get('/api/test', (req, res) => {
+    res.json({
+        success: true,
+        message: "API TradeLab opérationnelle",
+        date: new Date().toISOString()
+    });
+});
 
 // ==========================================
-// 1. ROUTES ADMINISTRATEUR (Création & Gestion)
+// ADMIN — RÉCUPÉRER LES SESSIONS
 // ==========================================
 
-// Créer une nouvelle session (UNIQUE et sécurisée)
+app.get('/api/admin/sessions', (req, res) => {
+
+    console.log("GET /api/admin/sessions");
+
+    res.json(sessions);
+});
+
+// ==========================================
+// ADMIN — CRÉER UNE SESSION
+// ==========================================
+
 app.post('/api/admin/sessions', (req, res) => {
+
+    console.log("POST /api/admin/sessions");
+    console.log("Données reçues :", req.body);
+
     try {
-        const { name, startDate, endDate, initialCapital } = req.body;
+
+        const {
+            name,
+            startDate,
+            endDate,
+            initialCapital
+        } = req.body;
+
+        // Validation
+        if (!name || !startDate || !endDate || !initialCapital) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Tous les champs sont obligatoires."
+            });
+        }
+
+        if (new Date(endDate) < new Date(startDate)) {
+
+            return res.status(400).json({
+                success: false,
+                message: "La date de fin doit être après la date de début."
+            });
+        }
+
+        const capital = Number(initialCapital);
+
+        if (!Number.isFinite(capital) || capital <= 0) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Le capital initial doit être supérieur à 0."
+            });
+        }
+
+        // Génération du code
         const code = generateSecureCode();
 
         const newSession = {
             id: `sess_${Date.now()}`,
-            name: name || "Simulation Sans Nom",
+            name: name.trim(),
             code,
-            startDate: startDate || new Date().toISOString().split('T')[0],
-            endDate: endDate || "2026-12-31",
-            initialCapital: Number(initialCapital) || 100000,
+            startDate,
+            endDate,
+            initialCapital: capital,
             adminId: "admin_prof1",
             isActive: true,
             participants: []
         };
 
+        // Ajout en mémoire
         sessions.push(newSession);
-        res.status(201).json({ success: true, session: newSession });
+
+        console.log("✅ Session créée :", newSession);
+
+        return res.status(201).json({
+            success: true,
+            message: "Session créée avec succès.",
+            session: newSession
+        });
+
     } catch (error) {
-        console.error("Erreur création session:", error);
-        res.status(500).json({ success: false, message: "Erreur lors de la création de la session." });
+
+        console.error("❌ Erreur création session :", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Erreur interne lors de la création."
+        });
     }
 });
 
-// Récupérer les sessions de l'administrateur
-app.get('/api/admin/sessions', (req, res) => {
-    res.json(sessions);
-});
+// ==========================================
+// ADMIN — FERMER UNE SESSION
+// ==========================================
 
-// Terminer / Fermer une session
 app.post('/api/admin/sessions/:id/close', (req, res) => {
-    const session = sessions.find(s => s.id === req.params.id);
-    if (!session) return res.status(404).json({ success: false, message: "Session introuvable." });
-    
-    session.isActive = false;
-    res.json({ success: true, message: "Session clôturée avec succès." });
-});
 
+    const session = sessions.find(
+        s => s.id === req.params.id
+    );
+
+    if (!session) {
+
+        return res.status(404).json({
+            success: false,
+            message: "Session introuvable."
+        });
+    }
+
+    session.isActive = false;
+
+    console.log("🔒 Session clôturée :", session.id);
+
+    res.json({
+        success: true,
+        message: "Session clôturée avec succès."
+    });
+});
 
 // ==========================================
-// 2. ROUTES ÉLÈVE (Rejoindre une session)
+// ÉLÈVE — REJOINDRE UNE SESSION
 // ==========================================
 
 app.post('/api/student/join', (req, res) => {
-    const { email, password, sessionCode } = req.body;
 
-    const session = sessions.find(s => s.code === sessionCode.toUpperCase().trim());
+    const {
+        email,
+        password,
+        sessionCode
+    } = req.body;
+
+    if (!email || !sessionCode) {
+
+        return res.status(400).json({
+            success: false,
+            message: "Email et code de session obligatoires."
+        });
+    }
+
+    const normalizedCode = sessionCode
+        .trim()
+        .toUpperCase();
+
+    const session = sessions.find(
+        s => s.code === normalizedCode
+    );
+
     if (!session) {
-        return res.status(404).json({ success: false, message: "Code de session invalide." });
+
+        return res.status(404).json({
+            success: false,
+            message: "Code de session invalide."
+        });
     }
 
     if (!session.isActive) {
-        return res.status(400).json({ success: false, message: "Cette session est terminée." });
+
+        return res.status(400).json({
+            success: false,
+            message: "Cette session est terminée."
+        });
     }
 
-    const existingParticipant = session.participants.find(p => p.email === email);
+    const existingParticipant =
+        session.participants.find(
+            p => p.email === email
+        );
+
     if (existingParticipant) {
-        return res.status(400).json({ success: false, message: "Vous avez déjà rejoint cette session." });
+
+        return res.status(400).json({
+            success: false,
+            message: "Vous avez déjà rejoint cette session."
+        });
     }
 
     const newParticipant = {
+
         id: `el_${Date.now()}`,
-        name: email.split('@')[0],
-        email: email,
+
+        name: email
+            .split('@')[0],
+
+        email,
+
         value: session.initialCapital,
+
         cash: session.initialCapital,
+
         positions: 0,
+
         status: "🟢 Connecté"
     };
 
     session.participants.push(newParticipant);
 
-    res.json({ 
-        success: true, 
-        message: "Session rejointe avec succès !", 
+    res.json({
+        success: true,
+        message: "Session rejointe avec succès !",
         sessionId: session.id,
         sessionName: session.name,
         code: session.code
     });
 });
 
-
 // ==========================================
-// 3. API CLASSEMENT GÉNÉRAL & PAR SESSION
+// CLASSEMENT
 // ==========================================
 
-// Route globale pour la page Classement de base
 app.get('/api/leaderboard', (req, res) => {
-    // Par défaut, renvoie les participants de la première session active pour le classement
-    const activeSession = sessions.find(s => s.isActive) || sessions[0];
-    if (!activeSession) return res.json([]);
+
+    const activeSession =
+        sessions.find(s => s.isActive);
+
+    if (!activeSession) {
+        return res.json([]);
+    }
+
     res.json(activeSession.participants);
 });
 
-// Route spécifique par session
 app.get('/api/sessions/:sessionId/leaderboard', (req, res) => {
-    const session = sessions.find(s => s.id === req.params.sessionId);
-    if (!session) return res.status(404).json({ error: "Session introuvable." });
+
+    const session =
+        sessions.find(
+            s => s.id === req.params.sessionId
+        );
+
+    if (!session) {
+
+        return res.status(404).json({
+            error: "Session introuvable."
+        });
+    }
 
     res.json({
         sessionName: session.name,
@@ -192,11 +339,28 @@ app.get('/api/sessions/:sessionId/leaderboard', (req, res) => {
     });
 });
 
-// Route par défaut (Single Page App / Statique)
-app.get(/.*/, (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+// ==========================================
+// PAGE HTML
+// ==========================================
+
+app.get('*', (req, res) => {
+
+    res.sendFile(
+        path.join(__dirname, 'index.html')
+    );
 });
 
-app.listen(port, () => {
-    console.log(`✅ Serveur démarré sur http://localhost:${port}`);
+// ==========================================
+// DÉMARRAGE
+// ==========================================
+
+app.listen(PORT, () => {
+
+    console.log('');
+    console.log('====================================');
+    console.log('🚀 TradeLab démarré');
+    console.log(`🌐 http://localhost:${PORT}`);
+    console.log(`🧪 http://localhost:${PORT}/api/test`);
+    console.log('====================================');
+    console.log('');
 });
