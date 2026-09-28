@@ -161,15 +161,103 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 .btn-full-width { width: 100%; background-color: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; cursor: pointer; margin-top: 15px; transition: 0.3s; font-weight: 600; }
 .btn-full-width:hover { background-color: var(--bg-hover); color: var(--text-main); }
 
-/* Podium (Page Classement) */
-.podium-grid { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 20px; align-items: end; margin-top: 30px; margin-bottom: 40px; }
-.podium-card { background-color: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px 20px; text-align: center; box-shadow: var(--shadow-panel); transition: 0.3s; backdrop-filter: blur(10px); }
-.podium-card:hover { transform: translateY(-5px); }
-.podium-card.rank-1 { border-color: rgba(245, 158, 11, 0.5); background: linear-gradient(180deg, rgba(245, 158, 11, 0.1) 0%, var(--bg-panel) 100%); transform: scale(1.05); box-shadow: 0 0 30px rgba(245, 158, 11, 0.15); }
-.podium-card.rank-1:hover { transform: scale(1.05) translateY(-5px); }
-.podium-medal { font-size: 1.2rem; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
-.podium-name { font-size: 1.15rem; font-weight: 600; color: #fff; margin-bottom: 10px; }
-.podium-capital { font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; color: #fff; }
+/* =========================================
+   STYLE FINANCIER PRO (Page Classement)
+   ========================================= */
+
+/* Structure & Typographie de base */
+.pro-layout { background-color: #0B0E14; color: #D1D4DC; font-family: 'Inter', sans-serif; }
+.page-container { max-width: 1280px; margin: 0 auto; padding: 20px 40px; }
+.num-font { font-family: 'JetBrains Mono', monospace; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+.text-left { text-align: left !important; }
+.text-secondary { color: #787B86; }
+.font-medium { font-weight: 500; color: #fff; }
+
+/* En-tête */
+.page-header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid #2A2E39; }
+.page-header h1 { font-size: 1.6rem; font-weight: 600; color: #fff; margin: 0 0 8px 0; }
+.subtitle { color: #787B86; font-size: 0.9rem; margin: 0; }
+.fin-select { background: #151924; border: 1px solid #2A2E39; color: #D1D4DC; padding: 8px 12px; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 0.85rem; cursor: pointer; outline: none; }
+.fin-select:hover { border-color: #434651; }
+
+/* Bandeau Concours */
+.contest-banner { background: rgba(41, 98, 255, 0.1); border: 1px solid rgba(41, 98, 255, 0.3); color: #2962FF; padding: 12px 16px; border-radius: 4px; font-size: 0.85rem; margin-bottom: 24px; }
+.hidden { display: none !important; }
+
+/* Sélecteur de période (Pills) */
+.period-selector { display: flex; gap: 8px; margin-bottom: 32px; }
+.period-btn { background: transparent; border: 1px solid transparent; color: #787B86; padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: 0.2s; }
+.period-btn:hover { color: #fff; background: #151924; border-color: #2A2E39; }
+.period-btn.active { background: #2A2E39; color: #fff; }
+
+/* Résumé Utilisateur (Métriques) */
+.user-summary-panel { display: flex; gap: 40px; background: #151924; border: 1px solid #2A2E39; padding: 20px 24px; border-radius: 6px; margin-bottom: 24px; }
+.summary-block { display: flex; flex-direction: column; gap: 4px; border-left: 1px solid #2A2E39; padding-left: 24px; }
+.summary-block:first-child { border-left: none; padding-left: 0; }
+.summary-label { font-size: 0.75rem; color: #787B86; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
+.summary-value { font-size: 1.5rem; font-weight: 600; color: #fff; }
+.summary-sub { font-size: 0.75rem; color: #787B86; }
+
+/* Top 3 Sober */
+.top3-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 40px; }
+.top3-card { display: flex; gap: 16px; align-items: center; background: #151924; border: 1px solid #2A2E39; padding: 16px; border-radius: 6px; }
+.top3-rank { font-size: 1.5rem; font-weight: 700; color: #434651; font-family: 'JetBrains Mono', monospace; }
+.top3-data { display: flex; flex-direction: column; gap: 2px; }
+.top3-name { font-weight: 500; color: #fff; font-size: 0.95rem; }
+.top3-val { font-size: 0.9rem; color: #D1D4DC; }
+.top3-perf { font-size: 0.85rem; font-weight: 500; }
+
+/* Contrôles du tableau */
+.table-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.search-box { position: relative; width: 280px; }
+.search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #787B86; font-size: 0.85rem; }
+.search-box input { width: 100%; background: #151924; border: 1px solid #2A2E39; color: #fff; padding: 8px 12px 8px 32px; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none; }
+.search-box input:focus { border-color: #2962FF; }
+.pagination-info { font-size: 0.8rem; color: #787B86; }
+
+/* Tableau Financier Pro */
+.table-wrapper { width: 100%; overflow-x: auto; border: 1px solid #2A2E39; border-radius: 6px; background: #0B0E14; margin-bottom: 20px; }
+.fin-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
+.fin-table th { font-weight: 500; color: #787B86; padding: 12px 16px; border-bottom: 1px solid #2A2E39; text-align: right; user-select: none; }
+.fin-table th.sortable:hover { color: #fff; cursor: pointer; background: #151924; }
+.fin-table th i { font-size: 0.7rem; margin-left: 4px; opacity: 0.5; }
+.fin-table td { padding: 12px 16px; border-bottom: 1px solid #2A2E39; text-align: right; }
+.fin-table tbody tr:hover { background-color: #151924; }
+.fin-table tbody tr:last-child td { border-bottom: none; }
+
+/* Ligne Utilisateur Connecté */
+.current-user-row { background-color: rgba(41, 98, 255, 0.05) !important; }
+.current-user-row td { font-weight: 500; border-bottom-color: rgba(41, 98, 255, 0.2); }
+.current-user-row .text-left { color: #2962FF; }
+
+/* État vide */
+.empty-state { text-align: center; padding: 40px; color: #787B86; }
+.empty-state i { font-size: 2rem; margin-bottom: 12px; opacity: 0.5; }
+
+/* Pagination Controls */
+.pagination-controls { display: flex; justify-content: flex-end; align-items: center; gap: 16px; }
+.page-btn { background: transparent; border: 1px solid #2A2E39; color: #D1D4DC; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+.page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.page-btn:not(:disabled):hover { background: #151924; }
+.page-numbers { display: flex; gap: 4px; font-size: 0.85rem; color: #787B86; align-items: center; }
+.page-num { background: transparent; border: none; color: #787B86; padding: 4px 8px; cursor: pointer; border-radius: 4px; }
+.page-num:hover { color: #fff; }
+.page-num.active { background: #2A2E39; color: #fff; }
+
+/* Navbar minimaliste (Spécifique à la demande pro) */
+.user-minimal-profile { font-size: 0.85rem; color: #D1D4DC; display: flex; align-items: center; gap: 12px; }
+.user-minimal-profile span { background: #2A2E39; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .page-container { padding: 16px; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .user-summary-panel { flex-wrap: wrap; gap: 20px; }
+    .summary-block { border-left: none; padding-left: 0; flex: 1 1 40%; }
+    .top3-container { grid-template-columns: 1fr; }
+    .fin-table td:nth-child(6), .fin-table th:nth-child(6),
+    .fin-table td:nth-child(7), .fin-table th:nth-child(7) { display: none; }
+}
 .trader-investir h2 {
     margin: 40px 0 15px 0;
     border-bottom: 2px solid #ddd;
@@ -821,3 +909,28 @@ body.trader-investir
 .stock-table td {
     font-size: 0.95rem;
 }
+
+/* =========================================
+   STYLE ADMIN & MODALES (Sessions & Codes)
+   ========================================= */
+.admin-container { max-width: 900px; margin: 40px auto; }
+.session-card { padding: 20px; margin-bottom: 24px; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; backdrop-filter: blur(10px); }
+.session-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.session-title { font-size: 1.2rem; color: #fff; margin-bottom: 4px; }
+.session-meta { font-size: 0.8rem; color: var(--text-secondary); }
+.btn-danger-outline { color: var(--color-down); border-color: rgba(242, 54, 69, 0.3); background: transparent; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+.btn-danger-outline:hover { background: rgba(242, 54, 69, 0.1); border-color: var(--color-down); }
+
+/* Boîte Code Unique */
+.code-box { background: var(--bg-main); border: 1px solid var(--border-color); padding: 16px 24px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.code-label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; display: block; margin-bottom: 4px; letter-spacing: 0.5px; }
+.code-value { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: 2px; }
+
+/* Modale */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.modal-content { background: var(--bg-panel); border: 1px solid var(--border-color); padding: 32px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: var(--shadow-panel); }
+.modal-content h2 { margin-top: 0; color: #fff; font-size: 1.4rem; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+.modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+
+/* Input Code Élève sur la page Connexion */
+.input-session-code { text-transform: uppercase; font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 1px; }

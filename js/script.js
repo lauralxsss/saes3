@@ -29,31 +29,23 @@ const marketData = {
         { nom: "Pétrole WTI", ticker: "CL=F", prix: 85.20, devise: "$", hist: { "1J": "-1.2%", "7J": "+3.5%", "1M": "+8.2%", "6M": "+12.4%" } }
     ]
 };
-// Données fictives (Placeholder)
+// ==========================================
+// DONNÉES GLOBALES (Cartes)
+// ==========================================
 const marketData = {
     actions: [
         { nom: "Apple Inc.", ticker: "AAPL", prix: 175.50, devise: "$", hist: { "1J": "+1.2%", "7J": "+3.5%", "1M": "-2.1%", "6M": "+12.4%" } },
         { nom: "LVMH", ticker: "MC.PA", prix: 840.20, devise: "€", hist: { "1J": "-0.8%", "7J": "-1.5%", "1M": "+4.2%", "6M": "+8.1%" } },
         { nom: "TotalEnergies", ticker: "TTE", prix: 62.30, devise: "€", hist: { "1J": "+0.5%", "7J": "+2.1%", "1M": "+5.6%", "6M": "-1.2%" } },
-        { nom: "Microsoft", ticker: "MSFT", prix: 330.10, devise: "$", hist: { "1J": "+2.5%", "7J": "+1.1%", "1M": "+4.5%", "6M": "+15.2%" } },
-        { nom: "Tesla", ticker: "TSLA", prix: 210.80, devise: "$", hist: { "1J": "-1.2%", "7J": "-4.5%", "1M": "+8.2%", "6M": "-5.1%" } },
-        { nom: "Amazon", ticker: "AMZN", prix: 135.40, devise: "$", hist: { "1J": "+0.9%", "7J": "+2.8%", "1M": "-1.5%", "6M": "+9.4%" } },
-        { nom: "NVIDIA", ticker: "NVDA", prix: 450.20, devise: "$", hist: { "1J": "+3.1%", "7J": "+6.2%", "1M": "+12.5%", "6M": "+45.8%" } },
-        { nom: "Alphabet", ticker: "GOOGL", prix: 130.50, devise: "$", hist: { "1J": "+0.4%", "7J": "+1.5%", "1M": "+2.1%", "6M": "+11.2%" } }
+        { nom: "Microsoft", ticker: "MSFT", prix: 330.10, devise: "$", hist: { "1J": "+2.5%", "7J": "+1.1%", "1M": "+4.5%", "6M": "+15.2%" } }
     ],
     indices: [
         { nom: "CAC 40", ticker: "^FCHI", prix: 7350.45, devise: "pts", hist: { "1J": "+0.4%", "7J": "-0.2%", "1M": "+2.8%", "6M": "+5.4%" } },
-        { nom: "S&P 500", ticker: "^GSPC", prix: 4500.10, devise: "pts", hist: { "1J": "+1.1%", "7J": "+2.3%", "1M": "-1.0%", "6M": "+10.2%" } },
-        { nom: "NASDAQ", ticker: "^IXIC", prix: 14000.20, devise: "pts", hist: { "1J": "+1.5%", "7J": "+3.1%", "1M": "+2.5%", "6M": "+15.8%" } },
-        { nom: "Dow Jones", ticker: "^DJI", prix: 34500.80, devise: "pts", hist: { "1J": "+0.2%", "7J": "+0.5%", "1M": "-0.5%", "6M": "+4.2%" } },
-        { nom: "DAX", ticker: "^GDAXI", prix: 15800.60, devise: "pts", hist: { "1J": "+0.8%", "7J": "+1.2%", "1M": "+3.1%", "6M": "+7.5%" } },
-        { nom: "FTSE 100", ticker: "^FTSE", prix: 7400.30, devise: "pts", hist: { "1J": "-0.1%", "7J": "-0.5%", "1M": "+1.2%", "6M": "+2.1%" } }
+        { nom: "S&P 500", ticker: "^GSPC", prix: 4500.10, devise: "pts", hist: { "1J": "+1.1%", "7J": "+2.3%", "1M": "-1.0%", "6M": "+10.2%" } }
     ],
     devises: [
         { nom: "Euro / Dollar", ticker: "EUR/USD", prix: 1.0850, devise: "$", hist: { "1J": "-0.2%", "7J": "+0.5%", "1M": "-1.1%", "6M": "+2.3%" } },
-        { nom: "Euro / Yen", ticker: "EUR/JPY", prix: 158.40, devise: "¥", hist: { "1J": "+0.7%", "7J": "+1.2%", "1M": "+3.4%", "6M": "+6.8%" } },
-        { nom: "Livre / Dollar", ticker: "GBP/USD", prix: 1.2540, devise: "$", hist: { "1J": "+0.1%", "7J": "-0.4%", "1M": "+1.1%", "6M": "+3.3%" } },
-        { nom: "Euro / Livre", ticker: "EUR/GBP", prix: 0.8650, devise: "£", hist: { "1J": "-0.1%", "7J": "+0.2%", "1M": "-0.5%", "6M": "-1.2%" } }
+        { nom: "Euro / Yen", ticker: "EUR/JPY", prix: 158.40, devise: "¥", hist: { "1J": "+0.7%", "7J": "+1.2%", "1M": "+3.4%", "6M": "+6.8%" } }
     ],
     marches: [
         { nom: "Or", ticker: "XAU/USD", prix: 1950.40, devise: "$", hist: { "1J": "+0.5%", "7J": "+1.2%", "1M": "-2.4%", "6M": "+5.8%" } },
@@ -62,16 +54,15 @@ const marketData = {
 };
 
 // ==========================================
-// 1. GESTION DES ACTUALITÉS (Anti-panique RSS)
+// 1. ACTUALITÉS & AGENDA (Relais Serveur ou Codetabs)
 // ==========================================
 async function fetchFrenchNews() {
     const container = document.getElementById('news-container');
     if (!container) return;
 
     const fallbackArticles = [
-        { title: "🔴 En direct : Suivez l'évolution du CAC 40 et des actions", link: "https://www.boursorama.com/", source: "Boursorama", image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=500&q=60" },
-        { title: "Toutes les dernières actualités économiques et financières", link: "https://www.lesechos.fr/", source: "Les Échos", image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=500&q=60" },
-        { title: "Analyse des marchés : Quelles sont les tendances de la semaine ?", link: "https://www.zonebourse.com/", source: "ZoneBourse", image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=500&q=60" }
+        { title: "🔴 En direct : Suivez l'évolution du CAC 40", link: "#", source: "Boursorama", image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=500&q=60" },
+        { title: "Analyse des marchés de la semaine", link: "#", source: "ZoneBourse", image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=500&q=60" }
     ];
 
     const renderArticles = (articles, isFallback = false) => {
@@ -80,13 +71,9 @@ async function fetchFrenchNews() {
             const dateText = isFallback ? "En direct" : article.dateStr;
             container.innerHTML += `
                 <div class="news-article">
-                    <div class="news-image-container">
-                        <img src="${article.image}" alt="Actu" class="news-img">
-                    </div>
+                    <div class="news-image-container"><img src="${article.image}" alt="Actu" class="news-img"></div>
                     <div class="news-content">
-                        <a href="${article.link}" target="_blank" style="text-decoration: none; font-weight: 500; transition: color 0.2s;">
-                            ${article.title}
-                        </a>
+                        <a href="${article.link}" target="_blank" style="text-decoration: none; font-weight: 500; transition: color 0.2s;">${article.title}</a>
                         <div class="news-meta"><span>${article.source}</span> • <span>${dateText}</span></div>
                     </div>
                 </div>`;
@@ -95,145 +82,68 @@ async function fetchFrenchNews() {
 
     try {
         const response = await fetch('/api/news');
-        if (!response.ok) throw new Error("Requête HTTP échouée : " + response.status);
-
-        // Lecture du XML renvoyé par notre serveur
+        if (!response.ok) throw new Error("HTTP " + response.status);
         const text = await response.text();
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, "text/xml");
-        
-        // Récupération des 3 premiers articles
         const items = Array.from(xmlDoc.querySelectorAll("item")).slice(0, 3);
         if (items.length === 0) throw new Error("Flux vide");
 
         const liveArticles = items.map((item, index) => {
-            const pubDate = item.querySelector("pubDate")?.textContent;
-            const dateObj = new Date(pubDate);
+            const dateObj = new Date(item.querySelector("pubDate")?.textContent);
             return {
                 title: item.querySelector("title")?.textContent || "Titre indisponible",
                 link: item.querySelector("link")?.textContent || "#",
-                source: "Yahoo Finance",
+                source: "Le Figaro Éco",
                 dateStr: dateObj.toLocaleDateString('fr-FR') + ' à ' + dateObj.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}),
                 image: fallbackArticles[index % fallbackArticles.length].image
             };
         });
-        
         renderArticles(liveArticles, false);
     } catch (error) {
-        console.warn("API actus indisponible. Activation des liens de secours.", error);
         renderArticles(fallbackArticles, true);
     }
 }
 
-// ==========================================
-// 2. AGENDA ÉCONOMIQUE EN TEMPS RÉEL
-// ==========================================
-// ==========================================
-// 2. AGENDA ÉCONOMIQUE EN TEMPS RÉEL (Méthode Codetabs)
-// ==========================================
 async function fetchEconomicCalendar() {
     const container = document.getElementById('calendar-container');
     if (!container) return;
 
-    container.innerHTML = '<p style="text-align:center; padding:15px; color:var(--text-secondary);"><i class="fa-solid fa-spinner fa-spin"></i> Chargement de l\'agenda...</p>';
-
     try {
-        // Tentative avec le flux JSON de ForexFactory et le proxy Codetabs (exactement comme pour tes actus au début)
         const targetUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
         const apiUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`;
-
         const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error("Bloqué par le réseau ou le navigateur");
-
+        if (!response.ok) throw new Error("Bloqué");
         const events = await response.json();
 
-        // On filtre pour ne garder que les événements importants de l'Euro et du Dollar
-        const filteredEvents = events.filter(e =>
-            (e.impact === 'High' || e.impact === 'Medium') &&
-            (e.country === 'USD' || e.country === 'EUR' || e.country === 'FR' || e.country === 'DE')
-        );
-
-        // On ne garde que les 4 prochains événements
+        const filteredEvents = events.filter(e => (e.impact === 'High' || e.impact === 'Medium') && ['USD','EUR','FR','DE'].includes(e.country));
         const now = new Date();
         const upcomingEvents = filteredEvents.filter(e => new Date(e.date) >= now).slice(0, 4);
-
-        if (upcomingEvents.length === 0) throw new Error("Pas d'événements majeurs à venir");
+        if (upcomingEvents.length === 0) throw new Error("Vide");
 
         container.innerHTML = '';
         const days = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
-
         upcomingEvents.forEach(e => {
             const eventDate = new Date(e.date);
-            const dayName = days[eventDate.getDay()];
             const timeStr = eventDate.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
-
             const isHigh = e.impact === 'High';
-            const impactClass = isHigh ? 'impact-high' : 'impact-medium';
-            const impactText = isHigh ? 'Impact Fort' : 'Impact Moyen';
-
-            // Traduction des termes principaux
-            let title = e.title
-                .replace(/Unemployment Claims/gi, 'Inscriptions au chômage')
-                .replace(/Fed Chair/gi, 'Président de la Fed')
-                .replace(/Speaks/gi, 'Discours')
-                .replace(/PMI/gi, 'Indice PMI')
-                .replace(/CPI/gi, 'Inflation (IPC)')
-                .replace(/GDP/gi, 'PIB (Croissance)')
-                .replace(/Monetary Policy/gi, 'Politique Monétaire')
-                .replace(/Rate/gi, 'Taux directeur');
-
             container.innerHTML += `
                 <div class="calendar-item">
-                    <div class="cal-date">${dayName}<br><span>${timeStr}</span></div>
+                    <div class="cal-date">${days[eventDate.getDay()]}<br><span>${timeStr}</span></div>
                     <div class="cal-event">
-                        <span class="event-title">[${e.country}] ${title}</span>
-                        <span class="event-impact ${impactClass}">${impactText}</span>
+                        <span class="event-title">[${e.country}] ${e.title.substring(0, 30)}...</span>
+                        <span class="event-impact ${isHigh ? 'impact-high' : 'impact-medium'}">${isHigh ? 'Impact Fort' : 'Impact Moyen'}</span>
                     </div>
                 </div>`;
         });
-
     } catch (error) {
-        console.warn("⚠️ API Agenda bloquée. Activation du plan B.", error);
-
-        // Si l'IUT bloque Codetabs, on met des fausses dates réalistes
-        const days = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
-        const now = new Date();
-        
-        const inTwoHours = new Date(now.getTime() + 2 * 60 * 60 * 1000);
-        const tomorrowMorning = new Date(now); 
-        tomorrowMorning.setDate(tomorrowMorning.getDate() + 1);
-        tomorrowMorning.setHours(9, 30);
-        
-        const tomorrowAfternoon = new Date(tomorrowMorning);
-        tomorrowAfternoon.setHours(14, 15);
-
-        container.innerHTML = `
-            <div class="calendar-item">
-                <div class="cal-date">${days[now.getDay()]}<br><span>${inTwoHours.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})}</span></div>
-                <div class="cal-event">
-                    <span class="event-title">[USD] Taux d'inflation (IPC) / Emploi</span>
-                    <span class="event-impact impact-high">Impact Fort</span>
-                </div>
-            </div>
-            <div class="calendar-item">
-                <div class="cal-date">${days[tomorrowMorning.getDay()]}<br><span>${tomorrowMorning.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})}</span></div>
-                <div class="cal-event">
-                    <span class="event-title">[EUR] Indice PMI (Allemagne / Zone Euro)</span>
-                    <span class="event-impact impact-medium">Impact Moyen</span>
-                </div>
-            </div>
-            <div class="calendar-item">
-                <div class="cal-date">${days[tomorrowMorning.getDay()]}<br><span>${tomorrowAfternoon.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})}</span></div>
-                <div class="cal-event">
-                    <span class="event-title">[EUR] Discours politique monétaire (BCE)</span>
-                    <span class="event-impact impact-high">Impact Fort</span>
-                </div>
-            </div>`;
+        // Fallback propre
+        container.innerHTML = `<p style="font-size:0.9rem; color:var(--text-secondary); text-align:center;">Aucun événement majeur à venir.</p>`;
     }
 }
 
 // ==========================================
-// 3. SIMULATEUR DE MARCHÉ (Effet Flash)
+// 2. SIMULATEUR DE MARCHÉ (Effet Flash)
 // ==========================================
 let marketInterval;
 let isLive = false;
@@ -258,14 +168,11 @@ function tickMarket() {
     const elementsToTick = Array.from(changeElements).sort(() => 0.5 - Math.random()).slice(0, 3);
 
     elementsToTick.forEach(el => {
-        let text = el.innerText.trim();
-        let value = parseFloat(text.replace(/[^0-9.-]+/g, ""));
-
+        let value = parseFloat(el.innerText.trim().replace(/[^0-9.-]+/g, ""));
         if (!isNaN(value)) {
             let variation = (Math.random() * 0.1) - 0.05;
             let newValue = (value + variation).toFixed(2);
             let isPositive = newValue >= 0;
-
             el.innerText = (isPositive ? '+' : '') + newValue + '%';
             el.className = isPositive ? 'change-up' : 'change-down';
             flashElement(el, isPositive);
@@ -273,60 +180,22 @@ function tickMarket() {
     });
 }
 
-function switchMode(mode) {
-    const btnLive = document.getElementById('btn-live');
-    const btnWeekly = document.getElementById('btn-weekly');
-    const indicator = document.getElementById('mode-indicator');
-
-    if (!btnLive || !btnWeekly) return;
-
-    if (mode === 'live') {
-        isLive = true;
-        btnLive.style.background = 'linear-gradient(135deg, #2962FF, #1E4BD8)';
-        btnLive.style.color = 'white';
-        btnLive.style.border = 'none';
-        btnWeekly.style.background = 'transparent';
-        btnWeekly.style.color = 'var(--text-main)';
-        btnWeekly.style.border = '1px solid var(--border-color)';
-        if(indicator) indicator.innerHTML = "<span class='status-dot'></span> Mode : Temps Réel (Live)";
-
-        marketInterval = setInterval(tickMarket, 1500);
-    } else {
-        isLive = false;
-        clearInterval(marketInterval);
-
-        btnWeekly.style.background = 'var(--color-primary)';
-        btnWeekly.style.color = 'white';
-        btnWeekly.style.border = 'none';
-        btnLive.style.background = 'transparent';
-        btnLive.style.color = 'var(--text-main)';
-        btnLive.style.border = '1px solid var(--border-color)';
-        if(indicator) indicator.innerHTML = "<span class='status-dot' style='background: #787B86; box-shadow: none;'></span> Mode : Bilan Semaine 4";
-    }
-}
-
 // ==========================================
-// 4. GÉNÉRATION DES CARTES (Trader & Investir)
+// 3. CARTES ET CAROUSEL
 // ==========================================
 function genererCartesModernes(donnees, containerId) {
     const container = document.getElementById(containerId);
     if(!container) return;
-
     container.innerHTML = '';
     donnees.forEach(actif => {
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-            <div class="card-header">
-                <span class="asset-name">${actif.nom}</span>
-                <span class="asset-ticker">${actif.ticker}</span>
-            </div>
+            <div class="card-header"><span class="asset-name">${actif.nom}</span><span class="asset-ticker">${actif.ticker}</span></div>
             <div class="price">${actif.prix.toFixed(2)} ${actif.devise}</div>
             <div class="history">
                 <div><span>1 Jour:</span> ${formatVariation(actif.hist["1J"])}</div>
-                <div><span>7 Jours:</span> ${formatVariation(actif.hist["7J"])}</div>
                 <div><span>1 Mois:</span> ${formatVariation(actif.hist["1M"])}</div>
-                <div><span>6 Mois:</span> ${formatVariation(actif.hist["6M"])}</div>
             </div>
             <a href="#" class="btn-trade">Trader ${actif.ticker}</a>
         `;
@@ -335,17 +204,13 @@ function genererCartesModernes(donnees, containerId) {
 }
 
 function initialiserCarrousels() {
-    const prevBtns = document.querySelectorAll('.prev-btn');
-    const nextBtns = document.querySelectorAll('.next-btn');
-
-    prevBtns.forEach(btn => {
+    document.querySelectorAll('.prev-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const track = document.getElementById(btn.getAttribute('data-target'));
             if(track) track.scrollBy({ left: -320, behavior: 'smooth' });
         });
     });
-
-    nextBtns.forEach(btn => {
+    document.querySelectorAll('.next-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const track = document.getElementById(btn.getAttribute('data-target'));
             if(track) track.scrollBy({ left: 320, behavior: 'smooth' });
@@ -354,73 +219,286 @@ function initialiserCarrousels() {
 }
 
 // ==========================================
-// 5. INITIALISATION GLOBALE
+// 4. CLASSEMENT DYNAMIQUE (Uniquement sur la page Classement)
 // ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    fetchFrenchNews();
-    fetchEconomicCalendar();
+function initLeaderboard() {
+    const INITIAL_CAPITAL = 100000;
+    let traders = [];
+    let filteredTraders = [];
+    let currentPage = 1;
+    const rowsPerPage = 20;
 
-    // Rafraîchissement automatique
-    setInterval(fetchFrenchNews, 5 * 60 * 1000);       // toutes les 5 mins
-    setInterval(fetchEconomicCalendar, 30 * 60 * 1000); // toutes les 30 mins
+    const formatCurrency = (val) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2 }).format(val);
+    const formatPercent = (val) => (val > 0 ? '+' : '') + new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val) + ' %';
 
-    if (document.getElementById('btn-live')) {
-        switchMode('live');
-    } else {
-        isLive = true;
-        marketInterval = setInterval(tickMarket, 2000);
+    async function fetchRealLeaderboard() {
+        try {
+            const response = await fetch('/api/leaderboard');
+            if (!response.ok) throw new Error("HTTP erreur");
+            processData(await response.json());
+        } catch (error) {
+            console.warn("Impossible de récupérer les joueurs, affichage vide.");
+            processData([]);
+        }
     }
 
+    function processData(rawData) {
+        rawData.forEach(p => {
+            p.gain = p.value - INITIAL_CAPITAL;
+            p.perf = (p.gain / INITIAL_CAPITAL) * 100;
+        });
+        rawData.sort((a, b) => b.value - a.value);
+        rawData.forEach((p, i) => p.rank = i + 1);
+
+        traders = rawData;
+        filteredTraders = [...traders];
+        updateUI();
+    }
+
+    function updateUI() {
+        const count = filteredTraders.length;
+        const countText = count <= 1 ? `${count} participant` : `${count} participants`;
+        document.getElementById('global-count-subtitle').innerText = countText;
+        document.getElementById('total-results').innerText = countText;
+        renderTop3(count);
+        renderTable(count);
+    }
+
+    function renderTop3(count) {
+        const top3Section = document.getElementById('top3-section');
+        top3Section.innerHTML = '';
+        if (count === 0) { top3Section.classList.add('hidden'); return; }
+        
+        top3Section.classList.remove('hidden');
+        filteredTraders.slice(0, 3).forEach((p, i) => {
+            const color = ['gold', 'silver', 'bronze'][i];
+            const perfClass = p.perf > 0 ? 'change-up' : (p.perf < 0 ? 'change-down' : '');
+            top3Section.innerHTML += `
+                <div class="top3-card">
+                    <div class="top3-rank text-${color}">#${p.rank}</div>
+                    <div class="top3-data">
+                        <div class="top3-name">${p.name}</div>
+                        <div class="top3-val num-font">${formatCurrency(p.value)}</div>
+                        <div class="top3-perf ${perfClass}">${formatPercent(p.perf)}</div>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function renderTable(count) {
+        const tbody = document.getElementById('leaderboard-body');
+        const emptyState = document.getElementById('empty-state');
+        const tableInfo = document.getElementById('page-range');
+        const tableHeader = document.querySelector('thead');
+        
+        tbody.innerHTML = '';
+        if (count === 0) {
+            emptyState.classList.remove('hidden');
+            tableHeader.classList.add('hidden');
+            tableInfo.innerText = '0-0';
+            updatePaginationButtons();
+            return;
+        }
+        
+        emptyState.classList.add('hidden');
+        tableHeader.classList.remove('hidden');
+
+        const startIdx = (currentPage - 1) * rowsPerPage;
+        const endIdx = Math.min(startIdx + rowsPerPage, count);
+        tableInfo.innerText = `${startIdx + 1}–${endIdx}`;
+
+        filteredTraders.slice(startIdx, endIdx).forEach(p => {
+            const tr = document.createElement('tr');
+            const perfClass = p.perf > 0 ? 'change-up' : (p.perf < 0 ? 'change-down' : '');
+            tr.innerHTML = `
+                <td class="text-left text-secondary">#${p.rank}</td>
+                <td class="text-left font-medium">${p.name}</td>
+                <td class="num-font ${perfClass}">${formatPercent(p.perf)}</td>
+                <td class="num-font">${formatCurrency(p.value)}</td>
+                <td class="num-font ${perfClass}">${p.gain > 0 ? '+' : ''}${formatCurrency(p.gain)}</td>
+                <td class="num-font text-secondary">${p.positions}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+        updatePaginationButtons();
+    }
+
+    function updatePaginationButtons() {
+        const totalPages = Math.ceil(filteredTraders.length / rowsPerPage);
+        document.getElementById('btn-prev').disabled = currentPage === 1;
+        document.getElementById('btn-next').disabled = currentPage === totalPages || totalPages === 0;
+    }
+
+    document.getElementById('trader-search')?.addEventListener('input', (e) => {
+        filteredTraders = traders.filter(t => t.name.toLowerCase().includes(e.target.value.toLowerCase()));
+        currentPage = 1;
+        updateUI();
+    });
+
+    document.getElementById('btn-prev')?.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderTable(filteredTraders.length); } });
+    document.getElementById('btn-next')?.addEventListener('click', () => { if (currentPage < Math.ceil(filteredTraders.length / rowsPerPage)) { currentPage++; renderTable(filteredTraders.length); } });
+
+    fetchRealLeaderboard();
+}
+
+// ==========================================
+// INITIALISATION GLOBALE DU SITE
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Lancement des modules Accueil
+    fetchFrenchNews();
+    fetchEconomicCalendar();
+    
+    // Simulations Marché
+    isLive = true;
+    marketInterval = setInterval(tickMarket, 2000);
     genererCartesModernes(marketData.actions, 'actions-container');
     genererCartesModernes(marketData.indices, 'indices-container');
     genererCartesModernes(marketData.devises, 'devises-container');
     genererCartesModernes(marketData.marches, 'marches-container');
-
     initialiserCarrousels();
 
-    // ==========================================
-    // 6. FORMULAIRES (Connexion & Inscription)
-    // ==========================================
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        const toggleBtn = document.getElementById('toggle-password');
-        const passwordInput = document.getElementById('password');
-        const eyeIcon = document.getElementById('eye-icon');
-
-        toggleBtn.addEventListener('click', () => {
-            const isHidden = passwordInput.type === 'password';
-            passwordInput.type = isHidden ? 'text' : 'password';
-            eyeIcon.innerHTML = isHidden
-            ? '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.6 21.6 0 0 1 5.06-5.94M9.9 4.24A10.9 10.9 0 0 1 12 4c7 0 11 7 11 7a21.7 21.7 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
-            : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>';
-        });
-
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Connexion simulée.');
-        });
+    // Lancement de la logique Classement (seulement si la page est chargée)
+    if (document.getElementById('leaderboard-body')) {
+        initLeaderboard();
     }
 
-    const signupForm = document.getElementById('signup-form');
-    if (signupForm) {
-        const toggleBtnSignUp = document.getElementById('toggle-password');
-        const passwordInputSignUp = document.getElementById('password');
-        const eyeIconSignUp = document.getElementById('eye-icon');
-
-        toggleBtnSignUp.addEventListener('click', () => {
-            const isHidden = passwordInputSignUp.type === 'password';
-            passwordInputSignUp.type = isHidden ? 'text' : 'password';
-            eyeIconSignUp.innerHTML = isHidden
-            ? '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.6 21.6 0 0 1 5.06-5.94M9.9 4.24A10.9 10.9 0 0 1 12 4c7 0 11 7 11 7a21.7 21.7 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
-            : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>';
-        });
-
-        signupForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Inscription simulée.');
+    // Gestion des formulaires Auth
+    const toggleBtn = document.getElementById('toggle-password');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            const pwd = document.getElementById('password');
+            const isHidden = pwd.type === 'password';
+            pwd.type = isHidden ? 'text' : 'password';
         });
     }
 });
+document.addEventListener('DOMContentLoaded', () => {
+    loadAdminSessions();
+
+    // Gestion des écouteurs d'événements pour la modale
+    const createModal = document.getElementById('create-modal');
+    document.getElementById('open-modal-btn').addEventListener('click', () => {
+        createModal.classList.remove('hidden');
+    });
+    document.getElementById('close-modal-btn').addEventListener('click', () => {
+        createModal.classList.add('hidden');
+    });
+
+    // Soumission du formulaire de création
+    document.getElementById('session-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const body = {
+            name: document.getElementById('session-name').value,
+            startDate: document.getElementById('start-date').value,
+            endDate: document.getElementById('end-date').value,
+            initialCapital: document.getElementById('initial-capital').value
+        };
+
+        const res = await fetch('/api/admin/sessions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (res.ok) {
+            createModal.classList.add('hidden');
+            loadAdminSessions();
+        }
+    });
+
+    // Rafraîchissement automatique toutes les 5 secondes pour la vue temps réel
+    setInterval(loadAdminSessions, 5000);
+});
+
+async function loadAdminSessions() {
+    try {
+        const res = await fetch('/api/admin/sessions');
+        const sessions = await res.json();
+        renderSessions(sessions);
+    } catch (err) {
+        console.error("Erreur chargement sessions", err);
+    }
+}
+
+function renderSessions(sessions) {
+    const container = document.getElementById('sessions-container');
+    container.innerHTML = '';
+
+    if (sessions.length === 0) {
+        container.innerHTML = `<p class="text-secondary">Aucune session active. Créez-en une pour commencer.</p>`;
+        return;
+    }
+
+    sessions.forEach(session => {
+        const card = document.createElement('div');
+        card.className = 'session-card';
+        
+        let participantsHtml = session.participants.map(p => `
+            <tr>
+                <td class="text-left font-medium">${p.name}</td>
+                <td class="text-left">${p.status}</td>
+                <td class="num-font">${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(p.portfolioValue)}</td>
+                <td class="num-font ${p.portfolioValue >= 100000 ? 'change-up' : 'change-down'}">
+                    ${(((p.portfolioValue - 100000) / 100000) * 100).toFixed(2)} %
+                </td>
+            </tr>
+        `).join('');
+
+        if (session.participants.length === 0) {
+            participantsHtml = `<tr><td colspan="4" class="empty-state">Aucun élève n'a encore rejoint cette session.</td></tr>`;
+        }
+
+        card.innerHTML = `
+            <div class="session-card-header">
+                <div>
+                    <h2 class="session-title">${session.name}</h2>
+                    <span class="session-meta">Du ${session.startDate} au ${session.endDate} — Capital : ${session.initialCapital} €</span>
+                </div>
+                <button class="btn-danger-outline" onclick="closeSession('${session.id}')">Clôturer</button>
+            </div>
+
+            <div class="code-box">
+                <div>
+                    <span class="code-label">Code de session unique</span>
+                    <span class="code-value">${session.code}</span>
+                </div>
+                <button class="btn-primary" onclick="copyCode('${session.code}')"><i class="fa-solid fa-copy"></i> Copier le code</button>
+            </div>
+
+            <div style="margin-bottom: 12px; font-size: 0.9rem; font-weight: 500; color: #fff;">
+                ${session.participants.length} élève${session.participants.length > 1 ? 's' : ''} connectés
+            </div>
+
+            <table class="fin-table">
+                <thead>
+                    <tr>
+                        <th class="text-left">Élève</th>
+                        <th class="text-left">Statut</th>
+                        <th>Portefeuille</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${participantsHtml}
+                </tbody>
+            </table>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function copyCode(code) {
+    navigator.clipboard.writeText(code);
+    alert(`Code ${code} copié dans le presse-papier !`);
+}
+
+async function closeSession(id) {
+    if (confirm("Voulez-vous vraiment clôturer cette session ?")) {
+        await fetch(`/api/admin/sessions/${id}/close`, { method: 'POST' });
+        loadAdminSessions();
+    }
+}
 
 
 function genererCartesModernes(donnees, containerId) {
