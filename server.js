@@ -339,6 +339,28 @@ app.get('/api/sessions/:sessionId/leaderboard', (req, res) => {
     });
 });
 
+app.get('/api/news', async (req, res) => {
+    try {
+        const rssUrl = 'https://www.lefigaro.fr/rss/figaro_economie.xml';
+        // On passe par le proxy pour contourner le blocage anti-bot du Figaro sur le cloud Render
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
+        
+        const response = await fetch(proxyUrl, { 
+            headers: { 'User-Agent': 'Mozilla/5.0' }, 
+            signal: AbortSignal.timeout(8000) 
+        });
+        
+        if (!response.ok) throw new Error(`Erreur réseau: ${response.status}`);
+        
+        const xml = await response.text();
+        res.type('application/xml').send(xml);
+
+    } catch (error) {
+        console.error("Erreur serveur actus :", error.message);
+        res.status(500).json({ error: "Impossible de récupérer les actualités" });
+    }
+});
+
 // ==========================================
 // PAGE HTML
 // ==========================================
