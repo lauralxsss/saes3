@@ -934,3 +934,27 @@ body.trader-investir
 
 /* Input Code Élève sur la page Connexion */
 .input-session-code { text-transform: uppercase; font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 1px; }
+
+/* =========================================
+   DESIGN FINTECH ADMIN (Sessions)
+   ========================================= */
+.admin-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+.admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 24px; }
+
+.session-fin-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 8px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+.session-fin-card.closed { opacity: 0.6; border-style: dashed; }
+
+.session-fin-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+.session-fin-name { font-size: 1.1rem; font-weight: 600; color: #fff; margin: 0 0 4px 0; }
+.session-fin-dates { font-size: 0.8rem; color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; }
+
+/* Bloc Code Unique Pro */
+.session-code-display { background: var(--bg-main); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; margin: 16px 0; }
+.session-code-label { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 2px; }
+.session-code-val { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: 1.5px; }
+
+/* Liste des élèves intégrée */
+.session-students-box { margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px; }
+.session-students-title { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 10px; display: flex; justify-content: space-between; }
+.student-mini-list { max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.student-row-item { display: flex; justify-content: space-between; font-size: 0.85rem; background: rgba(255,255,255,0.02); padding: 6px 10px; border-radius: 4px; align-items: center; }

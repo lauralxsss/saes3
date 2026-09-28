@@ -411,9 +411,67 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(loadAdminSessions, 5000);
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    loadAdminSessions();
+
+    const createModal = document.getElementById('create-modal');
+    const openModalBtn = document.getElementById('open-modal-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const sessionForm = document.getElementById('session-form');
+
+    // Gestion de la modale
+    if (openModalBtn && createModal) {
+        openModalBtn.addEventListener('click', () => {
+            createModal.classList.remove('hidden');
+        });
+    }
+
+    if (closeModalBtn && createModal) {
+        closeModalBtn.addEventListener('click', () => {
+            createModal.classList.add('hidden');
+        });
+    }
+
+    // Création d'une session via le formulaire
+    if (sessionForm) {
+        sessionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = {
+                name: document.getElementById('session-name').value,
+                startDate: document.getElementById('start-date').value,
+                endDate: document.getElementById('end-date').value,
+                initialCapital: document.getElementById('initial-capital').value
+            };
+
+            try {
+                const res = await fetch('/api/admin/sessions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    createModal.classList.add('hidden');
+                    sessionForm.reset();
+                    loadAdminSessions();
+                } else {
+                    alert(data.message || "Erreur lors de la création de la session.");
+                }
+            } catch (err) {
+                console.error("Erreur réseau :", err);
+                alert("Erreur de connexion au serveur.");
+            }
+        });
+    }
+
+    setInterval(loadAdminSessions, 5000);
+});
+
 async function loadAdminSessions() {
     try {
         const res = await fetch('/api/admin/sessions');
+        if (!res.ok) throw new Error("Erreur de récupération");
         const sessions = await res.json();
         renderSessions(sessions);
     } catch (err) {
@@ -423,109 +481,98 @@ async function loadAdminSessions() {
 
 function renderSessions(sessions) {
     const container = document.getElementById('sessions-container');
+    if (!container) return;
+    
     container.innerHTML = '';
 
-    if (sessions.length === 0) {
-        container.innerHTML = `<p class="text-secondary">Aucune session active. Créez-en une pour commencer.</p>`;
+    if (!sessions || sessions.length === 0) {
+        container.innerHTML = `<p class="text-secondary">Aucune session active.</p>`;
         return;
     }
 
     sessions.forEach(session => {
         const card = document.createElement('div');
-        card.className = 'session-card';
+        card.className = `session-fin-card ${!session.isActive ? 'closed' : ''}`;
         
-        let participantsHtml = session.participants.map(p => `
-            <tr>
-                <td class="text-left font-medium">${p.name}</td>
-                <td class="text-left">${p.status}</td>
-                <td class="num-font">${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(p.portfolioValue)}</td>
-                <td class="num-font ${p.portfolioValue >= 100000 ? 'change-up' : 'change-down'}">
-                    ${(((p.portfolioValue - 100000) / 100000) * 100).toFixed(2)} %
-                </td>
-            </tr>
-        `).join('');
-
-        if (session.participants.length === 0) {
-            participantsHtml = `<tr><td colspan="4" class="empty-state">Aucun élève n'a encore rejoint cette session.</td></tr>`;
+        let studentsHtml = '';
+        if (session.participants && session.participants.length > 0) {
+            studentsHtml = session.participants.map(p => `
+                <div class="student-row-item">
+                    <span><strong>${p.name}</strong> <span class="text-secondary">(${p.email || 'N/A'})</span></span>
+                    <span class="num-font">${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(p.value)}</span>
+                </div>
+            `).join('');
+        } else {
+            studentsHtml = `<div class="text-secondary" style="font-size: 0.85rem; text-align: center; padding: 10px 0;">Aucun élève inscrit pour le moment.</div>`;
         }
 
         card.innerHTML = `
-            <div class="session-card-header">
-                <div>
-                    <h2 class="session-title">${session.name}</h2>
-                    <span class="session-meta">Du ${session.startDate} au ${session.endDate} — Capital : ${session.initialCapital} €</span>
+            <div>
+                <div class="session-fin-top">
+                    <div>
+                        <h3 class="session-fin-name">${session.name}</h3>
+                        <span class="session-fin-dates">Du ${session.startDate} au ${session.endDate}</span>
+                    </div>
+                    <span class="level-badge ${session.isActive ? 'expert' : 'debutant'}">${session.isActive ? 'Active' : 'Clôturée'}</span>
                 </div>
-                <button class="btn-danger-outline" onclick="closeSession('${session.id}')">Clôturer</button>
-            </div>
 
-            <div class="code-box">
-                <div>
-                    <span class="code-label">Code de session unique</span>
-                    <span class="code-value">${session.code}</span>
+                <!-- CODE DE SESSION UNIQUE -->
+                <div class="session-code-display">
+                    <div>
+                        <span class="session-code-label">Code d'accès unique</span>
+                        <span class="session-code-val">${session.code}</span>
+                    </div>
+                    <button class="btn-outline copy-btn" data-code="${session.code}" style="padding: 6px 12px; font-size: 0.8rem;">
+                        <i class="fa-solid fa-copy"></i> Copier
+                    </button>
                 </div>
-                <button class="btn-primary" onclick="copyCode('${session.code}')"><i class="fa-solid fa-copy"></i> Copier le code</button>
+
+                <div style="margin-bottom: 12px; font-size: 0.9rem; font-weight: 500; color: #fff; display: flex; justify-content: space-between;">
+                    <span>Participants inscrits</span>
+                    <strong>${session.participants ? session.participants.length : 0}</strong>
+                </div>
+                
+                <div class="session-students-box">
+                    <div class="student-mini-list">
+                        ${studentsHtml}
+                    </div>
+                </div>
             </div>
 
-            <div style="margin-bottom: 12px; font-size: 0.9rem; font-weight: 500; color: #fff;">
-                ${session.participants.length} élève${session.participants.length > 1 ? 's' : ''} connectés
+            <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: flex-end;">
+                ${session.isActive ? `<button class="btn-danger-outline close-session-btn" data-id="${session.id}" style="padding: 6px 12px; font-size: 0.8rem;">Clôturer la session</button>` : ''}
             </div>
-
-            <table class="fin-table">
-                <thead>
-                    <tr>
-                        <th class="text-left">Élève</th>
-                        <th class="text-left">Statut</th>
-                        <th>Portefeuille</th>
-                        <th>Performance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${participantsHtml}
-                </tbody>
-            </table>
         `;
+
+        const copyBtn = card.querySelector('.copy-btn');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                const codeToCopy = copyBtn.getAttribute('data-code');
+                navigator.clipboard.writeText(codeToCopy);
+                alert(`Code ${codeToCopy} copié dans le presse-papier !`);
+            });
+        }
+
+        const closeBtn = card.querySelector('.close-session-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                const sessionId = closeBtn.getAttribute('data-id');
+                closeSession(sessionId);
+            });
+        }
+
         container.appendChild(card);
     });
 }
 
-function copyCode(code) {
-    navigator.clipboard.writeText(code);
-    alert(`Code ${code} copié dans le presse-papier !`);
-}
-
+// Fonction pour clôturer une session
 async function closeSession(id) {
     if (confirm("Voulez-vous vraiment clôturer cette session ?")) {
-        await fetch(`/api/admin/sessions/${id}/close`, { method: 'POST' });
-        loadAdminSessions();
+        try {
+            await fetch(`/api/admin/sessions/${id}/close`, { method: 'POST' });
+            loadAdminSessions();
+        } catch (err) {
+            console.error("Erreur fermeture session", err);
+        }
     }
-}
-
-
-function genererCartesModernes(donnees, containerId) {
-    const container = document.getElementById(containerId);
-    if(!container) return;
-    
-    donnees.forEach(actif => {
-        const card = document.createElement('div');
-        card.className = 'card';
-
-        card.innerHTML = `
-            <div class="card-header">
-                <span class="asset-name">${actif.nom}</span>
-                <span class="asset-ticker">${actif.ticker}</span>
-            </div>
-            <div class="price">${actif.prix.toFixed(2)} ${actif.devise}</div>
-            
-            <div class="history">
-                <div><span>1 Jour:</span> ${formatVariation(actif.hist["1J"])}</div>
-                <div><span>7 Jours:</span> ${formatVariation(actif.hist["7J"])}</div>
-                <div><span>1 Mois:</span> ${formatVariation(actif.hist["1M"])}</div>
-                <div><span>6 Mois:</span> ${formatVariation(actif.hist["6M"])}</div>
-            </div>
-
-            <a href="#" class="btn-trade">Trader ${actif.ticker}</a>
-        `;
-        
-        container.appendChild(card);
-    });
 }
