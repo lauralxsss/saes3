@@ -80,7 +80,7 @@ body {
 
 .nav-logo a, .nav-logo a:visited { text-decoration: none; color: var(--color-primary); }
 .nav-links { list-style: none; display: flex; gap: 30px; margin: 0; padding: 0; }
-.nav-links > li > a { color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: 0.3s; }
+.nav-links > li > a { color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: 0.3s; padding-top: 20px;padding-bottom: 20px;}
 .nav-links > li > a:hover { color: var(--text-main); }
 
 .btn-primary { background: linear-gradient(135deg, #2962FF, #1E4BD8); color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(41, 98, 255, 0.3); }
@@ -90,7 +90,7 @@ body {
 
 .dropdown { position: relative; }
 .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background: var(--bg-panel); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 0; min-width: 200px; box-shadow: var(--shadow-panel); margin-top: 15px; }
-.dropdown:hover .dropdown-menu { display: block; }
+.dropdown:hover .dropdown-menu { display: block; list-style-type: none;}
 .dropdown-menu li a { display: block; padding: 12px 20px; color: var(--text-main); text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
 .dropdown-menu li a:hover { background-color: var(--bg-hover); color: var(--color-primary); padding-left: 25px; }
 

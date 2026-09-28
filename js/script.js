@@ -112,7 +112,6 @@ async function fetchFrenchNews() {
         // Si ça bloque, on affiche nos VRAIS LIENS vers Boursorama, Les Échos, etc.
         renderArticles(fallbackArticles, true);
     }
-}
 
 
 // données fictives placeholder
