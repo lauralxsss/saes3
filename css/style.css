@@ -283,17 +283,96 @@ body.trader-investir { background-color: var(--bg-main); color: var(--text-main)
 .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
 .card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-panel); display: flex; flex-direction: column; backdrop-filter: blur(10px); }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.asset-name { font-weight: bold; font-size: 1.2rem; color: #fff; }
-.asset-ticker { color: var(--text-secondary); font-size: 0.9rem; background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 4px; }
-.card .price { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; }
+.asset-name { font-weight: bold; font-size: 1.1rem; color: #fff; }
+.asset-ticker {             color: #7f8c8d;
+            font-size: 0.85rem;
+            background: rgba(255,255,255,0.05);
+            padding: 3px 6px;
+            border-radius: 4px; }
+.card .price { font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #fff; }
 
-.history { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border: 1px solid var(--border-color); }
+        .history {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
 .history div { display: flex; justify-content: space-between; }
 .positive { color: var(--color-up); font-weight: bold; }
 .negative { color: var(--color-down); font-weight: bold; }
 
-.btn-trade { margin-top: auto; background: linear-gradient(135deg, #2962FF, #1E4BD8); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-trade {
+            margin-top: auto;
+            background: linear-gradient(135deg, #2962FF, #1E4BD8);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            transition: filter 0.2s;
+        }
 .btn-trade:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(41, 98, 255, 0.3); }
+
+body.trader-investir
+        .carousel-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .carousel-track {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 10px 0;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+        }
+
+        .carousel-track::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .carousel-track::-webkit-scrollbar-thumb {
+            background-color: var(--border-color, #2A2E39);
+            border-radius: 4px;
+        }
+
+        .carousel-track .card {
+            flex: 0 0 280px;
+            scroll-snap-align: start;
+            background: var(--bg-panel, #151924);
+            border: 1px solid var(--border-color, #2A2E39);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .subtitle-text {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+        }
 
 /* =========================================
    9. PAGES CONNEXION & INSCRIPTION RESTAURÉES

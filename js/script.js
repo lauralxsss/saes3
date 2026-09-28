@@ -421,3 +421,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+function genererCartesModernes(donnees, containerId) {
+    const container = document.getElementById(containerId);
+    if(!container) return;
+    
+    donnees.forEach(actif => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        card.innerHTML = `
+            <div class="card-header">
+                <span class="asset-name">${actif.nom}</span>
+                <span class="asset-ticker">${actif.ticker}</span>
+            </div>
+            <div class="price">${actif.prix.toFixed(2)} ${actif.devise}</div>
+            
+            <div class="history">
+                <div><span>1 Jour:</span> ${formatVariation(actif.hist["1J"])}</div>
+                <div><span>7 Jours:</span> ${formatVariation(actif.hist["7J"])}</div>
+                <div><span>1 Mois:</span> ${formatVariation(actif.hist["1M"])}</div>
+                <div><span>6 Mois:</span> ${formatVariation(actif.hist["6M"])}</div>
+            </div>
+
+            <a href="#" class="btn-trade">Trader ${actif.ticker}</a>
+        `;
+        
+        container.appendChild(card);
+    });
+}
