@@ -4,27 +4,29 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Sert les fichiers statiques (ton HTML, CSS, JS) depuis la racine du projet
 app.use(express.static(path.join(__dirname, '')));
 
+// Faux User-Agent pour que Yahoo et ForexFactory croient que c'est un vrai humain sur Chrome
+const requestOptions = {
+    headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
+};
+
 // ==========================================
-// API ACTUALITÉS (Relais serveur)
+// API ACTUALITÉS (Requête directe sans proxy)
 // ==========================================
 app.get('/api/news', async (req, res) => {
     try {
-        // Flux RSS de Yahoo Finance
         const rssUrl = 'https://fr.finance.yahoo.com/actualites/rss';
         
-        // Utilisation d'un proxy public (AllOrigins) via le serveur pour garantir le passage
-        const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+        // On interroge Yahoo directement !
+        const { statusCode, body } = await request(rssUrl, requestOptions);
         
-        const { statusCode, body } = await request(apiUrl);
         if (statusCode !== 200) throw new Error(`Erreur réseau: ${statusCode}`);
         
-        const data = await body.json();
-        
-        // On renvoie le contenu XML brut au frontend
-        res.type('application/xml').send(data.contents);
+        const xml = await body.text();
+        res.type('application/xml').send(xml);
 
     } catch (error) {
         console.error("Erreur serveur actus :", error);
@@ -33,13 +35,14 @@ app.get('/api/news', async (req, res) => {
 });
 
 // ==========================================
-// API AGENDA ÉCONOMIQUE (Relais serveur)
+// API AGENDA ÉCONOMIQUE (Requête directe sans proxy)
 // ==========================================
 app.get('/api/calendar', async (req, res) => {
     try {
-        // Flux JSON public ForexFactory
         const targetUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
-        const { statusCode, body } = await request(targetUrl);
+        
+        // On interroge ForexFactory directement !
+        const { statusCode, body } = await request(targetUrl, requestOptions);
         
         if (statusCode !== 200) throw new Error(`Erreur réseau: ${statusCode}`);
         
