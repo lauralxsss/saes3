@@ -715,4 +715,41 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+     // 2. Graphique de Répartition des Actifs (Donut)
+    const ctxAlloc = document.getElementById('assetAllocationChart');
+    
+    if (ctxAlloc) {
+        new Chart(ctxAlloc.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Apple', 'LVMH', 'Tesla', 'Liquidités'],
+                datasets: [{
+                    data: [26025, 25356, 30072, 32400],
+                    backgroundColor: [
+                        '#3B82F6',
+                        '#8B5CF6',
+                        '#F59E0B',
+                        '#10B981'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#151924'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#94A3B8',
+                            font: { family: 'Inter', size: 12 },
+                            padding: 15
+                        }
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+    }
 });
