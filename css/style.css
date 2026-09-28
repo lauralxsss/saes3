@@ -300,6 +300,7 @@ body.trader-investir { background-color: var(--bg-main); color: var(--text-main)
    ========================================= */
 /* On garde tes classes exactes, mais on les lie aux couleurs du thème sombre */
 .connexion, .inscription {
+  padding: 0px;
   font-family: 'Inter', sans-serif;
   color: var(--text-main);
   background: var(--bg-main);
@@ -449,58 +450,6 @@ body.trader-investir { background-color: var(--bg-main); color: var(--text-main)
     font-weight: 600; 
 }
 
-.inscription .login-cta a{
-  color:var(--green);
-  font-weight:600;
-  text-decoration:none;
-  border-bottom:1px solid var(--green);
-}
-
-.inscription .login-cta a:hover{
-  color:var(--text);
-  border-bottom-color:var(--text);
-}
-
-@media (prefers-reduced-motion: reduce){
-  .inscription *{
-    transition:none !important;
-  }
-}
-
-@media (max-width:860px){
-  .inscription .layout{
-    grid-template-columns:1fr;
-  }
-
-  .inscription .brand{
-    padding:32px 28px;
-    flex-direction:row;
-    align-items:center;
-    justify-content:space-between;
-    border-right:none;
-    border-bottom:1px solid var(--line);
-  }
-
-  .inscription .spark,
-  .inscription .brand-tagline{
-    display:none;
-  }
-
-  .inscription .wordmark{
-    font-size:1.4rem;
-  }
-
-  .inscription .form-panel{
-    padding:40px 24px 56px;
-  }
-}
-
-@media (max-width:480px){
-  .inscription .field-row{
-    grid-template-columns:1fr;
-    gap:0;
-  }
-}
 
 /* Bouton retour pour les deux pages */
 
