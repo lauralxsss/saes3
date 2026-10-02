@@ -11,7 +11,6 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png?v=20260928" />
     <meta name="apple-mobile-web-app-title" content="TradeLab" />
     <link rel="manifest" href="/favicons/site.webmanifest?v=20260928" />
-    <script src="/js/script.js" async></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -23,7 +22,7 @@
         
         <ul class="nav-links">
             <li class="dropdown">
-                <a href="#" onclick="window.location.href='/trader-et-investir/'"><i class="fa-solid fa-arrow-trend-up"></i> Trader & Investir ▾</a>
+                <a href="/trader-et-investir/" onclick="window.location.href='/trader-et-investir/'"><i class="fa-solid fa-arrow-trend-up"></i> Trader & Investir ▾</a>
                 <ul class="dropdown-menu">
                     <li><a href="/trader-et-investir/actions/"><i class="fa-solid fa-building"></i> Actions</a></li>
                     <li><a href="/trader-et-investir/indices/"><i class="fa-solid fa-chart-pie"></i> Indices</a></li>
@@ -35,8 +34,25 @@
         </ul>
 
         <div class="nav-auth">
-        <button class="btn-primary" onclick="window.location.href='/connexion/connexion.html'">Connexion</button>        </div>
+            <button class="btn-primary" onclick="window.location.href='/connexion/connexion.html'">Connexion</button>        
+        </div>
     </nav>
+
+
     <p>Actions</p>
+
+    <footer class="app-footer">
+        <div class="footer-content">
+            <div class="footer-logo"><i class="fa-solid fa-chart-line"></i> TradeLab</div>
+            <div class="footer-links">
+                <a href="/mentions-legales/#mentions-legales">Mentions légales</a>
+                <a href="/mentions-legales/#cgu">CGU</a>
+                <a href="/mentions-legales/#rgpd">RGPD</a>
+            </div>
+            <div class="footer-status"><span class="status-dot"></span> Systèmes opérationnels</div>
+        </div>
+        <div class="footer-bottom">&copy; 2026 SAE Simulateur Boursier - Équipe 4. Projet étudiant.</div>
+    </footer>
+    <script src="/js/script.js" defer></script>
 </body>
 </html>
