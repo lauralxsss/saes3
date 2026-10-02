@@ -372,43 +372,44 @@ body.trader-investir { background-color: var(--bg-main); color: var(--text-main)
 .card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-panel); display: flex; flex-direction: column; backdrop-filter: blur(10px); }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .asset-name { font-weight: bold; font-size: 1.1rem; color: #fff; }
-.asset-ticker {             color: #7f8c8d;
-            font-size: 0.85rem;
-            background: rgba(255,255,255,0.05);
-            padding: 3px 6px;
-            border-radius: 4px; }
-.card .price { font-size: 1.4rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #fff; }
-
-        .history {
-            background: rgba(0,0,0,0.2);
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            margin-bottom: 15px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-        }
+.asset-ticker {
+    color: #7f8c8d;
+    font-size: 0.85rem;
+    background: rgba(255,255,255,0.05);
+    padding: 3px 6px;
+    border-radius: 4px; }
+.card .price { 
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #fff; }
+.history {
+    background: rgba(0,0,0,0.2);
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
 .history div { display: flex; justify-content: space-between; }
 .positive { color: var(--color-up); font-weight: bold; }
 .negative { color: var(--color-down); font-weight: bold; }
 
-        .btn-trade {
-            margin-top: auto;
-            background: linear-gradient(135deg, #2962FF, #1E4BD8);
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            transition: filter 0.2s;
-        }
+.btn-trade {
+    margin-top: auto;
+    background: linear-gradient(135deg, #2962FF, #1E4BD8);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    transition: filter 0.2s;
+}
 .btn-trade:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(41, 98, 255, 0.3); }
 
 body.trader-investir
@@ -992,3 +993,28 @@ body.trader-investir
 .preview-row { display: flex; justify-content: space-between; font-size: 0.85rem; }
 .preview-label { color: var(--text-secondary); }
 .preview-val { color: #fff; font-weight: 500; }
+
+
+/* =========================================
+    Mentions légales
+========================================= */
+
+.mentions-legales a {
+    margin-top: auto;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.mentions-legales a.ml-a {
+    color:var(--color-primary)
+}
+.mentions-legales a:hover {
+    color: var(--color-primary);
+    transition: filter 0.2s;
+}
+
+.mentions-legales #mentions-legales,
+.mentions-legales #cgu, 
+.mentions-legales #rgpd {
+    scroll-margin-top: 80px;
+}
