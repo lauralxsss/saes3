@@ -1,0 +1,11 @@
+keep-supabase-alive:
+  image: curlimages/curl:latest
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+  script:
+    - |
+      curl -X GET "https://sdbcwpkqjnkdykplzqbl.supabase.co/rest/v1/keepalive?select=*&limit=1" \
+        -H "apikey: $SUPABASE_ANON_KEY" \
+        -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+        -H "Content-Type: application/json"
