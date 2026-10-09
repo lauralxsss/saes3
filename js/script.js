@@ -1,6 +1,41 @@
-// ==========================================
-// 1. DONNÉES GLOBALES (Marchés & Actifs)
-// ==========================================
+// ===== SUPABASE (sessions et codes) =====
+const sbClient = window.supabase
+  ? window.supabase.createClient(
+      "https://sdbcwpkqjnkdykplzqbl.supabase.co",
+      "sb_publishable_VYHMIw6eapMDK3e_Qs-YeQ_7I2dR2Q5"
+    )
+  : null; // null sur les pages qui n'ont pas chargé Supabase
+
+function genererCode(n = 6) {
+  const car = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const tab = crypto.getRandomValues(new Uint32Array(n));
+  return Array.from(tab, x => car[x % car.length]).join("");
+}
+
+async function creerSession(nom) {
+  for (let essai = 0; essai < 5; essai++) {
+    const code = genererCode();
+    const { error } = await sbClient.from("sessions").insert({ nom, code });
+    if (!error) return code;
+    if (error.code !== "23505") { console.error(error); break; } // 23505 = code déjà pris
+  }
+  return null;
+}
+
+async function verifierCode(code) {
+  const { data } = await sbClient
+    .from("sessions")
+    .select("id, nom, capital_initial, date_fin")
+    .eq("code", code.trim().toUpperCase())
+    .eq("statut", "en_cours")
+    .maybeSingle();
+  return data;
+}
+
+async function rejoindre(sessionId, pseudo) {
+  const { error } = await sbClient.from("participants").insert({ session_id: sessionId, pseudo });
+  return !error;
+}
 const marketData = {
     actions: [
         { nom: "Apple Inc.", ticker: "AAPL", prix: 175.50, devise: "$", hist: { "1J": "+1.2%", "7J": "+3.5%", "1M": "-2.1%", "6M": "+12.4%" } },
@@ -753,3 +788,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+

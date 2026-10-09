@@ -1,8 +1,22 @@
 const express = require('express');
 const path = require('path');
+const crypto = require('crypto');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// ==========================================
+// CONNEXION SUPABASE
+// (les deux valeurs se règlent dans Render > Environment)
+// ==========================================
+
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
+    console.error("❌ Variables SUPABASE_URL et SUPABASE_KEY manquantes (Render > Environment).");
+    process.exit(1);
+}
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // ==========================================
 // MIDDLEWARES
@@ -10,78 +24,73 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Fichiers statiques
 app.use(express.static(__dirname));
 
 // ==========================================
-// DONNÉES EN MÉMOIRE
+// OUTILS
 // ==========================================
 
-let sessions = [
-    {
-        id: "sess_1",
-        name: "Simulation Boursière — Classe BTS Finance",
-        code: "B7K4P9",
-        startDate: "2026-10-01",
-        endDate: "2026-10-31",
-        initialCapital: 100000,
-        adminId: "admin_prof1",
-        isActive: true,
+// Convertit une ligne Supabase en objet attendu par le site (mêmes noms qu'avant)
+function toParticipant(p) {
+    return {
+        id: p.id,
+        name: p.name,
+        email: p.email,
+        value: Number(p.value),
+        cash: Number(p.cash),
+        positions: p.positions,
+        status: p.status
+    };
+}
 
-        participants: [
-            {
-                id: "el_1",
-                name: "Thomas Martin",
-                email: "thomas@iut.fr",
-                value: 100000,
-                cash: 100000,
-                positions: 0,
-                status: "Connecté"
-            },
-            {
-                id: "el_2",
-                name: "Emma Dupont",
-                email: "emma@iut.fr",
-                value: 103240,
-                cash: 3240,
-                positions: 3,
-                status: "Connectée"
-            },
-            {
-                id: "el_3",
-                name: "Lucas Bernard",
-                email: "lucas@iut.fr",
-                value: 98750,
-                cash: 8750,
-                positions: 1,
-                status: "Connecté"
-            }
-        ]
-    }
-];
-
-// ==========================================
-// GÉNÉRATION CODE SESSION
-// ==========================================
+function toSession(s, participants = []) {
+    return {
+        id: s.id,
+        name: s.name,
+        code: s.code,
+        startDate: s.start_date,
+        endDate: s.end_date,
+        initialCapital: Number(s.initial_capital),
+        adminId: s.admin_id,
+        isActive: s.is_active,
+        participants: participants.map(toParticipant)
+    };
+}
 
 function generateSecureCode() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let code;
-
-    do {
-        code = '';
-        for (let i = 0; i < 6; i++) {
-            const index = Math.floor(Math.random() * chars.length);
-            code += chars[index];
-        }
-    } while (sessions.some(session => session.code === code));
-
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars[crypto.randomInt(chars.length)];
+    }
     return code;
 }
 
+// Renvoie une erreur JSON propre si quelque chose plante
+const wrap = (fn) => (req, res) =>
+    fn(req, res).catch((error) => {
+        console.error("❌ Erreur :", error);
+        res.status(500).json({ success: false, message: "Erreur serveur." });
+    });
+
+async function findSessionByCode(code) {
+    const { data, error } = await supabase.from('tl_sessions').select('*').eq('code', code).maybeSingle();
+    if (error) throw error;
+    return data;
+}
+
+async function getParticipants(sessionId) {
+    const { data, error } = await supabase
+        .from('tl_participants')
+        .select('*')
+        .eq('session_id', sessionId)
+        .order('created_at', { ascending: true });
+    if (error) throw error;
+    return data.map(toParticipant);
+}
+
 // ==========================================
-// ROUTES API (GET & POST)
+// ROUTES API
 // ==========================================
 
 app.get('/api/test', (req, res) => {
@@ -93,109 +102,124 @@ app.get('/api/test', (req, res) => {
 });
 
 // ADMIN — RÉCUPÉRER LES SESSIONS
-app.get('/api/admin/sessions', (req, res) => {
-    console.log("GET /api/admin/sessions");
-    res.json(sessions);
-});
+app.get('/api/admin/sessions', wrap(async (req, res) => {
+    const { data, error } = await supabase
+        .from('tl_sessions')
+        .select('*, tl_participants(*)')
+        .order('created_at', { ascending: true });
+    if (error) throw error;
+    res.json(data.map(s => toSession(s, s.tl_participants || [])));
+}));
 
 // ADMIN — CRÉER UNE SESSION
-app.post('/api/admin/sessions', (req, res) => {
-    console.log("POST /api/admin/sessions");
-    console.log("Données reçues :", req.body);
+app.post('/api/admin/sessions', wrap(async (req, res) => {
+    console.log("POST /api/admin/sessions", req.body);
 
-    try {
-        const { name, startDate, endDate, initialCapital } = req.body;
+    const { name, startDate, endDate, initialCapital } = req.body;
 
-        if (!name || !startDate || !endDate || !initialCapital) {
-            return res.status(400).json({ success: false, message: "Tous les champs sont obligatoires." });
-        }
-
-        if (new Date(endDate) < new Date(startDate)) {
-            return res.status(400).json({ success: false, message: "La date de fin doit être après la date de début." });
-        }
-
-        const capital = Number(initialCapital);
-        if (!Number.isFinite(capital) || capital <= 0) {
-            return res.status(400).json({ success: false, message: "Le capital initial doit être supérieur à 0." });
-        }
-
-        const code = generateSecureCode();
-        const newSession = {
-            id: `sess_${Date.now()}`,
-            name: name.trim(),
-            code,
-            startDate,
-            endDate,
-            initialCapital: capital,
-            adminId: "admin_prof1",
-            isActive: true,
-            participants: []
-        };
-
-        sessions.push(newSession);
-        console.log("✅ Session créée :", newSession);
-
-        return res.status(201).json({
-            success: true,
-            message: "Session créée avec succès.",
-            session: newSession
-        });
-
-    } catch (error) {
-        console.error("❌ Erreur création session :", error);
-        return res.status(500).json({ success: false, message: "Erreur interne lors de la création." });
+    if (!name || !startDate || !endDate || !initialCapital) {
+        return res.status(400).json({ success: false, message: "Tous les champs sont obligatoires." });
     }
-});
+
+    if (new Date(endDate) < new Date(startDate)) {
+        return res.status(400).json({ success: false, message: "La date de fin doit être après la date de début." });
+    }
+
+    const capital = Number(initialCapital);
+    if (!Number.isFinite(capital) || capital <= 0) {
+        return res.status(400).json({ success: false, message: "Le capital initial doit être supérieur à 0." });
+    }
+
+    // On réessaie si le code (ou l'id) existe déjà
+    let created = null;
+    for (let essai = 0; essai < 5 && !created; essai++) {
+        const { data, error } = await supabase
+            .from('tl_sessions')
+            .insert({
+                id: `sess_${Date.now()}`,
+                name: name.trim(),
+                code: generateSecureCode(),
+                start_date: startDate,
+                end_date: endDate,
+                initial_capital: capital
+            })
+            .select()
+            .single();
+
+        if (!error) created = data;
+        else if (error.code !== '23505') throw error; // 23505 = doublon
+    }
+
+    if (!created) {
+        return res.status(500).json({ success: false, message: "Impossible de générer un code unique." });
+    }
+
+    console.log("✅ Session créée :", created.id, created.code);
+    res.status(201).json({
+        success: true,
+        message: "Session créée avec succès.",
+        session: toSession(created, [])
+    });
+}));
 
 // ADMIN — FERMER UNE SESSION
-app.post('/api/admin/sessions/:id/close', (req, res) => {
-    const session = sessions.find(s => s.id === req.params.id);
+app.post('/api/admin/sessions/:id/close', wrap(async (req, res) => {
+    const { data, error } = await supabase
+        .from('tl_sessions')
+        .update({ is_active: false })
+        .eq('id', req.params.id)
+        .select();
+    if (error) throw error;
 
-    if (!session) {
+    if (!data || data.length === 0) {
         return res.status(404).json({ success: false, message: "Session introuvable." });
     }
 
-    session.isActive = false;
-    console.log("🔒 Session clôturée :", session.id);
-
+    console.log("🔒 Session clôturée :", req.params.id);
     res.json({ success: true, message: "Session clôturée avec succès." });
-});
+}));
 
-// ÉLÈVE — REJOINDRE UNE SESSION (Ancienne route)
-app.post('/api/student/join', (req, res) => {
-    const { email, password, sessionCode } = req.body;
+// ÉLÈVE — REJOINDRE UNE SESSION (ancienne route)
+app.post('/api/student/join', wrap(async (req, res) => {
+    const { email, sessionCode } = req.body;
 
     if (!email || !sessionCode) {
         return res.status(400).json({ success: false, message: "Email et code de session obligatoires." });
     }
 
-    const normalizedCode = sessionCode.trim().toUpperCase();
-    const session = sessions.find(s => s.code === normalizedCode);
+    const session = await findSessionByCode(sessionCode.trim().toUpperCase());
 
     if (!session) {
         return res.status(404).json({ success: false, message: "Code de session invalide." });
     }
 
-    if (!session.isActive) {
+    if (!session.is_active) {
         return res.status(400).json({ success: false, message: "Cette session est terminée." });
     }
 
-    const existingParticipant = session.participants.find(p => p.email === email);
-    if (existingParticipant) {
+    const { data: existing, error: errExisting } = await supabase
+        .from('tl_participants')
+        .select('id')
+        .eq('session_id', session.id)
+        .eq('email', email)
+        .maybeSingle();
+    if (errExisting) throw errExisting;
+
+    if (existing) {
         return res.status(400).json({ success: false, message: "Vous avez déjà rejoint cette session." });
     }
 
-    const newParticipant = {
+    const { error } = await supabase.from('tl_participants').insert({
         id: `el_${Date.now()}`,
+        session_id: session.id,
         name: email.split('@')[0],
         email,
-        value: session.initialCapital,
-        cash: session.initialCapital,
+        value: session.initial_capital,
+        cash: session.initial_capital,
         positions: 0,
         status: "🟢 Connecté"
-    };
-
-    session.participants.push(newParticipant);
+    });
+    if (error) throw error;
 
     res.json({
         success: true,
@@ -204,123 +228,147 @@ app.post('/api/student/join', (req, res) => {
         sessionName: session.name,
         code: session.code
     });
-});
+}));
 
 // PARCOURS ÉLÈVE : Étape 1 — Vérification et prévisualisation du code
-app.post('/api/student/verify-code', (req, res) => {
-    try {
-        const { code } = req.body;
-        
-        if (!code || !code.trim()) {
-            return res.status(400).json({ success: false, error: 'empty', message: "Veuillez entrer un code de session." });
-        }
+app.post('/api/student/verify-code', wrap(async (req, res) => {
+    const { code } = req.body;
 
-        const cleanCode = code.toUpperCase().trim();
-        const session = sessions.find(s => s.code === cleanCode);
-
-        if (!session) {
-            return res.status(404).json({ success: false, error: 'invalid', message: "Code invalide ou expiré. Vérifiez votre code et réessayez." });
-        }
-
-        if (!session.isActive) {
-            return res.status(400).json({ success: false, error: 'deactivated', message: "Cette session a été désactivée ou est terminée." });
-        }
-
-        const today = new Date().toISOString().split('T')[0];
-        if (session.endDate && today > session.endDate) {
-            return res.status(400).json({ success: false, error: 'expired', message: "Ce code a expiré." });
-        }
-
-        res.json({
-            success: true,
-            session: {
-                id: session.id,
-                name: session.name,
-                startDate: session.startDate,
-                endDate: session.endDate,
-                initialCapital: session.initialCapital,
-                institution: "TradeLab Academic Platform"
-            }
-        });
-    } catch (error) {
-        console.error("Erreur validation code:", error);
-        res.status(500).json({ success: false, error: 'server_error', message: "Erreur serveur lors de la validation." });
+    if (!code || !code.trim()) {
+        return res.status(400).json({ success: false, error: 'empty', message: "Veuillez entrer un code de session." });
     }
-});
+
+    const session = await findSessionByCode(code.toUpperCase().trim());
+
+    if (!session) {
+        return res.status(404).json({ success: false, error: 'invalid', message: "Code invalide ou expiré. Vérifiez votre code et réessayez." });
+    }
+
+    if (!session.is_active) {
+        return res.status(400).json({ success: false, error: 'deactivated', message: "Cette session a été désactivée ou est terminée." });
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+    if (session.end_date && today > session.end_date) {
+        return res.status(400).json({ success: false, error: 'expired', message: "Ce code a expiré." });
+    }
+
+    res.json({
+        success: true,
+        session: {
+            id: session.id,
+            name: session.name,
+            startDate: session.start_date,
+            endDate: session.end_date,
+            initialCapital: Number(session.initial_capital),
+            institution: "TradeLab Academic Platform"
+        }
+    });
+}));
 
 // PARCOURS ÉLÈVE : Étape 2 — Initialisation officielle de la session de l'étudiant
-app.post('/api/student/start-simulation', (req, res) => {
-    try {
-        const { sessionId, studentName } = req.body;
-        const session = sessions.find(s => s.id === sessionId);
+app.post('/api/student/start-simulation', wrap(async (req, res) => {
+    const { sessionId, studentName } = req.body;
 
-        if (!session || !session.isActive) {
-            return res.status(400).json({ success: false, message: "Session invalide ou inactive." });
-        }
+    const { data: session, error: errSession } = await supabase
+        .from('tl_sessions')
+        .select('*')
+        .eq('id', sessionId)
+        .maybeSingle();
+    if (errSession) throw errSession;
 
-        const name = studentName && studentName.trim() ? studentName.trim() : `Étudiant_${Math.floor(Math.random() * 900 + 100)}`;
-        const email = `${name.toLowerCase().replace(/\s+/g, '')}@etudiant.fr`;
+    if (!session || !session.is_active) {
+        return res.status(400).json({ success: false, message: "Session invalide ou inactive." });
+    }
 
-        let participant = session.participants.find(p => p.email === email);
-        if (!participant) {
-            participant = {
+    const name = studentName && studentName.trim() ? studentName.trim() : `Étudiant_${Math.floor(Math.random() * 900 + 100)}`;
+    const email = `${name.toLowerCase().replace(/\s+/g, '')}@etudiant.fr`;
+
+    let { data: participant, error: errPart } = await supabase
+        .from('tl_participants')
+        .select('*')
+        .eq('session_id', session.id)
+        .eq('email', email)
+        .maybeSingle();
+    if (errPart) throw errPart;
+
+    if (!participant) {
+        const { data, error } = await supabase
+            .from('tl_participants')
+            .insert({
                 id: `el_${Date.now()}`,
-                name: name,
-                email: email,
-                value: session.initialCapital,
-                cash: session.initialCapital,
+                session_id: session.id,
+                name,
+                email,
+                value: session.initial_capital,
+                cash: session.initial_capital,
                 positions: 0,
                 status: "🟢 Connecté"
-            };
-            session.participants.push(participant);
-        }
-
-        res.json({
-            success: true,
-            sessionId: session.id,
-            sessionName: session.name,
-            participant: participant
-        });
-    } catch (error) {
-        console.error("Erreur démarrage simulation:", error);
-        res.status(500).json({ success: false, message: "Impossible d'initialiser la simulation." });
+            })
+            .select()
+            .single();
+        if (error) throw error;
+        participant = data;
     }
-});
 
-// CLASSEMENT
-app.get('/api/leaderboard', (req, res) => {
-    const activeSession = sessions.find(s => s.isActive);
-    if (!activeSession) {
+    res.json({
+        success: true,
+        sessionId: session.id,
+        sessionName: session.name,
+        participant: toParticipant(participant)
+    });
+}));
+
+// CLASSEMENT (première session active)
+app.get('/api/leaderboard', wrap(async (req, res) => {
+    const { data: active, error } = await supabase
+        .from('tl_sessions')
+        .select('id')
+        .eq('is_active', true)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+    if (error) throw error;
+
+    if (!active) {
         return res.json([]);
     }
-    res.json(activeSession.participants);
-});
+    res.json(await getParticipants(active.id));
+}));
 
-app.get('/api/sessions/:sessionId/leaderboard', (req, res) => {
-    const session = sessions.find(s => s.id === req.params.sessionId);
+app.get('/api/sessions/:sessionId/leaderboard', wrap(async (req, res) => {
+    const { data: session, error } = await supabase
+        .from('tl_sessions')
+        .select('id, name')
+        .eq('id', req.params.sessionId)
+        .maybeSingle();
+    if (error) throw error;
+
     if (!session) {
         return res.status(404).json({ error: "Session introuvable." });
     }
+
+    const participants = await getParticipants(session.id);
     res.json({
         sessionName: session.name,
-        totalParticipants: session.participants.length,
-        participants: session.participants
+        totalParticipants: participants.length,
+        participants
     });
-});
+}));
 
 // ACTUALITÉS
 app.get('/api/news', async (req, res) => {
     try {
         const rssUrl = 'https://www.lefigaro.fr/rss/figaro_economie.xml';
         const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
-        
-        const response = await fetch(proxyUrl, { 
-            headers: { 'User-Agent': 'Mozilla/5.0' }, 
-            signal: AbortSignal.timeout(8000) 
+
+        const response = await fetch(proxyUrl, {
+            headers: { 'User-Agent': 'Mozilla/5.0' },
+            signal: AbortSignal.timeout(8000)
         });
-        
+
         if (!response.ok) throw new Error(`Erreur réseau: ${response.status}`);
-        
+
         const xml = await response.text();
         res.type('application/xml').send(xml);
 
