@@ -8,8 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 // ==========================================
 // CONNEXION SUPABASE
-// (les deux valeurs se règlent dans Render > Environment)
-// ==========================================
+
 
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
     console.error("❌ Variables SUPABASE_URL et SUPABASE_KEY manquantes (Render > Environment).");
