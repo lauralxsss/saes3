@@ -36,26 +36,7 @@ async function rejoindre(sessionId, pseudo) {
   const { error } = await sbClient.from("participants").insert({ session_id: sessionId, pseudo });
   return !error;
 }
-const marketData = {
-    actions: [
-        { nom: "Apple Inc.", ticker: "AAPL", prix: 175.50, devise: "$", hist: { "1J": "+1.2%", "7J": "+3.5%", "1M": "-2.1%", "6M": "+12.4%" } },
-        { nom: "LVMH", ticker: "MC.PA", prix: 840.20, devise: "€", hist: { "1J": "-0.8%", "7J": "-1.5%", "1M": "+4.2%", "6M": "+8.1%" } },
-        { nom: "TotalEnergies", ticker: "TTE", prix: 62.30, devise: "€", hist: { "1J": "+0.5%", "7J": "+2.1%", "1M": "+5.6%", "6M": "-1.2%" } },
-        { nom: "Microsoft", ticker: "MSFT", prix: 330.10, devise: "$", hist: { "1J": "+2.5%", "7J": "+1.1%", "1M": "+4.5%", "6M": "+15.2%" } }
-    ],
-    indices: [
-        { nom: "CAC 40", ticker: "^FCHI", prix: 7350.45, devise: "pts", hist: { "1J": "+0.4%", "7J": "-0.2%", "1M": "+2.8%", "6M": "+5.4%" } },
-        { nom: "S&P 500", ticker: "^GSPC", prix: 4500.10, devise: "pts", hist: { "1J": "+1.1%", "7J": "+2.3%", "1M": "-1.0%", "6M": "+10.2%" } }
-    ],
-    devises: [
-        { nom: "Euro / Dollar", ticker: "EUR/USD", prix: 1.0850, devise: "$", hist: { "1J": "-0.2%", "7J": "+0.5%", "1M": "-1.1%", "6M": "+2.3%" } },
-        { nom: "Euro / Yen", ticker: "EUR/JPY", prix: 158.40, devise: "¥", hist: { "1J": "+0.7%", "7J": "+1.2%", "1M": "+3.4%", "6M": "+6.8%" } }
-    ],
-    marches: [
-        { nom: "Or", ticker: "XAU/USD", prix: 1950.40, devise: "$", hist: { "1J": "+0.5%", "7J": "+1.2%", "1M": "-2.4%", "6M": "+5.8%" } },
-        { nom: "Pétrole WTI", ticker: "CL=F", prix: 85.20, devise: "$", hist: { "1J": "-1.2%", "7J": "+3.5%", "1M": "+8.2%", "6M": "+12.4%" } }
-    ]
-};
+// 
 
 // ==========================================
 // 2. ACTUALITÉS & AGENDA ÉCONOMIQUE
@@ -182,6 +163,77 @@ function tickMarket() {
     });
 }
 
+
+
+// =======================
+// Page Trader & Investir
+// =======================
+
+const marketData = {
+    actions: [
+        { nom: "Apple Inc.", ticker: "AAPL", prix: 175.50, devise: "$", hist: { "1J": "+1.2%", "7J": "+3.5%", "1M": "-2.1%", "6M": "+12.4%" },
+            desc: "Apple conçoit, fabrique et commercialise des smartphones, ordinateurs et tablettes à l'échelle mondiale.",
+            cap: "2 800 Md", res: "97.0 Md", resEvol: "+5.2%",
+            div: "0.96 (0.5%)", divEvol: "+4.1%", per: "28.5", ratio: "0.12",
+            chartData: [150, 155, 152, 160, 165, 162, 170, 175.50] },
+        { nom: "LVMH", ticker: "MC.PA", prix: 840.20, devise: "€", hist: { "1J": "-0.8%", "7J": "-1.5%", "1M": "+4.2%", "6M": "+8.1%" },
+            desc: "Leader mondial du luxe, LVMH possède des marques prestigieuses dans la mode, maroquinerie, parfums et spiritueux.",
+            cap: "420 Md", res: "14.1 Md", resEvol: "+12.0%",
+            div: "12.00 (1.4%)", divEvol: "+20.0%", per: "24.1", ratio: "0.28",
+            chartData: [880, 875, 850, 860, 845, 830, 835, 840.20] },
+        { nom: "TotalEnergies", ticker: "TTE", prix: 62.30, devise: "€", hist: { "1J": "+0.5%", "7J": "+2.1%", "1M": "+5.6%", "6M": "-1.2%" },
+            desc: "Compagnie mondiale multi-énergies de production et de fourniture d'énergies : pétrole, biocarburants, gaz naturel et électricité.",
+            cap: "155 Md", res: "20.5 Md", resEvol: "-4.2%",
+            div: "3.01 (4.8%)", divEvol: "+7.1%", per: "7.5", ratio: "0.55",
+            chartData: [55, 56, 58, 57, 59, 61, 60, 62.30] },
+        { nom: "Microsoft", ticker: "MSFT", prix: 330.10, devise: "$", hist: { "1J": "+2.5%", "7J": "+1.1%", "1M": "+4.5%", "6M": "+15.2%" },
+            desc: "Développe et prend en charge des logiciels, services, appareils et solutions à travers le monde. Leader dans le cloud.",
+            cap: "2 500 Md", res: "72.7 Md", resEvol: "+11.4%",
+            div: "2.72 (0.8%)", divEvol: "+9.7%", per: "34.2", ratio: "0.16",
+            chartData: [300, 310, 305, 315, 320, 325, 322, 330.10] },
+        { nom: "Tesla", ticker: "TSLA", prix: 210.80, devise: "$", hist: { "1J": "-1.2%", "7J": "-4.5%", "1M": "+8.2%", "6M": "-5.1%" },
+            desc: "Tesla conçoit, développe, fabrique et commercialise des véhicules électriques haute performance ainsi que des solutions de stockage d'énergie solaire.",
+            cap: "670 Md $", res: "12.6 Md $", resEvol: "+128.0%",
+            div: "0.00 $ (0.0%)", divEvol: "0.0%", per: "53.1", ratio: "0.13",
+            chartData: [230, 225, 215, 220, 212, 218, 210.80] },
+        { nom: "Amazon", ticker: "AMZN", prix: 135.40, devise: "$", hist: { "1J": "+0.9%", "7J": "+2.8%", "1M": "-1.5%", "6M": "+9.4%" },
+            desc: "Amazon est le leader mondial du commerce électronique, de l'informatique en nuage (AWS), du streaming numérique et de la logistique connectée.",
+            cap: "1 400 Md $", res: "-2.7 Md $", resEvol: "-108.0%",
+            div: "0.00 $ (0.0%)", divEvol: "0.0%", per: "105.4", ratio: "0.33",
+            chartData: [125, 128, 130, 129, 132, 134, 135.40] },
+        { nom: "NVIDIA", ticker: "NVDA", prix: 450.20, devise: "$", hist: { "1J": "+3.1%", "7J": "+6.2%", "1M": "+12.5%", "6M": "+45.8%" },
+            desc: "NVIDIA est le pionnier du processeur graphique (GPU), révolutionnant le domaine de l'intelligence artificielle, du gaming et du calcul haute performance.",
+            cap: "1 110 Md $", res: "4.3 Md $", resEvol: "-55.0%",
+            div: "0.16 $ (0.04%)", divEvol: "0.0%", per: "112.5", ratio: "0.03",
+            chartData: [380, 400, 395, 420, 415, 435, 450.20] },
+        { nom: "Alphabet", ticker: "GOOGL", prix: 130.50, devise: "$", hist: { "1J": "+0.4%", "7J": "+1.5%", "1M": "+2.1%", "6M": "+11.2%" },
+            desc: "Alphabet est la société mère de Google, spécialisée dans les services Internet, la publicité en ligne, le cloud computing et l'intelligence artificielle.",
+            cap: "1 650 Md $", res: "60.0 Md $", resEvol: "-21.0%",
+            div: "0.00 $ (0.0%)", divEvol: "0.0%", per: "27.6", ratio: "0.22",
+            chartData: [120, 122, 125, 124, 128, 129, 130.50] }
+    ],
+    indices: [
+        { nom: "CAC 40", ticker: "^FCHI", prix: 7350.45, devise: "pts", hist: { "1J": "+0.4%", "7J": "-0.2%", "1M": "+2.8%", "6M": "+5.4%" } },
+        { nom: "S&P 500", ticker: "^GSPC", prix: 4500.10, devise: "pts", hist: { "1J": "+1.1%", "7J": "+2.3%", "1M": "-1.0%", "6M": "+10.2%" } },
+        { nom: "NASDAQ", ticker: "^IXIC", prix: 14000.20, devise: "pts", hist: { "1J": "+1.5%", "7J": "+3.1%", "1M": "+2.5%", "6M": "+15.8%" } },
+        { nom: "Dow Jones", ticker: "^DJI", prix: 34500.80, devise: "pts", hist: { "1J": "+0.2%", "7J": "+0.5%", "1M": "-0.5%", "6M": "+4.2%" } },
+        { nom: "DAX", ticker: "^GDAXI", prix: 15800.60, devise: "pts", hist: { "1J": "+0.8%", "7J": "+1.2%", "1M": "+3.1%", "6M": "+7.5%" } },
+        { nom: "FTSE 100", ticker: "^FTSE", prix: 7400.30, devise: "pts", hist: { "1J": "-0.1%", "7J": "-0.5%", "1M": "+1.2%", "6M": "+2.1%" } },
+        { nom: "Nikkei 225", ticker: "^N225", prix: 32000.50, devise: "pts", hist: { "1J": "+1.2%", "7J": "+2.5%", "1M": "+4.8%", "6M": "+18.2%" } },
+        { nom: "Hang Seng", ticker: "^HSI", prix: 18000.10, devise: "pts", hist: { "1J": "-1.5%", "7J": "-3.2%", "1M": "-5.5%", "6M": "-12.4%" } }
+    ],
+    devises: [
+        { nom: "Euro / Dollar", ticker: "EUR/USD", prix: 1.0850, devise: "$", hist: { "1J": "-0.2%", "7J": "+0.5%", "1M": "-1.1%", "6M": "+2.3%" } },
+        { nom: "Euro / Yen", ticker: "EUR/JPY", prix: 158.40, devise: "¥", hist: { "1J": "+0.7%", "7J": "+1.2%", "1M": "+3.4%", "6M": "+6.8%" } },
+        { nom: "Livre / Dollar", ticker: "GBP/USD", prix: 1.2540, devise: "$", hist: { "1J": "+0.1%", "7J": "-0.4%", "1M": "+1.1%", "6M": "+3.3%" } },
+        { nom: "Euro / Livre", ticker: "EUR/GBP", prix: 0.8650, devise: "£", hist: { "1J": "-0.1%", "7J": "+0.2%", "1M": "-0.5%", "6M": "-1.2%" } },
+        { nom: "Dollar / Yen", ticker: "USD/JPY", prix: 145.20, devise: "¥", hist: { "1J": "+0.5%", "7J": "+1.1%", "1M": "+2.5%", "6M": "+8.4%" } },
+        { nom: "Aussie / Dollar", ticker: "AUD/USD", prix: 0.6420, devise: "$", hist: { "1J": "-0.4%", "7J": "-1.2%", "1M": "-2.1%", "6M": "-4.5%" } },
+        { nom: "Euro / Suisse", ticker: "EUR/CHF", prix: 0.9540, devise: "CHF", hist: { "1J": "+0.2%", "7J": "+0.1%", "1M": "-0.8%", "6M": "-2.3%" } },
+        { nom: "Dollar / CAD", ticker: "USD/CAD", prix: 1.3520, devise: "$", hist: { "1J": "+0.3%", "7J": "+0.8%", "1M": "+1.5%", "6M": "+2.8%" } }
+    ]
+};
+
 function genererCartesModernes(donnees, containerId) {
     const container = document.getElementById(containerId);
     if(!container) return;
@@ -191,7 +243,7 @@ function genererCartesModernes(donnees, containerId) {
         card.className = 'card';
         card.innerHTML = `
             <div class="card-header"><span class="asset-name">${actif.nom}</span><span class="asset-ticker">${actif.ticker}</span></div>
-            <div class="price">${actif.prix.toFixed(2)} ${actif.devise}</div>
+            <div class="price">${actif.prix.toFixed(3)} ${actif.devise}</div>
             <div class="history">
                 <div><span>1 Jour:</span> ${formatVariation(actif.hist["1J"])}</div>
                 <div><span>1 Mois:</span> ${formatVariation(actif.hist["1M"])}</div>
@@ -200,6 +252,29 @@ function genererCartesModernes(donnees, containerId) {
         `;
         container.appendChild(card);
     });
+}
+
+function createCard(item) {
+    return `
+        <div class="card" style="box-shadow: none !important;">
+            <div class="card-header">
+                <span class="asset-name">${item.nom}</span>
+                <span class="asset-ticker">${item.ticker}</span>
+            </div>
+            <div class="price">${item.prix} ${item.devise}</div>
+            <div class="history">
+                <div><span>1J:</span> <span class="${getChangeClass(item.hist['1J'])}">${item.hist['1J']}</span></div>
+                <div><span>1M:</span> <span class="${getChangeClass(item.hist['1M'])}">${item.hist['1M']}</span></div>
+                <div><span>7J:</span> <span class="${getChangeClass(item.hist['7J'])}">${item.hist['7J']}</span></div>
+                <div><span>6M:</span> <span class="${getChangeClass(item.hist['6M'])}">${item.hist['6M']}</span></div>
+            </div>
+            <a href="#trader-${item.ticker}" class="btn-trade">Trader ${item.ticker}</a>
+        </div>
+    `;
+}
+
+function getChangeClass(value) {
+    return value.startsWith('+') ? 'change-up' : 'change-down';
 }
 
 function initialiserCarrousels() {
@@ -216,6 +291,124 @@ function initialiserCarrousels() {
         });
     });
 }
+
+document.querySelectorAll('.carousel-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const targetId = e.target.getAttribute('data-target');
+        const track = document.getElementById(targetId);
+        if (track) {
+            const scrollAmount = e.target.classList.contains('prev-btn') ? -320 : 320;
+            track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    });
+});
+
+
+// ===================================
+// Page Trader & Investir /=> Actions
+// ===================================
+
+function createSvgChart(data) {
+    const width = 300;
+    const height = 120;
+    const min = Math.min(...data) * 0.99;
+    const max = Math.max(...data) * 1.01;
+    const range = (max - min) || 1;
+
+    const points = data.map((val, i) => {
+        const x = (i / (data.length - 1)) * width;
+        const y = height - ((val - min) / range) * height;
+        return `${x},${y}`;
+    }).join(' ');
+
+    const isUp = data[data.length - 1] >= data[0];
+    const strokeColor = isUp ? '#089981' : '#F23645';
+
+    return `
+        <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" style="width: 100%; height: 100%; display: block; overflow: visible;">
+            <polyline points="${points}" fill="none" stroke="${strokeColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    `;
+}
+
+function createCardHTML(action) {
+    const isUpRes = action.resEvol.startsWith('+');
+    const isUpDiv = action.divEvol.startsWith('+');
+
+    return `
+        <div class="action-detail-card" id="trader-${action.ticker}">
+            <div class="action-header-info">
+                <h2>${action.nom} (${action.ticker})</h2>
+                <p class="price">${action.prix.toFixed(2)} ${action.devise}</p>
+            </div>
+
+            <div class="action-info-box">
+                <div class="info-row">
+                    <span class="info-lbl">Cap. Boursière</span>
+                    <span class="info-val">${action.cap}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-lbl">Résultat Net</span>
+                    <span class="info-val">${action.res} <span class="${isUpRes ? 'change-up' : 'change-down'}">(${action.resEvol})</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-lbl">Dividendes</span>
+                    <span class="info-val">${action.div}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-lbl">Évol. Dividendes</span>
+                    <span class="info-val ${isUpDiv ? 'change-up' : 'change-down'}">${action.divEvol}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-lbl">PER</span>
+                    <span class="info-val">${action.per}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-lbl">Ratio Actifs/Cap</span>
+                    <span class="info-val">${action.ratio}</span>
+                </div>
+            </div>
+
+            <div class="action-chart-box">
+                <div class="chart-timeline">
+                    <span>1j</span>
+                    <span>7j</span>
+                    <span>1mo</span>
+                    <span>6mo</span>
+                    <span>1yo</span>
+                </div>
+                <div class="svg-wrapper">
+                    ${createSvgChart(action.chartData)}
+                </div>
+            </div>
+
+            <div class="action-buttons-box">
+                <a href="#achat-${action.ticker}" class="btn-action-buy">Acheter</a>
+                <a href="#vente-${action.ticker}" class="btn-action-sell">Vendre</a>
+                <div class="tooltip-box">
+                    <i class="fa-solid fa-info"></i>
+                    <span class="tooltip-content">${action.desc}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ==========================================
 // 4. CLASSEMENT DYNAMIQUE (Page Classement)
@@ -515,6 +708,21 @@ async function closeSession(id) {
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ==========================================
 // 6. INITIALISATION GLOBALE DU SITE
 // ==========================================
@@ -526,10 +734,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Simulateur de marché (Flash)
     isLive = true;
     marketInterval = setInterval(tickMarket, 2000);
-    genererCartesModernes(marketData.actions, 'actions-container');
-    genererCartesModernes(marketData.indices, 'indices-container');
-    genererCartesModernes(marketData.devises, 'devises-container');
-    genererCartesModernes(marketData.marches, 'marches-container');
+    // TED = Trader Et Investir (même élément mais utilisé différement selon les pages)
+    const actionsContainerTEI = document.getElementById('actions-container-TEI');
+    const actionsContainer = document.getElementById('actions-container');
+    const indicesContainer = document.getElementById('indices-container');
+    const devisesContainer = document.getElementById('devises-container');
+    if (actionsContainerTEI) {
+        actionsContainerTEI.innerHTML = marketData.actions.map(createCard).join('');
+    }
+    if (actionsContainer) {
+        actionsContainer.innerHTML = marketData.actions.map(createCardHTML).join('');
+        actionsContainer.innerHTML += cardsHTML;
+    }
+    if (indicesContainer) indicesContainer.innerHTML = marketData.indices.map(createCard).join('');
+    if (devisesContainer) devisesContainer.innerHTML = marketData.devises.map(createCard).join('');
     initialiserCarrousels();
 
     // 3. Modules conditionnels (selon la page active)

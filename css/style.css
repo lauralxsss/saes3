@@ -22,6 +22,18 @@
     --shadow-panel: 0 8px 30px rgba(0, 0, 0, 0.5);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 /* =========================================
    2. RESET ET BASE
    ========================================= */
@@ -42,6 +54,17 @@ body {
 .change-up { color: var(--color-up); font-weight: 600; }
 .change-down { color: var(--color-down); font-weight: 600; }
 
+
+
+
+
+
+
+
+
+
+
+
 /* =========================================
    3. CLASSES UTILITAIRES 
    ========================================= */
@@ -56,6 +79,13 @@ body {
 @keyframes flashRed { 0% { background-color: rgba(242, 54, 69, 0.4); } 100% { background-color: transparent; } }
 .flash-up { animation: flashGreen 1s ease-out; border-radius: 4px; padding: 0 4px; }
 .flash-down { animation: flashRed 1s ease-out; border-radius: 4px; padding: 0 4px; }
+
+
+
+
+
+
+
 
 /* =========================================
    4. COMPOSANTS COMMUNS (Navbar, Boutons, Footer)
@@ -102,6 +132,20 @@ body {
 .footer-status { color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
 .footer-bottom { text-align: center; color: var(--text-secondary); font-size: 0.8rem; }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* =========================================
    5. LAYOUT PRINCIPAL (Dashboard & Ticker)
    ========================================= */
@@ -126,6 +170,15 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 
 .table-container, .sidebar-widget, .movers-box { background-color: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: var(--shadow-panel); overflow: hidden; backdrop-filter: blur(10px); }
 
+
+
+
+
+
+
+
+
+
 /* =========================================
    6. TABLEAUX (Portefeuille & Classement)
    ========================================= */
@@ -136,6 +189,20 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 .asset-info { display: flex; flex-direction: column; gap: 4px; }
 .asset-info strong { color: #fff; font-size: 1rem; }
 .asset-info span { font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; width: fit-content; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* =========================================
    7. PALMARÈS, WATCHLIST ET PODIUM
@@ -160,6 +227,30 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 
 .btn-full-width { width: 100%; background-color: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; cursor: pointer; margin-top: 15px; transition: 0.3s; font-weight: 600; }
 .btn-full-width:hover { background-color: var(--bg-hover); color: var(--text-main); }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* classement */
 /* Bloc autonome : il ne dépend d'aucune ancienne règle de la page Classement */
@@ -198,12 +289,53 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 .user-minimal-profile { font-size: 0.85rem; display: flex; align-items: center; gap: 12px; }
 .user-minimal-profile span { background: var(--border-color); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; }
 
-/* ---------- Podium : 1er au centre et plus haut ---------- */
-.top3-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: end; margin-bottom: 48px; }
+/* Tableau Financier Pro */
+.table-wrapper { width: 100%; overflow-x: auto; border: 1px solid #2A2E39; border-radius: 6px; background: #0B0E14; margin-bottom: 20px; }
+.fin-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
+.fin-table th { font-weight: 500; color: #787B86; padding: 12px 16px; border-bottom: 1px solid #2A2E39; text-align: right; user-select: none; }
+.fin-table th.sortable:hover { color: #fff; cursor: pointer; background: #151924; }
+.fin-table th i { font-size: 0.7rem; margin-left: 4px; opacity: 0.5; }
+.fin-table td { padding: 12px 16px; border-bottom: 1px solid #2A2E39; text-align: right; }
+.fin-table tbody tr:hover { background-color: #151924; }
+.fin-table tbody tr:last-child td { border-bottom: none; }
 
-.top3-card {
-    --medal: var(--silver);
-    --glow: rgba(148, 163, 184, 0.12);
+/* Ligne Utilisateur Connecté */
+.current-user-row { background-color: rgba(41, 98, 255, 0.05) !important; }
+.current-user-row td { font-weight: 500; border-bottom-color: rgba(41, 98, 255, 0.2); }
+.current-user-row .text-left { color: #2962FF; }
+
+/* État vide */
+.empty-state { text-align: center; padding: 40px; color: #787B86; }
+.empty-state i { font-size: 2rem; margin-bottom: 12px; opacity: 0.5; }
+
+/* Pagination Controls */
+.pagination-controls { display: flex; justify-content: flex-end; align-items: center; gap: 16px; }
+.page-btn { background: transparent; border: 1px solid #2A2E39; color: #D1D4DC; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+.page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.page-btn:not(:disabled):hover { background: #151924; }
+.page-numbers { display: flex; gap: 4px; font-size: 0.85rem; color: #787B86; align-items: center; }
+.page-num { background: transparent; border: none; color: #787B86; padding: 4px 8px; cursor: pointer; border-radius: 4px; }
+.page-num:hover { color: #fff; }
+.page-num.active { background: #2A2E39; color: #fff; }
+
+/* Navbar minimaliste (Spécifique à la demande pro) */
+.user-minimal-profile { font-size: 0.85rem; color: #D1D4DC; display: flex; align-items: center; gap: 12px; }
+.user-minimal-profile span { background: #2A2E39; padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .page-container { padding: 16px; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .user-summary-panel { flex-wrap: wrap; gap: 20px; }
+    .summary-block { border-left: none; padding-left: 0; flex: 1 1 40%; }
+    .top3-container { grid-template-columns: 1fr; }
+    .fin-table td:nth-child(6), .fin-table th:nth-child(6),
+    .fin-table td:nth-child(7), .fin-table th:nth-child(7) { display: none; }
+}
+.trader-investir h2 {
+    margin: 40px 0 15px 0;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -536,38 +668,7 @@ body.trader-investir
 .impact-high { background-color: rgba(242, 54, 69, 0.15); color: var(--color-down); border: 1px solid rgba(242, 54, 69, 0.3); }
 .impact-medium { background-color: rgba(245, 158, 11, 0.15); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.3); }
 
-/* =========================================
-   SENTIMENT DU MARCHÉ
-   ========================================= */
-.sentiment-bar-container { 
-    margin-top: 15px; 
-}
-.sentiment-bar { 
-    height: 10px; 
-    width: 100%; 
-    border-radius: 6px; 
-    display: flex; 
-    overflow: hidden; 
-    margin-bottom: 12px; 
-    background-color: var(--bg-input);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-.sentiment-bullish { 
-    background-color: var(--color-up); 
-    transition: width 1s ease-in-out;
-}
-.sentiment-bearish { 
-    background-color: var(--color-down); 
-    transition: width 1s ease-in-out;
-}
-.sentiment-labels { 
-    display: flex; 
-    justify-content: space-between; 
-    font-size: 0.85rem; 
-    font-weight: 600; 
-}
-
-
+/* Bouton retour pour les deux pages */
 
 .back-button{
   position: absolute;
@@ -607,7 +708,176 @@ body.trader-investir
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================
+   SENTIMENT DU MARCHÉ
+   ========================================= */
+.sentiment-bar-container { 
+    margin-top: 15px; 
+}
+.sentiment-bar { 
+    height: 10px; 
+    width: 100%; 
+    border-radius: 6px; 
+    display: flex; 
+    overflow: hidden; 
+    margin-bottom: 12px; 
+    background-color: var(--bg-input);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+.sentiment-bullish { 
+    background-color: var(--color-up); 
+    transition: width 1s ease-in-out;
+}
+.sentiment-bearish { 
+    background-color: var(--color-down); 
+    transition: width 1s ease-in-out;
+}
+.sentiment-labels { 
+    display: flex; 
+    justify-content: space-between; 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ----------------------- page trader et investir ---------------------- */
+body.trader-investir { background-color: var(--bg-main); color: var(--text-main); line-height: 1.6; }
+.trader-investir .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+.trader-investir h1 { text-align: center; margin: 30px 0; color: #fff; }
+.trader-investir h2 { margin: 40px 0 15px 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: baseline; }
+
+.voir-tout { font-size: 0.9rem; color: var(--color-primary); text-decoration: none; }
+.voir-tout:hover { text-decoration: underline; }
+
+.grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-panel); display: flex; flex-direction: column; backdrop-filter: blur(10px); }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.asset-name { font-weight: bold; font-size: 1.1rem; color: #fff; }
+.asset-ticker {
+    color: #7f8c8d;
+    font-size: 0.85rem;
+    background: rgba(255,255,255,0.05);
+    padding: 3px 6px;
+    border-radius: 4px; }
+.card .price { 
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #fff; }
+.history {
+    background: rgba(0,0,0,0.2);
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+.history div {gap:15px;justify-content: flex-start; }
+.positive { color: var(--color-up); font-weight: bold; }
+.negative { color: var(--color-down); font-weight: bold; }
+
+.btn-trade {
+    margin-top: auto;
+    background: linear-gradient(135deg, #2962FF, #1E4BD8);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    transition: filter 0.2s;
+}
+.btn-trade:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(41, 98, 255, 0.3); }
+
+body.trader-investir
+        .carousel-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .carousel-track {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 10px 0;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+        }
+
+        .carousel-track::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .carousel-track::-webkit-scrollbar-thumb {
+            background-color: var(--border-color, #2A2E39);
+            border-radius: 4px;
+        }
+
+        .carousel-track .card {
+            flex: 0 0 280px;
+            scroll-snap-align: start;
+            background: var(--bg-panel, #151924);
+            border: 1px solid var(--border-color, #2A2E39);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .subtitle-text {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+        }
+
 
 .hidden-element {
     display: none !important;
@@ -678,6 +948,22 @@ body.trader-investir
 .next-btn {
     right: -20px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* =============================
@@ -859,6 +1145,21 @@ body.trader-investir
     font-size: 0.95rem;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* =========================================
    STYLE ADMIN & MODALES (Sessions & Codes)
    ========================================= */
@@ -883,6 +1184,20 @@ body.trader-investir
 
 /* Input Code Élève sur la page Connexion */
 .input-session-code { text-transform: uppercase; font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 1px; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* =========================================
    DESIGN FINTECH ADMIN (Sessions)
@@ -943,6 +1258,22 @@ body.trader-investir
 .preview-val { color: #fff; font-weight: 500; }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* =========================================
     Mentions légales
 ========================================= */
@@ -966,3 +1297,243 @@ body.trader-investir
 .mentions-legales #rgpd {
     scroll-margin-top: 80px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==================================================
+   ZONING ACTIONS (Basé sur le layout image)
+   ================================================== */
+.actions-main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    .page-title {
+    color: #111;
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 30px;
+    }
+
+    /* Le rectangle Noir (Conteneur principal) */
+    .action-card {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        grid-template-rows: auto 1fr auto;
+        gap: 20px;
+        border: 4px solid #000000;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        background-color: #ffffff;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Titre et valeur */
+    .header-info {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .header-info h2 {
+        margin: 0 0 5px 0;
+        font-size: 1.5rem;
+        color: #111;
+    }
+
+    .header-info .price {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: bold;
+        font-family: 'JetBrains Mono', monospace;
+        color: #111;
+    }
+
+    /* Rectangle Bleu (Graphique) */
+    .blue-box-chart {
+        grid-column: 2;
+        grid-row: 1 / 3;
+        border: 3px solid #3b82f6;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        min-height: 250px;
+    }
+
+    .chart-periods {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-bottom: 10px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: #666;
+    }
+
+    .chart-periods span {
+        cursor: pointer;
+    }
+
+    .chart-periods span:hover {
+        color: #3b82f6;
+    }
+
+    .chart-svg-container {
+        flex-grow: 1;
+        width: 100%;
+    }
+
+    /* Rectangle Rouge (Infos) */
+    .red-box-info {
+        grid-column: 1;
+        grid-row: 2 / 4;
+        border: 3px solid #ef4444;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .info-line {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #666;
+        font-weight: 600;
+    }
+
+    .info-val {
+        font-size: 0.95rem;
+        font-weight: bold;
+        color: #111;
+    }
+
+    .val-up { color: #089981; }
+    .val-down { color: #F23645; }
+
+    /* Conteneur des boutons du bas */
+    .bottom-actions {
+        grid-column: 2;
+        grid-row: 3;
+        display: flex;
+        gap: 15px;
+        align-items: stretch;
+        height: 50px;
+    }
+
+    /* Rectangle Vert (Acheter) */
+    .green-box-buy {
+        flex: 1;
+        border: 3px solid #22c55e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: #22c55e;
+        font-weight: bold;
+        font-size: 1.1rem;
+        transition: 0.2s;
+    }
+
+    .green-box-buy:hover {
+        background-color: #22c55e;
+        color: white;
+    }
+
+    /* Rectangle Violet (Vendre) */
+    .purple-box-sell {
+        flex: 1;
+        border: 3px solid #a855f7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: #a855f7;
+        font-weight: bold;
+        font-size: 1.1rem;
+        transition: 0.2s;
+    }
+
+    .purple-box-sell:hover {
+        background-color: #a855f7;
+        color: white;
+    }
+
+    /* Rectangle Rose (Info Bulle) */
+    .pink-box-tooltip {
+        width: 50px;
+        border: 3px solid #ec4899;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ec4899;
+        font-weight: bold;
+        font-size: 1.5rem;
+        position: relative;
+        cursor: help;
+    }
+
+    .pink-box-tooltip .tooltip-text {
+        visibility: hidden;
+        width: 250px;
+        background-color: #111;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 10px;
+        position: absolute;
+        z-index: 10;
+        bottom: 120%;
+        right: 0;
+        font-size: 0.85rem;
+        font-weight: normal;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .pink-box-tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 800px) {
+        .action-card {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto;
+        }
+        .header-info, .blue-box-chart, .red-box-info, .bottom-actions {
+            grid-column: 1;
+            grid-row: auto;
+        }
+        .bottom-actions {
+            flex-wrap: wrap;
+            height: auto;
+        }
+        .green-box-buy, .purple-box-sell {
+            min-height: 50px;
+        }
+        .pink-box-tooltip {
+            flex: 1;
+            min-width: 100%;
+            min-height: 50px;
+        }
+        .pink-box-tooltip .tooltip-text {
+            right: 50%;
+            transform: translateX(50%);
+        }
+    }
+}
+
