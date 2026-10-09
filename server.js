@@ -19,7 +19,7 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 
 // ==========================================
 // MIDDLEWARES
-// ==========================================
+// ========================
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
