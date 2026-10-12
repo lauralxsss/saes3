@@ -723,7 +723,10 @@ async function closeSession(id) {
 // 6. FONCTION : GESTION DE L'AFFICHAGE DU PROFIL (Menu déroulant)
 // ==========================================
 function updateAuthUI() {
-    const loginBtn = document.querySelector('a[href*="connexion"]');
+    const loginBtn = Array.from(document.querySelectorAll('a, button, .btn')).find(el => 
+        el.textContent.trim().toLowerCase() === 'connexion' || 
+        el.textContent.trim().toLowerCase() === 'se connecter'
+    );
     if (!loginBtn) return; 
 
     const adminToken = sessionStorage.getItem('tradelab_admin_token');
