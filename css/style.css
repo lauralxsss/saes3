@@ -873,23 +873,6 @@ body.trader-investir
     right: -20px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* =============================
     PAGE PORTEFEUILLE
    ============================= */
@@ -1069,19 +1052,99 @@ body.trader-investir
     font-size: 0.95rem;
 }
 
+/* Conteneur global qui sépare en deux colonnes */
+.portfolio-layout {
+    display: grid;
+    grid-template-columns: 1fr 350px; /* Le contenu prend toute la place, le aside fait 350px fixe à droite */
+    gap: 30px;
+    align-items: start;
+    max-width: 1250px;
+    margin: 0 auto;
+}
 
+/* Style de la zone Aside */
+.trade-journal-aside {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    margin-top : 73px;
+    border-radius: 8px;
+    padding: 20px;
+    position: sticky;
+    top: 30px;
+}
 
+.journal-header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
 
+.journal-header h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+    color: var(--text-main);
+}
 
+.journal-header p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
 
+.journal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 
+.journal-card {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 0.9rem;
+}
 
+.journal-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
 
+.journal-stock {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-size: 0.85rem;
+}
 
+.journal-date {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
 
+.journal-text {
+    margin: 0 0 10px 0;
+    color: var(--text-main);
+    font-style: italic;
+    line-height: 1.4;
+    font-size: 0.85rem;
+}
 
+.journal-footer {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-align: right;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 6px;
+}
 
-
+/* Sécurité responsive : si l'écran devient trop petit (tablette/mobile), tout repasse en une seule colonne */
+@media (max-width: 1100px) {
+    .portfolio-layout {
+        grid-template-columns: 1fr;
+    }
+}
 
 
 /* =========================================

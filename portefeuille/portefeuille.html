@@ -13,164 +13,196 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-logo"><a href="../index.html">TradeLab</a></div>
+        <div class="nav-logo" onclick="window.location.href='../index.html'" style="cursor: pointer;"><img src="../favicons/favicon-96x96.png" sizes="96x96" width="20%"> TradeLab</div>
         
         <ul class="nav-links">
             <li class="dropdown">
-                <a href="#">Trader & Investir ▾</a>
+                <a href="../trader-et-investir/" onclick="window.location.href='../trader-et-investir/'"><i class="fa-solid fa-arrow-trend-up"></i> Trader & Investir ▾</a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Actions</a></li>
-                    <li><a href="#">Indices</a></li>
-                    <li><a href="#">Devises</a></li>
-                    <li><a href="#">Marchés</a></li>
+                    <li><a href="/trader-et-investir/actions/"><i class="fa-solid fa-building"></i> Actions</a></li>
+                    <li><a href="/trader-et-investir/indices/"><i class="fa-solid fa-chart-pie"></i> Indices</a></li>
+                    <li><a href="/trader-et-investir/devises/"><i class="fa-solid fa-coins"></i> Devises</a></li>
                 </ul>
             </li>
-            <li><a href="#">Actus</a></li>
-            <li><a href="#">Classement</a></li>
-            <li><a href="#">Conseils boursiers</a></li>
+            <li><a href="../actualites/"><i class="fa-regular fa-newspaper"></i> Actus</a></li>
+            <li><a href="../classement/classement.html"><i class="fa-solid fa-trophy"></i> Classement</a></li>
         </ul>
 
-        <!-- Profil -->
         <div class="nav-auth">
-            <div id="user-menu">
-                <div class="nav-balance price">100 000,00 €</div>
-                <div class="dropdown">
-                    <div class="profile-trigger">
-                    
-                    </div>
-                    <ul class="dropdown-menu profile-menu">
-                        <li><a href="portefeuille.html" style="font-weight: 600; color: var(--color-primary);">Mon Portefeuille</a></li>
-                        <li><a href="#">Graphique des actions</a></li>
-                        <li><a href="#">Historique des opérations</a></li>
-                        <div class="menu-divider"></div>
-                        <li><a href="#" id="logout-btn" style="color: var(--color-down);">Déconnexion</a></li>
-                    </ul>
-                </div>
-            </div>
+            <button class="btn-primary" onclick="window.location.href='../connexion/connexion.html'">Connexion</button>        
         </div>
     </nav>
 
-    <!-- Contenu Principal -->
-    <div id="app">
-        
-        <div class="page-title">
-            <h1>Mon Portefeuille</h1>
-        </div>
+    <!-- Contenu Principal global -->
+    <main class="portfolio-layout">
 
-        <!-- ZONE 1 : Infos Générales Utilisateur -->
-        <section class="user-zone">
-            <!-- Carte profil -->
-            <div class="user-card">
-                <div class="user-info">
-                    <h2>Alex Trader</h2>
-                    <span class="user-status">Compte Virtuel</span>
-                </div>
+        <!-- Colonne de gauche (Tout ton contenu actuel) -->
+        <div id="app">
+            
+            <div class="page-title">
+                <h1>Mon Portefeuille</h1>
             </div>
 
-            <!-- Cartes d'informations / statistiques -->
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <span class="kpi-label">Valeur Totale</span>
-                    <div class="kpi-value price">114 250,00 €</div>
-                    <span class="change-up">+14,25 %</span>
-                </div>
-
-                <div class="kpi-card">
-                    <span class="kpi-label">Solde Disponible</span>
-                    <div class="kpi-value price">32 400,00 €</div>
-                    <span class="kpi-sub">Sur 100 000,00 €</span>
-                </div>
-
-                <div class="kpi-card">
-                    <span class="kpi-label">Gains / Pertes</span>
-                    <div class="kpi-value change-up">+14 250,00 €</div>
-                    <span class="change-up">+14,25 %</span>
-                </div>
-
-                <div class="kpi-card">
-                    <span class="kpi-label">Classement</span>
-                    <div class="kpi-value">12<sup>e</sup></div>
-                    <span class="kpi-sub">sur 1 450 participants</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- ZONE 2 : Emplacement pour les Graphiques -->
-        <section class="charts-zone">
-            <!-- Emplacement Grand Graphique -->
-            <div class="chart-box main-chart">
-                <div class="chart-header">
-                    <h3>Évolution du portefeuille</h3>
-                    <div class="chart-time">
-                        <button class="time-btn active">1S</button>
-                        <button class="time-btn">1M</button>
-                        <button class="time-btn">1A</button>
+            <!-- ZONE 1 : Infos Générales Utilisateur -->
+            <section class="user-zone">
+                <div class="user-card">
+                    <div class="user-info">
+                        <h2>Alex Trader</h2>
+                        <span class="user-status">Compte Virtuel</span>
                     </div>
                 </div>
-                <div class="chart-placeholder">
-                    <canvas id="portfolioPerformanceChart"></canvas>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <span class="kpi-label">Valeur Totale</span>
+                        <div class="kpi-value price">114 250,00 €</div>
+                        <span class="change-up">+14,25 %</span>
+                    </div>
+
+                    <div class="kpi-card">
+                        <span class="kpi-label">Solde Disponible</span>
+                        <div class="kpi-value price">32 400,00 €</div>
+                        <span class="kpi-sub">Sur 100 000,00 €</span>
+                    </div>
+
+                    <div class="kpi-card">
+                        <span class="kpi-label">Gains / Pertes</span>
+                        <div class="kpi-value change-up">+14 250,00 €</div>
+                        <span class="change-up">+14,25 %</span>
+                    </div>
+
+                    <div class="kpi-card">
+                        <span class="kpi-label">Classement</span>
+                        <div class="kpi-value">12<sup>e</sup></div>
+                        <span class="kpi-sub">sur 1 450 participants</span>
+                    </div>
                 </div>
+            </section>
+
+            <!-- ZONE 2 : Emplacement pour les Graphiques -->
+            <section class="charts-zone">
+                <div class="chart-box main-chart">
+                    <div class="chart-header">
+                        <h3>Évolution du portefeuille</h3>
+                        <div class="chart-time">
+                            <button class="time-btn active">1S</button>
+                            <button class="time-btn">1M</button>
+                            <button class="time-btn">1A</button>
+                        </div>
+                    </div>
+                    <div class="chart-placeholder">
+                        <canvas id="portfolioPerformanceChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-box side-chart">
+                    <div class="chart-header">
+                        <h3>Répartition des actifs</h3>
+                    </div>
+                    <div class="chart-placeholder">
+                        <canvas id="assetAllocationChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tableau des Actions Détenues -->
+            <section class="table-zone">
+                <h2>Mes Actions</h2>
+                <table class="stock-table">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Symbole</th>
+                            <th>Quantité</th>
+                            <th>Prix d'Achat</th>
+                            <th>Prix Actuel</th>
+                            <th>Valeur Totale</th>
+                            <th>Gain / Perte</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Apple Inc.</td>
+                            <td><span class="stock-ticker">AAPL</span></td>
+                            <td>150</td>
+                            <td class="price">150,00 $</td>
+                            <td class="price">173,50 $</td>
+                            <td class="price">26 025,00 $</td>
+                            <td class="change-up">+15,6 %</td>
+                        </tr>
+                        <tr>
+                            <td>LVMH</td>
+                            <td><span class="stock-ticker">MC.PA</span></td>
+                            <td>30</td>
+                            <td class="price">860,00 €</td>
+                            <td class="price">845,20 €</td>
+                            <td class="price">25 356,00 €</td>
+                            <td class="change-down">-1,7 %</td>
+                        </tr>
+                        <tr>
+                            <td>Tesla</td>
+                            <td><span class="stock-ticker">TSLA</span></td>
+                            <td>140</td>
+                            <td class="price">180,00 $</td>
+                            <td class="price">214,80 $</td>
+                            <td class="price">30 072,00 $</td>
+                            <td class="change-up">+19,3 %</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <!-- Colonne de droite (Le aside se place ici) -->
+        <aside class="trade-journal-aside">
+            <div class="journal-header">
+                <h3>Journal de Trading</h3>
+                <p>Raisonnement des investissements</p>
             </div>
 
-            <!-- Emplacement Second Graphique -->
-            <div class="chart-box side-chart">
-                <div class="chart-header">
-                    <h3>Répartition des actifs</h3>
+            <div class="journal-list">
+                <div class="journal-card">
+                    <div class="journal-meta">
+                        <span class="journal-stock">Apple Inc. (AAPL)</span>
+                        <span class="journal-date">12 Mars 2026</span>
+                    </div>
+                    <p class="journal-text">
+                        "Achat de 150 actions suite à l'annonce du nouveau casque AR et de prévisions de croissance solides sur le marché asiatique. Pari sur le court/moyen terme."
+                    </p>
+                    <div class="journal-footer">
+                        <span>Achat : 150,00 $</span>
+                    </div>
                 </div>
-                <div class="chart-placeholder">
-                    <canvas id="assetAllocationChart"></canvas>
+
+                <div class="journal-card">
+                    <div class="journal-meta">
+                        <span class="journal-stock">Tesla (TSLA)</span>
+                        <span class="journal-date">02 Fév 2026</span>
+                    </div>
+                    <p class="journal-text">
+                        "Position prise après une correction technique importante du cours. Le support des 180$ a tenu, je parie sur un rebond technique."
+                    </p>
+                    <div class="journal-footer">
+                        <span>Achat : 180,00 $</span>
+                    </div>
+                </div>
+
+                <div class="journal-card">
+                    <div class="journal-meta">
+                        <span class="journal-stock">LVMH (MC.PA)</span>
+                        <span class="journal-date">15 Janv 2026</span>
+                    </div>
+                    <p class="journal-text">
+                        "Investissement de long terme dans le secteur du luxe pour diversifier le portefeuille. Valeur refuge solide malgré l'inflation."
+                    </p>
+                    <div class="journal-footer">
+                        <span>Achat : 860,00 €</span>
+                    </div>
                 </div>
             </div>
-        </section>
+        </aside>
 
-        <!-- Tableau des Actions Détenues -->
-        <section class="table-zone">
-            <h2>Mes Actions</h2>
-            <table class="stock-table">
-                <thead>
-                    <tr>
-                        <th>Action</th>
-                        <th>Symbole</th>
-                        <th>Quantité</th>
-                        <th>Prix d'Achat</th>
-                        <th>Prix Actuel</th>
-                        <th>Valeur Totale</th>
-                        <th>Gain / Perte</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Apple Inc.</td>
-                        <td><span class="stock-ticker">AAPL</span></td>
-                        <td>150</td>
-                        <td class="price">150,00 $</td>
-                        <td class="price">173,50 $</td>
-                        <td class="price">26 025,00 $</td>
-                        <td class="change-up">+15,6 %</td>
-                    </tr>
-                    <tr>
-                        <td>LVMH</td>
-                        <td><span class="stock-ticker">MC.PA</span></td>
-                        <td>30</td>
-                        <td class="price">860,00 €</td>
-                        <td class="price">845,20 €</td>
-                        <td class="price">25 356,00 €</td>
-                        <td class="change-down">-1,7 %</td>
-                    </tr>
-                    <tr>
-                        <td>Tesla</td>
-                        <td><span class="stock-ticker">TSLA</span></td>
-                        <td>140</td>
-                        <td class="price">180,00 $</td>
-                        <td class="price">214,80 $</td>
-                        <td class="price">30 072,00 $</td>
-                        <td class="change-up">+19,3 %</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-    </div>
+    </main>
     <footer class="app-footer">
         <div class="footer-content">
             <div class="footer-logo"><i class="fa-solid fa-chart-line"></i> TradeLab</div>
