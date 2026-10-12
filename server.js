@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 3000;
 // CONNEXION SUPABASE
 //===========================================
 
-
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
     console.error("❌ Variables SUPABASE_URL et SUPABASE_KEY manquantes (Render > Environment).");
     process.exit(1);
@@ -25,6 +24,39 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
+
+
+// ========================================================
+// SÉCURITÉ ET IDENTIFICATION (Professeur & Élèves)
+// ========================================================
+
+// Mot de passe et clé secrète (récupérés depuis Render, ou valeur par défaut)
+const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'prof123';
+const SECRET_KEY = process.env.AUTH_SECRET || 'super_secret_tradelab_2026';
+
+// Fonction pour fabriquer un jeton sécurisé
+function creerJeton(data) {
+    const payload = Buffer.from(JSON.stringify(data)).toString('base64');
+    const signature = crypto.createHmac('sha256', SECRET_KEY).update(payload).digest('base64');
+    return `${payload}.${signature}`;
+}
+
+// Middleware pour vérifier l'identité à chaque requête
+function verifierJeton(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) return res.status(401).json({ success: false, message: "Non autorisé" });
+
+    try {
+        const [payload, signature] = token.split('.');
+        const expectedSignature = crypto.createHmac('sha256', SECRET_KEY).update(payload).digest('base64');
+        if (signature === expectedSignature) {
+            req.user = JSON.parse(Buffer.from(payload, 'base64').toString('utf8'));
+            return next();
+        }
+    } catch (e) {}
+    return res.status(403).json({ success: false, message: "Jeton invalide" });
+}
 
 // ==========================================
 // OUTILS
@@ -89,8 +121,29 @@ async function getParticipants(sessionId) {
     return data.map(toParticipant);
 }
 
+
 // ==========================================
-// ROUTES API
+// ROUTES API - AUTHENTIFICATION
+// ==========================================
+
+// 1. ROUTE : Connexion du professeur
+app.post('/api/auth/admin-login', (req, res) => {
+    const { password } = req.body;
+    if (password === ADMIN_PASS) {
+        return res.json({ success: true, token: creerJeton({ role: 'admin' }) });
+    }
+    res.status(401).json({ success: false, message: "Mot de passe incorrect" });
+});
+
+// SÉCURITÉ : Protéger TOUTES les routes /api/admin/...
+// Ce bloc empêche quiconque d'accéder aux routes admin sans être le professeur
+app.use('/api/admin', verifierJeton, (req, res, next) => {
+    if (req.user.role !== 'admin') return res.status(403).json({ success: false, message: "Accès refusé" });
+    next();
+});
+
+// ==========================================
+// ROUTES API - ADMIN ET SESSIONS
 // ==========================================
 
 app.get('/api/test', (req, res) => {
@@ -178,6 +231,11 @@ app.post('/api/admin/sessions/:id/close', wrap(async (req, res) => {
     console.log("🔒 Session clôturée :", req.params.id);
     res.json({ success: true, message: "Session clôturée avec succès." });
 }));
+
+
+// ==========================================
+// ROUTES API - PARCOURS ÉLÈVE
+// ==========================================
 
 // ÉLÈVE — REJOINDRE UNE SESSION (ancienne route)
 app.post('/api/student/join', wrap(async (req, res) => {
@@ -311,13 +369,61 @@ app.post('/api/student/start-simulation', wrap(async (req, res) => {
         participant = data;
     }
 
+    // --- NOUVEAU : On génère le jeton (token) pour l'élève et on lui envoie ---
     res.json({
         success: true,
         sessionId: session.id,
         sessionName: session.name,
-        participant: toParticipant(participant)
+        participant: toParticipant(participant),
+        token: creerJeton({ role: 'student', participantId: participant.id, sessionId: session.id })
     });
 }));
+
+// ==========================================
+// ROUTES API - ORDRES (Achat/Vente Élève)
+// ==========================================
+
+app.post('/api/student/orders', verifierJeton, async (req, res) => {
+    const { participantId, symbole, side, quantite, prix } = req.body;
+
+    try {
+        // A. Chercher l'élève dans la BDD
+        const { data: part } = await supabase.from('tl_participants').select('*').eq('id', participantId).single();
+        if (!part) return res.status(404).json({ success: false, message: "Élève introuvable" });
+
+        const montantTotal = quantite * prix;
+
+        // B. Vérifier que l'élève a assez d'argent
+        if (side === 'buy' && part.cash < montantTotal) {
+            return res.status(400).json({ success: false, message: "Fonds insuffisants sur le compte" });
+        }
+
+        // C. Sauvegarder l'ordre
+        await supabase.from('tl_orders').insert({
+            id: 'ord_' + Math.random().toString(36).substr(2, 9),
+            session_id: part.session_id,
+            participant_id: participantId,
+            symbole, 
+            side, 
+            quantite, 
+            prix, 
+            statut: 'execute'
+        });
+
+        // D. Retirer ou ajouter l'argent du compte
+        const nouveauCash = side === 'buy' ? part.cash - montantTotal : part.cash + montantTotal;
+        await supabase.from('tl_participants').update({ cash: nouveauCash }).eq('id', participantId);
+
+        res.json({ success: true, message: "Ordre exécuté" });
+    } catch (error) {
+        console.error("Erreur serveur lors de l'ordre:", error);
+        res.status(500).json({ success: false, message: "Erreur serveur" });
+    }
+});
+
+// ==========================================
+// ROUTES API - DIVERS
+// ==========================================
 
 // CLASSEMENT (première session active)
 app.get('/api/leaderboard', wrap(async (req, res) => {
@@ -377,6 +483,7 @@ app.get('/api/news', async (req, res) => {
         res.status(500).json({ error: "Impossible de récupérer les actualités" });
     }
 });
+
 
 // ==========================================
 // ROUTE CATCH-ALL (DOIT TOUJOURS ÊTRE EN DERNIER)
