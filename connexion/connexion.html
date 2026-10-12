@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Montserrat:wght@400;500;600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <link href="../css/style.css" rel="stylesheet">
-
 </head>
 <body class="connexion">
 <a href="../index.html" class="back-button" aria-label="Retour à l'accueil">
@@ -66,7 +65,9 @@
           <a href="#" class="link-quiet">Mot de passe oublié ?</a>
         </div>
 
-        <button type="submit" class="submit">Se connecter</button>
+        <div id="login-error-message" style="color: #EF4444; margin-top: 10px; font-size: 0.9rem; font-weight: 500; text-align: center; min-height: 20px;"></div>
+
+        <button type="submit" class="submit" style="margin-top: 10px;">Se connecter</button>
 
         <div class="divider">ou</div>
 
@@ -76,5 +77,7 @@
   </main>
 
 </div>
+
+<script src="../script.js"></script>
 </body>
 </html>

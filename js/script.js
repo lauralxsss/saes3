@@ -1,4 +1,6 @@
-// ===== SUPABASE (sessions et codes) =====
+// ==========================================
+// 1. SUPABASE (sessions et codes)
+// ==========================================
 const sbClient = window.supabase
   ? window.supabase.createClient(
       "https://sdbcwpkqjnkdykplzqbl.supabase.co",
@@ -36,7 +38,7 @@ async function rejoindre(sessionId, pseudo) {
   const { error } = await sbClient.from("participants").insert({ session_id: sessionId, pseudo });
   return !error;
 }
-// 
+
 
 // ==========================================
 // 2. ACTUALITÉS & AGENDA ÉCONOMIQUE
@@ -162,8 +164,6 @@ function tickMarket() {
         }
     });
 }
-
-
 
 // =======================
 // Page Trader & Investir
@@ -303,7 +303,6 @@ document.querySelectorAll('.carousel-btn').forEach(btn => {
     });
 });
 
-
 // ===================================
 // Page Trader & Investir /=> Actions
 // ===================================
@@ -393,22 +392,6 @@ function createCardHTML(action) {
         </div>
     `;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // ==========================================
 // 4. CLASSEMENT DYNAMIQUE (Page Classement)
@@ -540,6 +523,36 @@ function initLeaderboard() {
 // ==========================================
 // 5. GESTION DE L'ESPACE ADMIN (Sessions & Codes)
 // ==========================================
+
+// --- NOUVEAU : Fonctions de connexion et de vérification Professeur ---
+async function loginProf(password) {
+    const res = await fetch('/api/auth/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+    });
+    const data = await res.json().catch(() => null);
+    if (res.ok && data && data.success) {
+        sessionStorage.setItem('tradelab_admin_token', data.token);
+        return { ok: true };
+    }
+    return { ok: false, message: (data && data.message) || "Connexion impossible." };
+}
+
+async function adminFetch(url, options = {}) {
+    const token = sessionStorage.getItem('tradelab_admin_token');
+    const res = await fetch(url, {
+        ...options,
+        headers: { ...(options.headers || {}), 'Authorization': 'Bearer ' + token }
+    });
+    if (res.status === 401) {
+        sessionStorage.removeItem('tradelab_admin_token');
+        window.location.href = '/connexion/connexion.html'; 
+    }
+    return res;
+}
+// -----------------------------------------------------------------------
+
 function initAdminSessions() {
     const container = document.getElementById('sessions-container');
     if (!container) return;
@@ -576,7 +589,8 @@ function initAdminSessions() {
             };
 
             try {
-                const res = await fetch('/api/admin/sessions', {
+                // --- NOUVEAU : On utilise adminFetch ---
+                const res = await adminFetch('/api/admin/sessions', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
@@ -605,7 +619,8 @@ async function loadAdminSessions() {
     const container = document.getElementById('sessions-container');
     if (!container) return;
     try {
-        const res = await fetch('/api/admin/sessions');
+        // --- NOUVEAU : On utilise adminFetch ---
+        const res = await adminFetch('/api/admin/sessions');
         if (!res.ok) throw new Error("Erreur de récupération");
         const sessions = await res.json();
         renderAdminSessions(sessions);
@@ -700,28 +715,14 @@ function renderAdminSessions(sessions) {
 async function closeSession(id) {
     if (confirm("Voulez-vous vraiment clôturer cette session ?")) {
         try {
-            await fetch(`/api/admin/sessions/${id}/close`, { method: 'POST' });
+            // --- NOUVEAU : On utilise adminFetch ---
+            await adminFetch(`/api/admin/sessions/${id}/close`, { method: 'POST' });
             loadAdminSessions();
         } catch (err) {
             console.error("Erreur fermeture session", err);
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // ==========================================
 // 6. INITIALISATION GLOBALE DU SITE
@@ -744,7 +745,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (actionsContainer) {
         actionsContainer.innerHTML = marketData.actions.map(createCardHTML).join('');
-        actionsContainer.innerHTML += cardsHTML;
+        // attention : cardsHTML n'était pas défini dans ton code original, je le laisse s'il vient d'ailleurs
+        if(typeof cardsHTML !== 'undefined') actionsContainer.innerHTML += cardsHTML;
     }
     if (indicesContainer) indicesContainer.innerHTML = marketData.indices.map(createCard).join('');
     if (devisesContainer) devisesContainer.innerHTML = marketData.devises.map(createCard).join('');
@@ -764,6 +766,31 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleBtn.addEventListener('click', () => {
             const pwd = document.getElementById('password');
             if (pwd) pwd.type = pwd.type === 'password' ? 'text' : 'password';
+        });
+    }
+
+    // ==========================================
+    // 5. Gestion du formulaire de connexion Professeur (Page connexion)
+    // ==========================================
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        const passwordInput = document.getElementById('password');
+        const errorMsg = document.getElementById('login-error-message');
+        
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (errorMsg) errorMsg.textContent = ''; // On réinitialise l'erreur
+            
+            const pwd = passwordInput ? passwordInput.value : '';
+            const result = await loginProf(pwd); // Fonction qui gère l'authentification avec ton backend
+            
+            if (result.ok) {
+                // Redirection vers le tableau de bord admin
+                window.location.href = '../admin.html'; // Modifie selon le nom exact de ta page d'administration
+            } else {
+                // Affichage du message d'erreur renvoyé par le serveur
+                if (errorMsg) errorMsg.textContent = result.message || "Mot de passe incorrect.";
+            }
         });
     }
 });
@@ -878,6 +905,9 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('tradelab_active_session_id', data.sessionId);
             localStorage.setItem('tradelab_active_session_name', data.sessionName);
             localStorage.setItem('tradelab_participant', JSON.stringify(data.participant));
+            
+            // --- NOUVEAU : Sauvegarde du jeton de l'élève ---
+            localStorage.setItem('tradelab_token', data.token);
 
             // Redirection vers le tableau de bord de la simulation (Première étape)
             window.location.href = '../index.html';
@@ -920,8 +950,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================
 // Portefeuille : Gestion des graphiques
 // ==========================================
-
-    document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
     // 1. Graphique d'Évolution de la Valeur du Portefeuille (Courbe)
     const ctxPerf = document.getElementById('portfolioPerformanceChart');
     
@@ -1007,3 +1036,58 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
+// ==========================================
+// 7. PASSAGE D'ORDRES (Achat / Vente pour les élèves)
+// ==========================================
+// --- NOUVEAU : Logique complète pour l'achat et la vente des actions ---
+document.addEventListener('click', async (e) => {
+    // Si l'élève clique sur Acheter ou Vendre
+    if (e.target.classList.contains('btn-action-buy') || e.target.classList.contains('btn-action-sell')) {
+        e.preventDefault();
+        
+        const isBuy = e.target.classList.contains('btn-action-buy');
+        const ticker = e.target.getAttribute('href').split('-')[1];
+        
+        // On récupère le prix de l'action dans les données du marché (marketData)
+        const action = marketData.actions.find(a => a.ticker === ticker);
+        if (!action) return alert("Action introuvable.");
+
+        const quantite = prompt(`Combien d'actions ${ticker} voulez-vous ${isBuy ? 'acheter' : 'vendre'} au prix de ${action.prix} ${action.devise} ?`);
+        if (!quantite || isNaN(quantite) || parseInt(quantite) <= 0) return;
+
+        // Récupération des infos de l'élève
+        const token = localStorage.getItem('tradelab_token');
+        const participantStr = localStorage.getItem('tradelab_participant');
+        if (!token || !participantStr) return alert("Vous n'êtes pas connecté à une session. (Essayez de rejoindre à nouveau la session avec votre code)");
+
+        const participantId = JSON.parse(participantStr).id;
+
+        try {
+            const response = await fetch('/api/student/orders', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    participantId: participantId,
+                    symbole: ticker,
+                    side: isBuy ? 'buy' : 'sell',
+                    quantite: parseInt(quantite),
+                    prix: action.prix
+                })
+            });
+
+            const data = await response.json();
+            if (response.ok && data.success) {
+                alert(`Ordre exécuté ! Vous avez ${isBuy ? 'acheté' : 'vendu'} ${quantite} actions ${ticker}.`);
+            } else {
+                alert(data.message || "Erreur lors de la transaction.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Erreur de connexion au serveur.");
+        }
+    }
+});
