@@ -6,7 +6,7 @@ const sbClient = window.supabase
       "https://sdbcwpkqjnkdykplzqbl.supabase.co",
       "sb_publishable_VYHMIw6eapMDK3e_Qs-YeQ_7I2dR2Q5"
     )
-  : null; // null sur les pages qui n'ont pas chargé Supabase
+  : null;
 
 function genererCode(n = 6) {
   const car = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -19,7 +19,7 @@ async function creerSession(nom) {
     const code = genererCode();
     const { error } = await sbClient.from("sessions").insert({ nom, code });
     if (!error) return code;
-    if (error.code !== "23505") { console.error(error); break; } // 23505 = code déjà pris
+    if (error.code !== "23505") { console.error(error); break; }
   }
   return null;
 }
@@ -524,7 +524,6 @@ function initLeaderboard() {
 // 5. GESTION DE L'ESPACE ADMIN (Sessions & Codes)
 // ==========================================
 
-// --- NOUVEAU : Fonctions de connexion et de vérification Professeur ---
 async function loginProf(password) {
     const res = await fetch('/api/auth/admin-login', {
         method: 'POST',
@@ -551,7 +550,6 @@ async function adminFetch(url, options = {}) {
     }
     return res;
 }
-// -----------------------------------------------------------------------
 
 function initAdminSessions() {
     const container = document.getElementById('sessions-container');
@@ -589,7 +587,6 @@ function initAdminSessions() {
             };
 
             try {
-                // --- NOUVEAU : On utilise adminFetch ---
                 const res = await adminFetch('/api/admin/sessions', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -619,7 +616,6 @@ async function loadAdminSessions() {
     const container = document.getElementById('sessions-container');
     if (!container) return;
     try {
-        // --- NOUVEAU : On utilise adminFetch ---
         const res = await adminFetch('/api/admin/sessions');
         if (!res.ok) throw new Error("Erreur de récupération");
         const sessions = await res.json();
@@ -715,7 +711,6 @@ function renderAdminSessions(sessions) {
 async function closeSession(id) {
     if (confirm("Voulez-vous vraiment clôturer cette session ?")) {
         try {
-            // --- NOUVEAU : On utilise adminFetch ---
             await adminFetch(`/api/admin/sessions/${id}/close`, { method: 'POST' });
             loadAdminSessions();
         } catch (err) {
@@ -725,367 +720,7 @@ async function closeSession(id) {
 }
 
 // ==========================================
-// 6. INITIALISATION GLOBALE DU SITE
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    updateAuthUI();
-    fetchFrenchNews();
-    fetchEconomicCalendar();
-
-    isLive = true;
-    marketInterval = setInterval(tickMarket, 2000);
-    const actionsContainerTEI = document.getElementById('actions-container-TEI');
-    const actionsContainer = document.getElementById('actions-container');
-    const indicesContainer = document.getElementById('indices-container');
-    const devisesContainer = document.getElementById('devises-container');
-    if (actionsContainerTEI) {
-        actionsContainerTEI.innerHTML = marketData.actions.map(createCard).join('');
-    }
-    if (actionsContainer) {
-        actionsContainer.innerHTML = marketData.actions.map(createCardHTML).join('');
-        if(typeof cardsHTML !== 'undefined') actionsContainer.innerHTML += cardsHTML;
-    }
-    if (indicesContainer) indicesContainer.innerHTML = marketData.indices.map(createCard).join('');
-    if (devisesContainer) devisesContainer.innerHTML = marketData.devises.map(createCard).join('');
-    initialiserCarrousels();
-
-    if (document.getElementById('leaderboard-body')) {
-        initLeaderboard();
-    }
-    if (document.getElementById('sessions-container')) {
-        initAdminSessions();
-    }
-    const toggleBtn = document.getElementById('toggle-password');
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            const pwd = document.getElementById('password');
-            if (pwd) pwd.type = pwd.type === 'password' ? 'text' : 'password';
-        });
-    }
-
-    // ==========================================
-    // 5. Gestion du formulaire de connexion Professeur (Page connexion)
-    // ==========================================
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        const passwordInput = document.getElementById('password');
-        const errorMsg = document.getElementById('login-error-message');
-        
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (errorMsg) errorMsg.textContent = ''; // On réinitialise l'erreur
-            
-            const pwd = passwordInput ? passwordInput.value : '';
-            const result = await loginProf(pwd); // Fonction qui gère l'authentification avec ton backend
-            
-            if (result.ok) {
-                // Redirection vers le tableau de bord admin
-                window.location.href = '../admin.html'; // Modifie selon le nom exact de ta page d'administration
-            } else {
-                // Affichage du message d'erreur renvoyé par le serveur
-                if (errorMsg) errorMsg.textContent = result.message || "Mot de passe incorrect.";
-            }
-        });
-    }
-});
-
-// ==========================================
-// PARCOURS ÉLÈVE : GESTION DE LA PAGE REJOINDRE
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    const codeForm = document.getElementById('code-form');
-    if (!codeForm) return; // S'exécute uniquement sur la page rejoindre.html
-
-    const codeInput = document.getElementById('session-code');
-    const errorAlert = document.getElementById('error-alert');
-    const errorMessage = document.getElementById('error-message');
-    const validateBtn = document.getElementById('validate-btn');
-    const btnText = document.getElementById('btn-text');
-    const btnSpinner = document.getElementById('btn-spinner');
-    
-    const previewBox = document.getElementById('simulation-preview');
-    const prevName = document.getElementById('prev-name');
-    const prevInstitution = document.getElementById('prev-institution');
-    const prevDates = document.getElementById('prev-dates');
-    const prevCapital = document.getElementById('prev-capital');
-    const studentNameInput = document.getElementById('student-name');
-    const startBtn = document.getElementById('start-btn');
-    const backBtn = document.getElementById('back-btn');
-
-    let currentValidatedSession = null;
-
-    // 1. Soumission du code (Étape 1)
-    codeForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        errorAlert.classList.add('hidden');
-        
-        const code = codeInput.value.trim();
-        if (!code) {
-            showError("Veuillez entrer un code de session.");
-            return;
-        }
-
-        // État de chargement professionnel
-        setLoading(true);
-
-        try {
-            const response = await fetch('/api/student/verify-code', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok || !data.success) {
-                showError(data.message || "Code invalide ou expiré. Vérifiez votre code et réessayez.");
-                setLoading(false);
-                return;
-            }
-
-            // Succès : Stockage temporaire et affichage du récapitulatif
-            currentValidatedSession = data.session;
-            
-            prevName.innerText = data.session.name;
-            prevInstitution.innerText = data.session.institution || "TradeLab Academic";
-            prevDates.innerText = `Du ${data.session.startDate} au ${data.session.endDate}`;
-            prevCapital.innerText = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(data.session.initialCapital);
-
-            codeForm.classList.add('hidden');
-            previewBox.classList.remove('hidden');
-
-        } catch (err) {
-            console.error("Erreur réseau:", err);
-            showError("Erreur de communication avec le serveur. Veuillez réessayer.");
-        } finally {
-            setLoading(false);
-        }
-    });
-
-    // 2. Démarrage de la simulation (Étape 2)
-    startBtn.addEventListener('click', async () => {
-        const studentName = studentNameInput.value.trim();
-        if (!studentName) {
-            alert("Veuillez entrer votre nom ou pseudo pour commencer.");
-            studentNameInput.focus();
-            return;
-        }
-
-        if (!currentValidatedSession) return;
-
-        startBtn.innerText = "Initialisation...";
-        startBtn.disabled = true;
-
-        try {
-            const response = await fetch('/api/student/start-simulation', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    sessionId: currentValidatedSession.id,
-                    studentName: studentName
-                })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok || !data.success) {
-                alert(data.message || "Impossible de démarrer la simulation.");
-                startBtn.innerText = "Commencer la simulation";
-                startBtn.disabled = false;
-                return;
-            }
-
-            // PERSISTANCE SÉCURISÉE (localStorage pour éviter la perte de session au rafraîchissement)
-            localStorage.setItem('tradelab_active_session_id', data.sessionId);
-            localStorage.setItem('tradelab_active_session_name', data.sessionName);
-            localStorage.setItem('tradelab_participant', JSON.stringify(data.participant));
-            
-            // --- NOUVEAU : Sauvegarde du jeton de l'élève ---
-            localStorage.setItem('tradelab_token', data.token);
-
-            // Redirection vers le tableau de bord de la simulation (Première étape)
-            window.location.href = '../index.html';
-
-        } catch (err) {
-            console.error("Erreur d'initialisation:", err);
-            alert("Erreur serveur lors de la création de votre session.");
-            startBtn.innerText = "Commencer la simulation";
-            startBtn.disabled = false;
-        }
-    });
-
-    // 3. Bouton pour corriger / saisir un autre code
-    backBtn.addEventListener('click', () => {
-        previewBox.classList.add('hidden');
-        codeForm.classList.remove('hidden');
-        codeInput.value = '';
-        codeInput.focus();
-    });
-
-    function showError(msg) {
-        errorMessage.innerText = msg;
-        errorAlert.classList.remove('hidden');
-    }
-
-    function setLoading(isLoading) {
-        if (isLoading) {
-            validateBtn.disabled = true;
-            btnText.classList.add('hidden');
-            btnSpinner.classList.remove('hidden');
-        } else {
-            validateBtn.disabled = false;
-            btnText.classList.remove('hidden');
-            btnSpinner.classList.add('hidden');
-        }
-    }
-});
-
-
-// ==========================================
-// Portefeuille : Gestion des graphiques
-// ==========================================
-document.addEventListener("DOMContentLoaded", function() {
-    // 1. Graphique d'Évolution de la Valeur du Portefeuille (Courbe)
-    const ctxPerf = document.getElementById('portfolioPerformanceChart');
-    
-    if (ctxPerf) {
-        const contextPerf = ctxPerf.getContext('2d');
-        
-        // Dégradé sous la courbe
-        const gradient = contextPerf.createLinearGradient(0, 0, 0, 300);
-        gradient.addColorStop(0, 'rgba(34, 197, 94, 0.35)');
-        gradient.addColorStop(1, 'rgba(34, 197, 94, 0.0)');
-
-        new Chart(contextPerf, {
-            type: 'line',
-            data: {
-                labels: ['Janv', 'Févr', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept'],
-                datasets: [{
-                    label: 'Valeur du portefeuille (€)',
-                    data: [100000, 101200, 99800, 103500, 106000, 104200, 109800, 112000, 114250],
-                    borderColor: '#22C55E',
-                    borderWidth: 2,
-                    backgroundColor: gradient,
-                    fill: true,
-                    tension: 0.3,
-                    pointBackgroundColor: '#22C55E',
-                    pointRadius: 3
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    x: {
-                        grid: { color: '#2A2E39' },
-                        ticks: { color: '#94A3B8' }
-                    },
-                    y: {
-                        grid: { color: '#2A2E39' },
-                        ticks: { color: '#94A3B8' }
-                    }
-                }
-            }
-        });
-    }
-     // 2. Graphique de Répartition des Actifs (Donut)
-    const ctxAlloc = document.getElementById('assetAllocationChart');
-    
-    if (ctxAlloc) {
-        new Chart(ctxAlloc.getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Apple', 'LVMH', 'Tesla', 'Liquidités'],
-                datasets: [{
-                    data: [26025, 25356, 30072, 32400],
-                    backgroundColor: [
-                        '#3B82F6',
-                        '#8B5CF6',
-                        '#F59E0B',
-                        '#10B981'
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#151924'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            color: '#94A3B8',
-                            font: { family: 'Inter', size: 12 },
-                            padding: 15
-                        }
-                    }
-                },
-                cutout: '70%'
-            }
-        });
-    }
-});
-
-
-// ==========================================
-// 7. PASSAGE D'ORDRES (Achat / Vente pour les élèves)
-// ==========================================
-// --- NOUVEAU : Logique complète pour l'achat et la vente des actions ---
-document.addEventListener('click', async (e) => {
-    // Si l'élève clique sur Acheter ou Vendre
-    if (e.target.classList.contains('btn-action-buy') || e.target.classList.contains('btn-action-sell')) {
-        e.preventDefault();
-        
-        const isBuy = e.target.classList.contains('btn-action-buy');
-        const ticker = e.target.getAttribute('href').split('-')[1];
-        
-        // On récupère le prix de l'action dans les données du marché (marketData)
-        const action = marketData.actions.find(a => a.ticker === ticker);
-        if (!action) return alert("Action introuvable.");
-
-        const quantite = prompt(`Combien d'actions ${ticker} voulez-vous ${isBuy ? 'acheter' : 'vendre'} au prix de ${action.prix} ${action.devise} ?`);
-        if (!quantite || isNaN(quantite) || parseInt(quantite) <= 0) return;
-
-        // Récupération des infos de l'élève
-        const token = localStorage.getItem('tradelab_token');
-        const participantStr = localStorage.getItem('tradelab_participant');
-        if (!token || !participantStr) return alert("Vous n'êtes pas connecté à une session. (Essayez de rejoindre à nouveau la session avec votre code)");
-
-        const participantId = JSON.parse(participantStr).id;
-
-        try {
-            const response = await fetch('/api/student/orders', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                },
-                body: JSON.stringify({
-                    participantId: participantId,
-                    symbole: ticker,
-                    side: isBuy ? 'buy' : 'sell',
-                    quantite: parseInt(quantite),
-                    prix: action.prix
-                })
-            });
-
-            const data = await response.json();
-            if (response.ok && data.success) {
-                alert(`Ordre exécuté ! Vous avez ${isBuy ? 'acheté' : 'vendu'} ${quantite} actions ${ticker}.`);
-            } else {
-                alert(data.message || "Erreur lors de la transaction.");
-            }
-        } catch (err) {
-            console.error(err);
-            alert("Erreur de connexion au serveur.");
-        }
-    }
- // ==========================================
-// 8. GESTION DE L'AFFICHAGE DU PROFIL (Bouton Connexion / Pseudo)
+// 6. FONCTION : GESTION DE L'AFFICHAGE DU PROFIL (Menu déroulant)
 // ==========================================
 function updateAuthUI() {
     const loginBtn = document.querySelector('a[href*="connexion"]');
@@ -1153,7 +788,7 @@ function updateAuthUI() {
                 
                 ${menuLinks}
                 
-                <div style="height: 1px; background: #2A2E39; margin: 5px 0;"></div> <!-- Petite ligne de séparation -->
+                <div style="height: 1px; background: #2A2E39; margin: 5px 0;"></div>
                 
                 <button id="logout-btn" style="${linkStyle} width: 100%; text-align: left; background: transparent; border: none; color: #EF4444; cursor: pointer; font-family: inherit;" ${hoverFx}>
                     <i class="fa-solid fa-arrow-right-from-bracket" style="margin-right: 8px; width: 16px; text-align: center;"></i> Déconnexion
@@ -1177,15 +812,335 @@ function updateAuthUI() {
 
         const logoutBtn = profileContainer.querySelector('#logout-btn');
         logoutBtn.addEventListener('click', () => {
-            // On vide toutes les mémoires
             sessionStorage.removeItem('tradelab_admin_token');
             localStorage.removeItem('tradelab_token');
             localStorage.removeItem('tradelab_participant');
             localStorage.removeItem('tradelab_active_session_id');
             localStorage.removeItem('tradelab_active_session_name');
-            
             window.location.href = '../index.html'; 
         });
     }
 }
+
+// ==========================================
+// 7. INITIALISATION GLOBALE DU SITE
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // ---> Lancement de l'affichage du profil connecté
+    updateAuthUI();
+
+    fetchFrenchNews();
+    fetchEconomicCalendar();
+
+    isLive = true;
+    marketInterval = setInterval(tickMarket, 2000);
+    const actionsContainerTEI = document.getElementById('actions-container-TEI');
+    const actionsContainer = document.getElementById('actions-container');
+    const indicesContainer = document.getElementById('indices-container');
+    const devisesContainer = document.getElementById('devises-container');
+    
+    if (actionsContainerTEI) {
+        actionsContainerTEI.innerHTML = marketData.actions.map(createCard).join('');
+    }
+    if (actionsContainer) {
+        actionsContainer.innerHTML = marketData.actions.map(createCardHTML).join('');
+        if(typeof cardsHTML !== 'undefined') actionsContainer.innerHTML += cardsHTML;
+    }
+    if (indicesContainer) indicesContainer.innerHTML = marketData.indices.map(createCard).join('');
+    if (devisesContainer) devisesContainer.innerHTML = marketData.devises.map(createCard).join('');
+    initialiserCarrousels();
+
+    if (document.getElementById('leaderboard-body')) {
+        initLeaderboard();
+    }
+    if (document.getElementById('sessions-container')) {
+        initAdminSessions();
+    }
+
+    const toggleBtn = document.getElementById('toggle-password');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            const pwd = document.getElementById('password');
+            if (pwd) pwd.type = pwd.type === 'password' ? 'text' : 'password';
+        });
+    }
+
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        const passwordInput = document.getElementById('password');
+        const errorMsg = document.getElementById('login-error-message');
+        
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (errorMsg) errorMsg.textContent = ''; 
+            
+            const pwd = passwordInput ? passwordInput.value : '';
+            const result = await loginProf(pwd); 
+            
+            if (result.ok) {
+                window.location.href = '../admin.html'; 
+            } else {
+                if (errorMsg) errorMsg.textContent = result.message || "Mot de passe incorrect.";
+            }
+        });
+    }
+});
+
+// ==========================================
+// 8. PARCOURS ÉLÈVE : GESTION DE LA PAGE REJOINDRE
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const codeForm = document.getElementById('code-form');
+    if (!codeForm) return; 
+
+    const codeInput = document.getElementById('session-code');
+    const errorAlert = document.getElementById('error-alert');
+    const errorMessage = document.getElementById('error-message');
+    const validateBtn = document.getElementById('validate-btn');
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+    
+    const previewBox = document.getElementById('simulation-preview');
+    const prevName = document.getElementById('prev-name');
+    const prevInstitution = document.getElementById('prev-institution');
+    const prevDates = document.getElementById('prev-dates');
+    const prevCapital = document.getElementById('prev-capital');
+    const studentNameInput = document.getElementById('student-name');
+    const startBtn = document.getElementById('start-btn');
+    const backBtn = document.getElementById('back-btn');
+
+    let currentValidatedSession = null;
+
+    codeForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorAlert.classList.add('hidden');
+        
+        const code = codeInput.value.trim();
+        if (!code) {
+            showError("Veuillez entrer un code de session.");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await fetch('/api/student/verify-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                showError(data.message || "Code invalide ou expiré. Vérifiez votre code et réessayez.");
+                setLoading(false);
+                return;
+            }
+
+            currentValidatedSession = data.session;
+            
+            prevName.innerText = data.session.name;
+            prevInstitution.innerText = data.session.institution || "TradeLab Academic";
+            prevDates.innerText = `Du ${data.session.startDate} au ${data.session.endDate}`;
+            prevCapital.innerText = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(data.session.initialCapital);
+
+            codeForm.classList.add('hidden');
+            previewBox.classList.remove('hidden');
+
+        } catch (err) {
+            console.error("Erreur réseau:", err);
+            showError("Erreur de communication avec le serveur. Veuillez réessayer.");
+        } finally {
+            setLoading(false);
+        }
+    });
+
+    startBtn.addEventListener('click', async () => {
+        const studentName = studentNameInput.value.trim();
+        if (!studentName) {
+            alert("Veuillez entrer votre nom ou pseudo pour commencer.");
+            studentNameInput.focus();
+            return;
+        }
+
+        if (!currentValidatedSession) return;
+
+        startBtn.innerText = "Initialisation...";
+        startBtn.disabled = true;
+
+        try {
+            const response = await fetch('/api/student/start-simulation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sessionId: currentValidatedSession.id,
+                    studentName: studentName
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                alert(data.message || "Impossible de démarrer la simulation.");
+                startBtn.innerText = "Commencer la simulation";
+                startBtn.disabled = false;
+                return;
+            }
+
+            localStorage.setItem('tradelab_active_session_id', data.sessionId);
+            localStorage.setItem('tradelab_active_session_name', data.sessionName);
+            localStorage.setItem('tradelab_participant', JSON.stringify(data.participant));
+            localStorage.setItem('tradelab_token', data.token);
+
+            window.location.href = '../index.html';
+
+        } catch (err) {
+            console.error("Erreur d'initialisation:", err);
+            alert("Erreur serveur lors de la création de votre session.");
+            startBtn.innerText = "Commencer la simulation";
+            startBtn.disabled = false;
+        }
+    });
+
+    backBtn.addEventListener('click', () => {
+        previewBox.classList.add('hidden');
+        codeForm.classList.remove('hidden');
+        codeInput.value = '';
+        codeInput.focus();
+    });
+
+    function showError(msg) {
+        errorMessage.innerText = msg;
+        errorAlert.classList.remove('hidden');
+    }
+
+    function setLoading(isLoading) {
+        if (isLoading) {
+            validateBtn.disabled = true;
+            btnText.classList.add('hidden');
+            btnSpinner.classList.remove('hidden');
+        } else {
+            validateBtn.disabled = false;
+            btnText.classList.remove('hidden');
+            btnSpinner.classList.add('hidden');
+        }
+    }
+});
+
+
+// ==========================================
+// 9. PORTEFEUILLE : Gestion des graphiques
+// ==========================================
+document.addEventListener("DOMContentLoaded", function() {
+    const ctxPerf = document.getElementById('portfolioPerformanceChart');
+    if (ctxPerf) {
+        const contextPerf = ctxPerf.getContext('2d');
+        const gradient = contextPerf.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(34, 197, 94, 0.35)');
+        gradient.addColorStop(1, 'rgba(34, 197, 94, 0.0)');
+
+        new Chart(contextPerf, {
+            type: 'line',
+            data: {
+                labels: ['Janv', 'Févr', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept'],
+                datasets: [{
+                    label: 'Valeur du portefeuille (€)',
+                    data: [100000, 101200, 99800, 103500, 106000, 104200, 109800, 112000, 114250],
+                    borderColor: '#22C55E',
+                    borderWidth: 2,
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: '#22C55E',
+                    pointRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: '#2A2E39' }, ticks: { color: '#94A3B8' } },
+                    y: { grid: { color: '#2A2E39' }, ticks: { color: '#94A3B8' } }
+                }
+            }
+        });
+    }
+
+    const ctxAlloc = document.getElementById('assetAllocationChart');
+    if (ctxAlloc) {
+        new Chart(ctxAlloc.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Apple', 'LVMH', 'Tesla', 'Liquidités'],
+                datasets: [{
+                    data: [26025, 25356, 30072, 32400],
+                    backgroundColor: ['#3B82F6', '#8B5CF6', '#F59E0B', '#10B981'],
+                    borderWidth: 2,
+                    borderColor: '#151924'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#94A3B8', font: { family: 'Inter', size: 12 }, padding: 15 } }
+                },
+                cutout: '70%'
+            }
+        });
+    }
+});
+
+
+// ==========================================
+// 10. PASSAGE D'ORDRES (Achat / Vente pour les élèves)
+// ==========================================
+document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('btn-action-buy') || e.target.classList.contains('btn-action-sell')) {
+        e.preventDefault();
+        
+        const isBuy = e.target.classList.contains('btn-action-buy');
+        const ticker = e.target.getAttribute('href').split('-')[1];
+        
+        const action = marketData.actions.find(a => a.ticker === ticker);
+        if (!action) return alert("Action introuvable.");
+
+        const quantite = prompt(`Combien d'actions ${ticker} voulez-vous ${isBuy ? 'acheter' : 'vendre'} au prix de ${action.prix} ${action.devise} ?`);
+        if (!quantite || isNaN(quantite) || parseInt(quantite) <= 0) return;
+
+        const token = localStorage.getItem('tradelab_token');
+        const participantStr = localStorage.getItem('tradelab_participant');
+        if (!token || !participantStr) return alert("Vous n'êtes pas connecté à une session. (Essayez de rejoindre à nouveau la session avec votre code)");
+
+        const participantId = JSON.parse(participantStr).id;
+
+        try {
+            const response = await fetch('/api/student/orders', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    participantId: participantId,
+                    symbole: ticker,
+                    side: isBuy ? 'buy' : 'sell',
+                    quantite: parseInt(quantite),
+                    prix: action.prix
+                })
+            });
+
+            const data = await response.json();
+            if (response.ok && data.success) {
+                alert(`Ordre exécuté ! Vous avez ${isBuy ? 'acheté' : 'vendu'} ${quantite} actions ${ticker}.`);
+            } else {
+                alert(data.message || "Erreur lors de la transaction.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Erreur de connexion au serveur.");
+        }
+    }
 });
