@@ -546,7 +546,7 @@ async function adminFetch(url, options = {}) {
     });
     if (res.status === 401) {
         sessionStorage.removeItem('tradelab_admin_token');
-        window.location.href = '/connexion/connexion.html'; 
+        window.location.href = '../connexion/connexion.html'; 
     }
     return res;
 }
@@ -723,11 +723,13 @@ async function closeSession(id) {
 // 6. FONCTION : GESTION DE L'AFFICHAGE DU PROFIL (Menu déroulant)
 // ==========================================
 function updateAuthUI() {
+    // On cherche n'importe quel lien ou bouton qui contient le mot "Connexion"
     const loginBtn = Array.from(document.querySelectorAll('a, button, .btn')).find(el => 
         el.textContent.trim().toLowerCase() === 'connexion' || 
         el.textContent.trim().toLowerCase() === 'se connecter'
     );
-    if (!loginBtn) return; 
+    
+    if (!loginBtn) return; // Si on ne le trouve pas, on arrête
 
     const adminToken = sessionStorage.getItem('tradelab_admin_token');
     const studentToken = localStorage.getItem('tradelab_token');
@@ -764,7 +766,7 @@ function updateAuthUI() {
         let menuLinks = "";
         if (role === 'admin') {
             menuLinks = `
-                <a href="../admin.html" style="${linkStyle}" ${hoverFx}>
+                <a href="../admin/sessions.html" style="${linkStyle}" ${hoverFx}>
                     <i class="fa-solid fa-gauge" style="margin-right: 8px; width: 16px; text-align: center;"></i> Espace Professeur
                 </a>
             `;
@@ -868,22 +870,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Gestion du formulaire de connexion
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         const passwordInput = document.getElementById('password');
-        const errorMsg = document.getElementById('login-error-message');
         
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (errorMsg) errorMsg.textContent = ''; 
             
             const pwd = passwordInput ? passwordInput.value : '';
             const result = await loginProf(pwd); 
             
             if (result.ok) {
-                window.location.href = '../admin.html'; 
+                // Succès : C'est le prof !
+                window.location.href = '../admin/sessions.html'; 
             } else {
-                if (errorMsg) errorMsg.textContent = result.message || "Mot de passe incorrect.";
+                // Échec : C'est pas le prof ! On envoie l'élève pour rejoindre une session.
+                window.location.href = '../rejoindre.html'; 
             }
         });
     }
