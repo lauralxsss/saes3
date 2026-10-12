@@ -728,14 +728,12 @@ async function closeSession(id) {
 // 6. INITIALISATION GLOBALE DU SITE
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Modules communs (Accueil & Widgets)
+    updateAuthUI();
     fetchFrenchNews();
     fetchEconomicCalendar();
 
-    // 2. Simulateur de marché (Flash)
     isLive = true;
     marketInterval = setInterval(tickMarket, 2000);
-    // TED = Trader Et Investir (même élément mais utilisé différement selon les pages)
     const actionsContainerTEI = document.getElementById('actions-container-TEI');
     const actionsContainer = document.getElementById('actions-container');
     const indicesContainer = document.getElementById('indices-container');
@@ -745,22 +743,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (actionsContainer) {
         actionsContainer.innerHTML = marketData.actions.map(createCardHTML).join('');
-        // attention : cardsHTML n'était pas défini dans ton code original, je le laisse s'il vient d'ailleurs
         if(typeof cardsHTML !== 'undefined') actionsContainer.innerHTML += cardsHTML;
     }
     if (indicesContainer) indicesContainer.innerHTML = marketData.indices.map(createCard).join('');
     if (devisesContainer) devisesContainer.innerHTML = marketData.devises.map(createCard).join('');
     initialiserCarrousels();
 
-    // 3. Modules conditionnels (selon la page active)
     if (document.getElementById('leaderboard-body')) {
         initLeaderboard();
     }
     if (document.getElementById('sessions-container')) {
         initAdminSessions();
     }
-
-    // 4. Gestion de la visibilité des mots de passe (Auth)
     const toggleBtn = document.getElementById('toggle-password');
     if (toggleBtn) {
         toggleBtn.addEventListener('click', () => {
@@ -1090,4 +1084,108 @@ document.addEventListener('click', async (e) => {
             alert("Erreur de connexion au serveur.");
         }
     }
+ // ==========================================
+// 8. GESTION DE L'AFFICHAGE DU PROFIL (Bouton Connexion / Pseudo)
+// ==========================================
+function updateAuthUI() {
+    const loginBtn = document.querySelector('a[href*="connexion"]');
+    if (!loginBtn) return; 
+
+    const adminToken = sessionStorage.getItem('tradelab_admin_token');
+    const studentToken = localStorage.getItem('tradelab_token');
+    const studentDataStr = localStorage.getItem('tradelab_participant');
+
+    let pseudo = "";
+    let role = "";
+    let initials = "";
+
+    if (adminToken) {
+        role = "admin";
+        pseudo = "Professeur";
+        initials = "PR";
+    } else if (studentToken && studentDataStr) {
+        role = "student";
+        try {
+            const part = JSON.parse(studentDataStr);
+            pseudo = part.name;
+            initials = pseudo.substring(0, 2).toUpperCase();
+        } catch(e) {}
+    }
+
+    if (role) {
+        loginBtn.style.display = 'none';
+
+        const profileContainer = document.createElement('div');
+        profileContainer.style.position = 'relative';
+        profileContainer.style.display = 'inline-block';
+        profileContainer.style.marginLeft = '15px';
+
+        const linkStyle = "display: block; padding: 10px; color: white; text-decoration: none; border-radius: 6px; font-size: 0.9rem; transition: 0.2s; margin-bottom: 2px;";
+        const hoverFx = "onmouseover=\"this.style.background='#2A2E39'\" onmouseout=\"this.style.background='transparent'\"";
+
+        let menuLinks = "";
+        if (role === 'admin') {
+            menuLinks = `
+                <a href="../admin.html" style="${linkStyle}" ${hoverFx}>
+                    <i class="fa-solid fa-gauge" style="margin-right: 8px; width: 16px; text-align: center;"></i> Espace Professeur
+                </a>
+            `;
+        } else {
+            menuLinks = `
+                <a href="../portefeuille.html" style="${linkStyle}" ${hoverFx}>
+                    <i class="fa-solid fa-wallet" style="margin-right: 8px; width: 16px; text-align: center;"></i> Mon Portefeuille
+                </a>
+                <a href="../parametres.html" style="${linkStyle}" ${hoverFx}>
+                    <i class="fa-solid fa-gear" style="margin-right: 8px; width: 16px; text-align: center;"></i> Paramètres
+                </a>
+            `;
+        }
+
+        profileContainer.innerHTML = `
+            <div class="profile-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #22C55E; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; user-select: none; box-shadow: 0 2px 10px rgba(34, 197, 94, 0.2);">
+                ${initials}
+            </div>
+            <div class="profile-dropdown" style="display: none; position: absolute; right: 0; top: 50px; background: #151924; border: 1px solid #2A2E39; border-radius: 8px; width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 9999; padding: 10px;">
+                <div style="padding: 10px; border-bottom: 1px solid #2A2E39; margin-bottom: 5px;">
+                    <strong style="color: white; display: block; font-size: 1rem;">${pseudo}</strong>
+                    <span style="font-size: 0.8rem; color: #94A3B8;">${role === 'admin' ? 'Administrateur' : 'Élève (Simulation)'}</span>
+                </div>
+                
+                ${menuLinks}
+                
+                <div style="height: 1px; background: #2A2E39; margin: 5px 0;"></div> <!-- Petite ligne de séparation -->
+                
+                <button id="logout-btn" style="${linkStyle} width: 100%; text-align: left; background: transparent; border: none; color: #EF4444; cursor: pointer; font-family: inherit;" ${hoverFx}>
+                    <i class="fa-solid fa-arrow-right-from-bracket" style="margin-right: 8px; width: 16px; text-align: center;"></i> Déconnexion
+                </button>
+            </div>
+        `;
+
+        loginBtn.parentNode.insertBefore(profileContainer, loginBtn.nextSibling);
+
+        const circle = profileContainer.querySelector('.profile-circle');
+        const dropdown = profileContainer.querySelector('.profile-dropdown');
+        
+        circle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.addEventListener('click', () => {
+            dropdown.style.display = 'none';
+        });
+
+        const logoutBtn = profileContainer.querySelector('#logout-btn');
+        logoutBtn.addEventListener('click', () => {
+            // On vide toutes les mémoires
+            sessionStorage.removeItem('tradelab_admin_token');
+            localStorage.removeItem('tradelab_token');
+            localStorage.removeItem('tradelab_participant');
+            localStorage.removeItem('tradelab_active_session_id');
+            localStorage.removeItem('tradelab_active_session_name');
+            
+            window.location.href = '../index.html'; 
+        });
+    }
+}
 });
