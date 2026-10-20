@@ -1076,10 +1076,10 @@ body.trader-investir
 .trade-journal-aside {
     background-color: var(--bg-panel);
     border: 1px solid var(--border-color);
-    margin-top : 73px;
+    margin-top : 45px;
     border-radius: 8px;
     padding: 20px;
-    position: sticky;
+    position: relative;
     top: 30px;
 }
 
