@@ -876,9 +876,10 @@ body.trader-investir
    ============================= */
 
 .page-title h1 {
-    font-size: 1.6rem;
-    margin-bottom: 25px;
-    color: var(--text-main);
+    font-size: 2rem;
+    margin: 26px 0 10px 0;
+    color: #fff;
+    letter-spacing: -0.5px;
 }
 
 
@@ -984,7 +985,7 @@ body.trader-investir
 .chart-header h3 {
     margin: 0;
     font-size: 1rem;
-    color: var(--text-secondary);
+    color: var(--text-main);
 }
 
 .chart-time {
