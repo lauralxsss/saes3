@@ -38,7 +38,20 @@
     </nav>
 
 
-    <p>Devises</p>
+    <div class="actions-layout">
+        <nav class="actions-nav" id="actions-nav" aria-label="Navigation entre les actions">
+            <button type="button" class="actions-nav__toggle" aria-expanded="false" aria-controls="actions-nav-panel" aria-label="Afficher la navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="actions-nav__panel" id="actions-nav-panel">
+                <p class="actions-nav__title">Aller à</p>
+                <ul class="actions-nav__list" id="actions-nav-list"></ul>
+            </div>
+        </nav>
+
+        <!-- Les cartes sont générées ici par le JS -->
+        <main id="devises-detail-container" class="actions-main"></main>
+    </div>
 
     <footer class="app-footer">
         <div class="footer-content">

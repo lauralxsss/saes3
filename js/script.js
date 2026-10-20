@@ -213,24 +213,24 @@ const marketData = {
             chartData: [120, 122, 125, 124, 128, 129, 130.50] }
     ],
     indices: [
-        { nom: "CAC 40", ticker: "^FCHI", prix: 7350.45, devise: "pts", hist: { "1J": "+0.4%", "7J": "-0.2%", "1M": "+2.8%", "6M": "+5.4%" } },
-        { nom: "S&P 500", ticker: "^GSPC", prix: 4500.10, devise: "pts", hist: { "1J": "+1.1%", "7J": "+2.3%", "1M": "-1.0%", "6M": "+10.2%" } },
-        { nom: "NASDAQ", ticker: "^IXIC", prix: 14000.20, devise: "pts", hist: { "1J": "+1.5%", "7J": "+3.1%", "1M": "+2.5%", "6M": "+15.8%" } },
-        { nom: "Dow Jones", ticker: "^DJI", prix: 34500.80, devise: "pts", hist: { "1J": "+0.2%", "7J": "+0.5%", "1M": "-0.5%", "6M": "+4.2%" } },
-        { nom: "DAX", ticker: "^GDAXI", prix: 15800.60, devise: "pts", hist: { "1J": "+0.8%", "7J": "+1.2%", "1M": "+3.1%", "6M": "+7.5%" } },
-        { nom: "FTSE 100", ticker: "^FTSE", prix: 7400.30, devise: "pts", hist: { "1J": "-0.1%", "7J": "-0.5%", "1M": "+1.2%", "6M": "+2.1%" } },
-        { nom: "Nikkei 225", ticker: "^N225", prix: 32000.50, devise: "pts", hist: { "1J": "+1.2%", "7J": "+2.5%", "1M": "+4.8%", "6M": "+18.2%" } },
-        { nom: "Hang Seng", ticker: "^HSI", prix: 18000.10, devise: "pts", hist: { "1J": "-1.5%", "7J": "-3.2%", "1M": "-5.5%", "6M": "-12.4%" } }
+        { nom: "CAC 40", ticker: "^FCHI", desc: "Principal indice boursier français : il regroupe les 40 plus grandes capitalisations cotées à Paris.", prix: 7350.45, devise: "pts", hist: { "1J": "+0.4%", "7J": "-0.2%", "1M": "+2.8%", "6M": "+5.4%" } },
+        { nom: "S&P 500", ticker: "^GSPC", desc: "Indice qui suit 500 des plus grandes entreprises cotées aux États-Unis, référence du marché américain.", prix: 4500.10, devise: "pts", hist: { "1J": "+1.1%", "7J": "+2.3%", "1M": "-1.0%", "6M": "+10.2%" } },
+        { nom: "NASDAQ", ticker: "^IXIC", desc: "Indice composite regroupant les sociétés cotées au NASDAQ, très orienté technologie.", prix: 14000.20, devise: "pts", hist: { "1J": "+1.5%", "7J": "+3.1%", "1M": "+2.5%", "6M": "+15.8%" } },
+        { nom: "Dow Jones", ticker: "^DJI", desc: "Indice américain de 30 grandes entreprises industrielles et de services, l'un des plus anciens au monde.", prix: 34500.80, devise: "pts", hist: { "1J": "+0.2%", "7J": "+0.5%", "1M": "-0.5%", "6M": "+4.2%" } },
+        { nom: "DAX", ticker: "^GDAXI", desc: "Indice phare de la bourse allemande : il suit les 40 plus grandes entreprises cotées à Francfort.", prix: 15800.60, devise: "pts", hist: { "1J": "+0.8%", "7J": "+1.2%", "1M": "+3.1%", "6M": "+7.5%" } },
+        { nom: "FTSE 100", ticker: "^FTSE", desc: "Indice qui suit les 100 plus grandes capitalisations cotées à la bourse de Londres.", prix: 7400.30, devise: "pts", hist: { "1J": "-0.1%", "7J": "-0.5%", "1M": "+1.2%", "6M": "+2.1%" } },
+        { nom: "Nikkei 225", ticker: "^N225", desc: "Indice de référence de la bourse de Tokyo, composé de 225 grandes entreprises japonaises.", prix: 32000.50, devise: "pts", hist: { "1J": "+1.2%", "7J": "+2.5%", "1M": "+4.8%", "6M": "+18.2%" } },
+        { nom: "Hang Seng", ticker: "^HSI", desc: "Indice principal de la bourse de Hong Kong, qui suit les plus grandes entreprises qui y sont cotées.", prix: 18000.10, devise: "pts", hist: { "1J": "-1.5%", "7J": "-3.2%", "1M": "-5.5%", "6M": "-12.4%" } }
     ],
     devises: [
-        { nom: "Euro / Dollar", ticker: "EUR/USD", prix: 1.0850, devise: "$", hist: { "1J": "-0.2%", "7J": "+0.5%", "1M": "-1.1%", "6M": "+2.3%" } },
-        { nom: "Euro / Yen", ticker: "EUR/JPY", prix: 158.40, devise: "¥", hist: { "1J": "+0.7%", "7J": "+1.2%", "1M": "+3.4%", "6M": "+6.8%" } },
-        { nom: "Livre / Dollar", ticker: "GBP/USD", prix: 1.2540, devise: "$", hist: { "1J": "+0.1%", "7J": "-0.4%", "1M": "+1.1%", "6M": "+3.3%" } },
-        { nom: "Euro / Livre", ticker: "EUR/GBP", prix: 0.8650, devise: "£", hist: { "1J": "-0.1%", "7J": "+0.2%", "1M": "-0.5%", "6M": "-1.2%" } },
-        { nom: "Dollar / Yen", ticker: "USD/JPY", prix: 145.20, devise: "¥", hist: { "1J": "+0.5%", "7J": "+1.1%", "1M": "+2.5%", "6M": "+8.4%" } },
-        { nom: "Aussie / Dollar", ticker: "AUD/USD", prix: 0.6420, devise: "$", hist: { "1J": "-0.4%", "7J": "-1.2%", "1M": "-2.1%", "6M": "-4.5%" } },
-        { nom: "Euro / Suisse", ticker: "EUR/CHF", prix: 0.9540, devise: "CHF", hist: { "1J": "+0.2%", "7J": "+0.1%", "1M": "-0.8%", "6M": "-2.3%" } },
-        { nom: "Dollar / CAD", ticker: "USD/CAD", prix: 1.3520, devise: "$", hist: { "1J": "+0.3%", "7J": "+0.8%", "1M": "+1.5%", "6M": "+2.8%" } }
+        { nom: "Euro / Dollar", ticker: "EUR/USD", desc: "Indique combien de dollars américains il faut pour acheter 1 euro.", prix: 1.0850, devise: "$", hist: { "1J": "-0.2%", "7J": "+0.5%", "1M": "-1.1%", "6M": "+2.3%" } },
+        { nom: "Euro / Yen", ticker: "EUR/JPY", desc: "Indique combien de yens il faut pour acheter 1 euro.", prix: 158.40, devise: "¥", hist: { "1J": "+0.7%", "7J": "+1.2%", "1M": "+3.4%", "6M": "+6.8%" } },
+        { nom: "Livre / Dollar", ticker: "GBP/USD", desc: "Indique combien de dollars américains il faut pour acheter 1 livre sterling.", prix: 1.2540, devise: "$", hist: { "1J": "+0.1%", "7J": "-0.4%", "1M": "+1.1%", "6M": "+3.3%" } },
+        { nom: "Euro / Livre", ticker: "EUR/GBP", desc: "Indique combien de livres sterling il faut pour acheter 1 euro.", prix: 0.8650, devise: "£", hist: { "1J": "-0.1%", "7J": "+0.2%", "1M": "-0.5%", "6M": "-1.2%" } },
+        { nom: "Dollar / Yen", ticker: "USD/JPY", desc: "Indique combien de yens il faut pour acheter 1 dollar américain.", prix: 145.20, devise: "¥", hist: { "1J": "+0.5%", "7J": "+1.1%", "1M": "+2.5%", "6M": "+8.4%" } },
+        { nom: "Aussie / Dollar", ticker: "AUD/USD", desc: "Indique combien de dollars américains il faut pour acheter 1 dollar australien.", prix: 0.6420, devise: "$", hist: { "1J": "-0.4%", "7J": "-1.2%", "1M": "-2.1%", "6M": "-4.5%" } },
+        { nom: "Euro / Suisse", ticker: "EUR/CHF", desc: "Indique combien de francs suisses il faut pour acheter 1 euro.", prix: 0.9540, devise: "CHF", hist: { "1J": "+0.2%", "7J": "+0.1%", "1M": "-0.8%", "6M": "-2.3%" } },
+        { nom: "Dollar / CAD", ticker: "USD/CAD", desc: "Indique combien de dollars canadiens il faut pour acheter 1 dollar américain.", prix: 1.3520, devise: "CAD", hist: { "1J": "+0.3%", "7J": "+0.8%", "1M": "+1.5%", "6M": "+2.8%" } }
     ]
 };
 
@@ -307,91 +307,314 @@ document.querySelectorAll('.carousel-btn').forEach(btn => {
 // Page Trader & Investir /=> Actions
 // ===================================
 
-function createSvgChart(data) {
+const actionsIndex = {};
+
+const DEFAULT_PERIOD = '1y';
+
+// chartData peut être :
+//  - un tableau simple          -> devient la série 1 an, les autres périodes sont générées (voir ensureChartData)
+//  - un objet { '1d': [...], '7d': [...], '1mo': [...], '6mo': [...], '1y': [...] }
+function getSeries(chartData, period) {
+    if (Array.isArray(chartData)) return chartData;
+    return chartData[period] || chartData[DEFAULT_PERIOD] || [];
+}
+
+/* ===== Graphique : courbe + légendes (valeurs à gauche, temps en bas) ===== */
+
+// Durée couverte par chaque période + format des légendes de temps
+const PERIOD_CONFIG = {
+    '1d':  { ms: 24 * 3600e3,  format: { hour: '2-digit', minute: '2-digit' } },
+    '7d':  { ms: 7 * 86400e3,  format: { weekday: 'short', day: 'numeric' } },
+    '1mo': { ms: 30 * 86400e3, format: { day: 'numeric', month: 'short' } },
+    '6mo': { ms: 182 * 86400e3, format: { month: 'short' } },
+    '1y':  { ms: 365 * 86400e3, format: { month: 'short', year: '2-digit' } }
+};
+
+// Calcule des graduations "rondes" (10, 20, 30...) qui encadrent les données
+function niceScale(min, max, targetTicks = 5) {
+    if (min === max) {
+        const flat = Math.abs(min) * 0.01 || 1;
+        min -= flat;
+        max += flat;
+    }
+    const margin = (max - min) * 0.03;           // un peu d'air au-dessus et en dessous de la courbe
+    min -= margin;
+    max += margin;
+
+    const rough = (max - min) / (targetTicks - 1);
+    const pow = Math.pow(10, Math.floor(Math.log10(rough)));
+    const frac = rough / pow;
+    const mult = frac <= 1 ? 1 : frac <= 2 ? 2 : frac <= 2.5 ? 2.5 : frac <= 5 ? 5 : 10;
+    const step = Number((mult * pow).toPrecision(12));
+
+    const lo = Math.floor(min / step) * step;
+    const hi = Math.ceil(max / step) * step;
+    const count = Math.round((hi - lo) / step) + 1;
+    const decimals = Math.min(4, (String(step).split('.')[1] || '').length);   // 4 décimales max (paires de devises)
+
+    // Du haut vers le bas, comme à l'écran
+    const ticks = Array.from({ length: count }, (_, i) => hi - i * step);
+    return { lo, hi, ticks, decimals };
+}
+
+// Légendes de temps : 5 repères répartis de "il y a X" jusqu'à maintenant
+function getTimeLabels(period, count = 5) {
+    const cfg = PERIOD_CONFIG[period] || PERIOD_CONFIG[DEFAULT_PERIOD];
+    const end = Date.now();
+    return Array.from({ length: count }, (_, i) => {
+        const t = end - cfg.ms + (i / (count - 1)) * cfg.ms;
+        return new Date(t).toLocaleString('fr-FR', cfg.format);
+    });
+}
+
+function createChartHTML(data, period, devise) {
+    if (!data || data.length < 2) return '';
+
     const width = 300;
     const height = 120;
-    const min = Math.min(...data) * 0.99;
-    const max = Math.max(...data) * 1.01;
-    const range = (max - min) || 1;
+    const { lo, hi, ticks, decimals } = niceScale(Math.min(...data), Math.max(...data));
+    const range = hi - lo;
 
     const points = data.map((val, i) => {
         const x = (i / (data.length - 1)) * width;
-        const y = height - ((val - min) / range) * height;
+        const y = height - ((val - lo) / range) * height;
         return `${x},${y}`;
     }).join(' ');
 
     const isUp = data[data.length - 1] >= data[0];
-    const strokeColor = isUp ? '#089981' : '#F23645';
+    const strokeColor = isUp ? 'var(--color-up)' : 'var(--color-down)';
+
+    // Lignes de repère horizontales + légendes de valeur (alignées sur les mêmes positions)
+    const lastTick = ticks.length - 1;
+    const gridLines = ticks.map((_, i) => {
+        const y = (i / lastTick) * height;
+        return `<line class="stock-chart__grid" x1="0" y1="${y}" x2="${width}" y2="${y}" vector-effect="non-scaling-stroke"/>`;
+    }).join('');
+
+    const yTexts = ticks.map(v =>
+        `${v.toLocaleString('fr-FR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} ${devise}`
+    );
+    const yLabels = yTexts.map((text, i) => `<span style="top:${(i / lastTick) * 100}%">${text}</span>`).join('');
+    // La colonne des valeurs s'adapte à la longueur du texte (ex. "14 000 pts")
+    const yWidth = (Math.max(...yTexts.map(t => t.length)) * 0.62 + 0.4).toFixed(2);
+
+    const xLabels = getTimeLabels(period).map(t => `<span>${t}</span>`).join('');
 
     return `
-        <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" style="width: 100%; height: 100%; display: block; overflow: visible;">
-            <polyline points="${points}" fill="none" stroke="${strokeColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-    `;
-}
-
-function createCardHTML(action) {
-    const isUpRes = action.resEvol.startsWith('+');
-    const isUpDiv = action.divEvol.startsWith('+');
-
-    return `
-        <div class="action-detail-card" id="trader-${action.ticker}">
-            <div class="action-header-info">
-                <h2>${action.nom} (${action.ticker})</h2>
-                <p class="price">${action.prix.toFixed(2)} ${action.devise}</p>
+        <div class="stock-chart" style="grid-template-columns: ${yWidth}em minmax(0, 1fr);">
+            <div class="stock-chart__y">${yLabels}</div>
+            <div class="stock-chart__plot">
+                <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" class="stock-chart__svg">
+                    ${gridLines}
+                    <polyline points="${points}" fill="none" style="stroke:${strokeColor}" stroke-width="2.5"
+                              stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+                </svg>
             </div>
-
-            <div class="action-info-box">
-                <div class="info-row">
-                    <span class="info-lbl">Cap. Boursière</span>
-                    <span class="info-val">${action.cap}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-lbl">Résultat Net</span>
-                    <span class="info-val">${action.res} <span class="${isUpRes ? 'change-up' : 'change-down'}">(${action.resEvol})</span></span>
-                </div>
-                <div class="info-row">
-                    <span class="info-lbl">Dividendes</span>
-                    <span class="info-val">${action.div}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-lbl">Évol. Dividendes</span>
-                    <span class="info-val ${isUpDiv ? 'change-up' : 'change-down'}">${action.divEvol}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-lbl">PER</span>
-                    <span class="info-val">${action.per}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-lbl">Ratio Actifs/Cap</span>
-                    <span class="info-val">${action.ratio}</span>
-                </div>
-            </div>
-
-            <div class="action-chart-box">
-                <div class="chart-timeline">
-                    <span>1j</span>
-                    <span>7j</span>
-                    <span>1mo</span>
-                    <span>6mo</span>
-                    <span>1yo</span>
-                </div>
-                <div class="svg-wrapper">
-                    ${createSvgChart(action.chartData)}
-                </div>
-            </div>
-
-            <div class="action-buttons-box">
-                <a href="#achat-${action.ticker}" class="btn-action-buy">Acheter</a>
-                <a href="#vente-${action.ticker}" class="btn-action-sell">Vendre</a>
-                <div class="tooltip-box">
-                    <i class="fa-solid fa-info"></i>
-                    <span class="tooltip-content">${action.desc}</span>
-                </div>
-            </div>
+            <div class="stock-chart__x">${xLabels}</div>
         </div>
     `;
 }
+
+/* ===== Séries générées à partir des variations (actions, indices, devises) =====
+   Pas d'historique complet, seulement hist { 1J, 7J, 1M, 6M }.
+   On fabrique donc une courbe qui part du bon niveau et finit au cours actuel.
+   (À remplacer par de vraies séries quand tu en auras : item.chartData = { '1d': [...], ... }) */
+
+// Générateur pseudo-aléatoire : même ticker + même période = toujours la même courbe
+function seededRandom(seed) {
+    let h = 1779033703 ^ seed.length;
+    for (let i = 0; i < seed.length; i++) {
+        h = Math.imul(h ^ seed.charCodeAt(i), 3432918353);
+        h = (h << 13) | (h >>> 19);
+    }
+    return function () {
+        h = Math.imul(h ^ (h >>> 16), 2246822507);
+        h = Math.imul(h ^ (h >>> 13), 3266489909);
+        h ^= h >>> 16;
+        return (h >>> 0) / 4294967296;
+    };
+}
+
+function buildSeries(prix, pct, seed, points = 30) {
+    const rand = seededRandom(seed);
+    const start = prix / (1 + pct / 100);                       // niveau d'il y a une période
+    const amp = Math.max(Math.abs(prix - start), prix * 0.004) * 0.25;
+
+    const walk = [0];
+    for (let i = 1; i < points; i++) walk.push(walk[i - 1] + (rand() - 0.5));
+    const last = walk[points - 1];
+
+    return walk.map((w, i) => {
+        const t = i / (points - 1);
+        const bridge = w - t * last;                            // vaut 0 au début et à la fin
+        return start + (prix - start) * t + bridge * amp;
+    });
+}
+
+function ensureChartData(item) {
+    if (!item.hist) return;
+    // Déjà une série par période : rien à faire
+    if (item.chartData && !Array.isArray(item.chartData)) return;
+
+    const pct = key => parseFloat(item.hist[key]) || 0;
+    item.chartData = {
+        '1d':  buildSeries(item.prix, pct('1J'), item.ticker + '1d'),
+        '7d':  buildSeries(item.prix, pct('7J'), item.ticker + '7d'),
+        '1mo': buildSeries(item.prix, pct('1M'), item.ticker + '1mo'),
+        '6mo': buildSeries(item.prix, pct('6M'), item.ticker + '6mo'),
+        // 1 an : la courbe déjà écrite à la main pour l'action si elle existe, sinon une estimation (2 x variation 6 mois)
+        '1y':  Array.isArray(item.chartData)
+                   ? item.chartData
+                   : buildSeries(item.prix, pct('6M') * 2, item.ticker + '1y')
+    };
+}
+
+function createInfoRow(label, valueHTML) {
+    return `
+        <div class="stock-infos__row">
+            <dt>${label}</dt>
+            <dd>${valueHTML}</dd>
+        </div>
+    `;
+}
+
+function changeClass(variation) {
+    return String(variation).startsWith('-') ? 'change-down' : 'change-up';
+}
+
+// Infos d'une action : fondamentaux
+function createFundamentalsRows(action) {
+    const isUpRes = action.resEvol.startsWith('+');
+    const isUpDiv = action.divEvol.startsWith('+');
+    return `
+        ${createInfoRow('Cap. Boursière', action.cap)}
+        ${createInfoRow('Résultat Net', `${action.res} <span class="${isUpRes ? 'change-up' : 'change-down'}">(${action.resEvol})</span>`)}
+        ${createInfoRow('Dividendes', action.div)}
+        ${createInfoRow('Évol. Dividendes', `<span class="${isUpDiv ? 'change-up' : 'change-down'}">${action.divEvol}</span>`)}
+        ${createInfoRow('PER', action.per)}
+        ${createInfoRow('Ratio Actifs/Cap', action.ratio)}
+    `;
+}
+
+// Infos d'un indice ou d'une paire de devises : type, cotation et variations
+function createMarketRows(item) {
+    const type = item.ticker.includes('/') ? 'Paire de devises' : 'Indice boursier';
+    const variation = key => `<span class="${changeClass(item.hist[key])}">${item.hist[key]}</span>`;
+    return `
+        ${createInfoRow('Type', type)}
+        ${createInfoRow('Cotation', item.devise)}
+        ${createInfoRow('Variation 1 jour', variation('1J'))}
+        ${createInfoRow('Variation 7 jours', variation('7J'))}
+        ${createInfoRow('Variation 1 mois', variation('1M'))}
+        ${createInfoRow('Variation 6 mois', variation('6M'))}
+    `;
+}
+
+// Un cours < 10 (paires de devises) est affiché avec 4 décimales
+function formatPrice(prix) {
+    return prix.toFixed(prix < 10 ? 4 : 2);
+}
+
+function createCardHTML(action) {
+    actionsIndex[action.ticker] = action;
+    ensureChartData(action);
+    const infosRows = action.cap ? createFundamentalsRows(action) : createMarketRows(action);
+
+    const periods = [
+        ['1d', '1J'], ['7d', '7J'], ['1mo', '1M'], ['6mo', '6M'], ['1y', '1A']
+    ].map(([key, label]) => `
+        <button type="button" class="stock-chart__period${key === DEFAULT_PERIOD ? ' is-active' : ''}" data-period="${key}">${label}</button>
+    `).join('');
+
+    return `
+        <article class="stock-card" id="trader-${action.ticker}" data-symbol="${action.ticker}">
+
+            <header class="stock-card__header">
+                <h2 class="stock-card__name">${action.nom} (${action.ticker})</h2>
+                <p class="stock-card__price">${formatPrice(action.prix)} ${action.devise}</p>
+            </header>
+
+            <aside class="stock-card__infos">
+                <dl class="stock-infos">
+                    ${infosRows}
+                </dl>
+            </aside>
+
+            <section class="stock-card__chart">
+                <div class="stock-chart__periods" role="group" aria-label="Période du graphique">
+                    ${periods}
+                </div>
+                <div class="stock-chart__canvas" id="chart-${action.ticker}">
+                    ${createChartHTML(getSeries(action.chartData, DEFAULT_PERIOD), DEFAULT_PERIOD, action.devise)}
+                </div>
+            </section>
+
+            <footer class="stock-card__actions">
+                <a href="#achat-${action.ticker}" class="stock-btn stock-btn--buy">Acheter ${action.nom}</a>
+                <a href="#vente-${action.ticker}" class="stock-btn stock-btn--sell">Vendre ${action.nom}</a>
+
+                <div class="stock-tooltip">
+                    <button type="button" class="stock-tooltip__trigger" aria-label="Informations sur ${action.nom}">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </button>
+                    <div class="stock-tooltip__content" role="tooltip">
+                        <strong>${action.nom}</strong>
+                        <p>${action.desc}</p>
+                    </div>
+                </div>
+            </footer>
+
+        </article>
+    `;
+}
+
+/* ===== Navigation entre les actions ===== */
+
+// À appeler une fois après avoir généré les cartes, avec le même tableau de données
+function buildActionsNav(actions) {
+    const list = document.getElementById('actions-nav-list');
+    if (!list) return;
+
+    list.innerHTML = actions.map(a => `
+        <li>
+            <a class="actions-nav__link" href="#trader-${a.ticker}">
+                <span class="actions-nav__ticker">${a.ticker}</span>${a.nom}
+            </a>
+        </li>
+    `).join('');
+}
+
+// Ouverture / fermeture du menu en responsive
+(function initActionsNav() {
+    const nav = document.getElementById('actions-nav');
+    if (!nav) return;
+
+    const toggle = nav.querySelector('.actions-nav__toggle');
+
+    function setOpen(open) {
+        nav.classList.toggle('is-open', open);
+        toggle.setAttribute('aria-expanded', open);
+    }
+
+    // Clic sur le bouton : ouvre / ferme
+    toggle.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
+
+    // Clic sur un lien : on navigue puis on referme
+    nav.addEventListener('click', (e) => {
+        if (e.target.closest('.actions-nav__link')) setOpen(false);
+    });
+
+    // Clic / toucher n'importe où ailleurs : on referme
+    document.addEventListener('click', (e) => {
+        if (!nav.contains(e.target)) setOpen(false);
+    });
+
+    // Touche Échap : on referme
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setOpen(false);
+    });
+})();
+
 
 // ==========================================
 // 4. CLASSEMENT DYNAMIQUE (Page Classement)
@@ -850,9 +1073,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (actionsContainer) {
         actionsContainer.innerHTML = marketData.actions.map(createCardHTML).join('');
         if(typeof cardsHTML !== 'undefined') actionsContainer.innerHTML += cardsHTML;
+        buildActionsNav(marketData.actions);
+    }
+
+    // Pages Indices et Devises : mêmes cartes que les actions
+    const indicesDetail = document.getElementById('indices-detail-container');
+    if (indicesDetail) {
+        indicesDetail.innerHTML = marketData.indices.map(createCardHTML).join('');
+        buildActionsNav(marketData.indices);
+    }
+    const devisesDetail = document.getElementById('devises-detail-container');
+    if (devisesDetail) {
+        devisesDetail.innerHTML = marketData.devises.map(createCardHTML).join('');
+        buildActionsNav(marketData.devises);
     }
     if (indicesContainer) indicesContainer.innerHTML = marketData.indices.map(createCard).join('');
     if (devisesContainer) devisesContainer.innerHTML = marketData.devises.map(createCard).join('');
+
+
+    
     initialiserCarrousels();
 
     if (document.getElementById('leaderboard-body')) {
@@ -1039,6 +1278,22 @@ document.addEventListener('DOMContentLoaded', () => {
 // 9. PORTEFEUILLE : Gestion des graphiques
 // ==========================================
 document.addEventListener("DOMContentLoaded", function() {
+    // bouton de scroll top
+    let scrollBtn = document.getElementById("scrollTopBtn");
+    const nav = document.querySelector('nav-auth');
+    
+    window.addEventListener("scroll", function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        scrollBtn.style.display = "none";
+        // Min. 600px de scroll pour afficher le bouton
+        if (scrollTop > 600) {
+            scrollBtn.style.display = "flex";
+        } else {
+            scrollBtn.style.display = "none";
+        }
+    })
+
+
     const ctxPerf = document.getElementById('portfolioPerformanceChart');
     if (ctxPerf) {
         const contextPerf = ctxPerf.getContext('2d');
@@ -1150,3 +1405,45 @@ document.addEventListener('click', async (e) => {
         }
     }
 });
+
+
+/* ===== Changement de période (délégation : fonctionne pour toutes les cartes) ===== */
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.stock-chart__period');
+    if (!btn) return;
+
+    const card = btn.closest('.stock-card');
+    const action = actionsIndex[card.dataset.symbol];
+    if (!action) return;
+
+    card.querySelectorAll('.stock-chart__period').forEach(b => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+
+    card.querySelector('.stock-chart__canvas').innerHTML =
+        createChartHTML(getSeries(action.chartData, btn.dataset.period), btn.dataset.period, action.devise);
+});
+
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function injectScrollTopButton() {
+    // Évite les doublons si le bouton est déjà dans la page
+    if (document.getElementById('scrollTopBtn')) return;
+
+    const buttonHTML = `
+        <button id="scrollTopBtn" onclick="scrollToTop()" title="Remonter en haut">
+            <img src="https://biggbde.fr/assets/svg/angle-up-svgrepo-com.svg" alt="Angled Up Arrow SVG ; AUTHOR: FortAwesome" class="scroll-icon" />
+        </button>
+    `;
+
+    // Dans le footer en priorité, sinon à la fin du body
+    const target = document.querySelector('footer.app-footer') || document.querySelector('footer') || document.body;
+    target.insertAdjacentHTML('beforeend', buttonHTML);
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectScrollTopButton);
+} else {
+    injectScrollTopButton();
+}
