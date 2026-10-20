@@ -377,7 +377,7 @@ body.trader-investir { background-color: var(--bg-main); color: var(--text-main)
 .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
 .card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-panel); display: flex; flex-direction: column; backdrop-filter: blur(10px); }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.asset-name { font-weight: bold; font-size: 1.1rem; color: #fff; }
+.asset-name { font-weight: 700; font-size: 1.1rem; color: #fff; }
 .asset-ticker {
     color: #7f8c8d;
     font-size: 0.85rem;
@@ -386,7 +386,7 @@ body.trader-investir { background-color: var(--bg-main); color: var(--text-main)
     border-radius: 4px; }
 .card .price { 
     font-size: 1.4rem;
-    font-weight: bold;
+    font-weight: 700;
     margin-bottom: 15px;
     color: #fff; }
 .history {
@@ -400,8 +400,8 @@ body.trader-investir { background-color: var(--bg-main); color: var(--text-main)
     gap: 6px;
 }
 .history div { display: flex; justify-content: space-between; }
-.positive { color: var(--color-up); font-weight: bold; }
-.negative { color: var(--color-down); font-weight: bold; }
+.positive { color: var(--color-up); font-weight: 700; }
+.negative { color: var(--color-down); font-weight: 700; }
 
 .btn-trade {
     margin-top: auto;
@@ -411,7 +411,7 @@ body.trader-investir { background-color: var(--bg-main); color: var(--text-main)
     padding: 10px;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
     text-align: center;
     text-decoration: none;
     transition: filter 0.2s;
@@ -480,7 +480,7 @@ body.trader-investir { background-color: var(--bg-main); color: var(--text-main)
 .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
 .card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-panel); display: flex; flex-direction: column; backdrop-filter: blur(10px); }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.asset-name { font-weight: bold; font-size: 1.1rem; color: #fff; }
+.asset-name { font-weight: 700; font-size: 1.1rem; color: #fff; }
 .asset-ticker {
     color: #7f8c8d;
     font-size: 0.85rem;
@@ -489,7 +489,7 @@ body.trader-investir { background-color: var(--bg-main); color: var(--text-main)
     border-radius: 4px; }
 .card .price { 
     font-size: 1.4rem;
-    font-weight: bold;
+    font-weight: 700;
     margin-bottom: 15px;
     color: #fff; }
 .history {
@@ -503,8 +503,8 @@ body.trader-investir { background-color: var(--bg-main); color: var(--text-main)
     gap: 6px;
 }
 .history div {gap:15px;justify-content: flex-start; }
-.positive { color: var(--color-up); font-weight: bold; }
-.negative { color: var(--color-down); font-weight: bold; }
+.positive { color: var(--color-up); font-weight: 700; }
+.negative { color: var(--color-down); font-weight: 700; }
 
 .btn-trade {
     margin-top: auto;
@@ -514,7 +514,7 @@ body.trader-investir { background-color: var(--bg-main); color: var(--text-main)
     padding: 10px;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
     text-align: center;
     text-decoration: none;
     transition: filter 0.2s;
@@ -1426,47 +1426,49 @@ body.trader-investir
 
 /* ===== Carte d'action : adaptation à la largeur =====
    À coller APRÈS le CSS de la carte et de la nav (il surcharge certaines règles).
-   Principe : la carte est un "container", et les tailles de texte / boutons /
-   graphique se calculent en fonction de SA largeur (unité cqi = 1% de la largeur de la carte). */
+   Principe : les tailles (texte, boutons, graphique) se calculent à partir de --cq,
+   qui vaut environ 1% de la largeur d'une carte (estimée depuis la largeur de l'écran). */
 
-.stock-card {
-    container-type: inline-size;
+:root { --cq: 0.64vw; }                         /* grand écran : cartes avec 18% de marge de chaque côté */
+@media (max-width: 1000px) {
+    :root { --cq: 0.92vw; }                     /* écran réduit : cartes quasi pleine largeur */
 }
+
 .stock-card > * { min-width: 0; }              /* empêche un enfant de forcer la carte à s'élargir */
 
 /* --- Textes qui rétrécissent quand la place manque --- */
-.stock-card__name  { font-size: clamp(1.05rem, 5cqi, 1.3rem); overflow-wrap: anywhere; }
-.stock-card__price { font-size: clamp(1.4rem, 7cqi, 2rem); }
+.stock-card__name  { font-size: clamp(1.05rem, calc(5 * var(--cq)), 1.3rem); overflow-wrap: anywhere; }
+.stock-card__price { font-size: clamp(1.4rem, calc(7 * var(--cq)), 2rem); }
 
 .stock-infos__row {
     flex-wrap: wrap;
     column-gap: 8px;
-    font-size: clamp(0.72rem, 3.4cqi, 0.9rem);
+    font-size: clamp(0.72rem, calc(3.4 * var(--cq)), 0.9rem);
 }
 .stock-infos__row dd { margin-left: auto; text-align: right; }
 
 /* --- Graphique --- */
 .stock-chart__periods { flex-wrap: wrap; }
 .stock-chart__period {
-    padding: 6px clamp(8px, 2.5cqi, 12px);
-    font-size: clamp(0.7rem, 3cqi, 0.9rem);
+    padding: 6px clamp(8px, calc(2.5 * var(--cq)), 12px);
+    font-size: clamp(0.7rem, calc(3 * var(--cq)), 0.9rem);
 }
-.stock-chart__canvas { height: clamp(200px, 40cqi, 320px); }
+.stock-chart__canvas { height: clamp(200px, calc(40 * var(--cq)), 320px); }
 
 /* --- Boutons Acheter / Vendre / info --- */
-.stock-card__actions { gap: clamp(6px, 2cqi, 12px); }
+.stock-card__actions { gap: clamp(6px, calc(2 * var(--cq)), 12px); }
 .stock-btn {
     min-width: 0;
-    padding: 10px clamp(6px, 2.5cqi, 16px);
-    font-size: clamp(0.68rem, 3.2cqi, 1rem);
+    padding: 10px clamp(6px, calc(2.5 * var(--cq)), 16px);
+    font-size: clamp(0.68rem, calc(3.2 * var(--cq)), 1rem);
     line-height: 1.2;
 }
 .stock-tooltip { flex: none; }
 .stock-tooltip__trigger {
-    width: clamp(36px, 10cqi, 44px);
-    height: clamp(36px, 10cqi, 44px);
+    width: clamp(36px, calc(10 * var(--cq)), 44px);
+    height: clamp(36px, calc(10 * var(--cq)), 44px);
 }
-.stock-tooltip__content { width: min(260px, 80cqi); }
+.stock-tooltip__content { width: min(260px, calc(80 * var(--cq))); }
 
 /* --- Marges des tuiles : 18% sur grand écran (place pour la nav), puis adaptatives --- */
 @media (max-width: 1000px) {
@@ -1641,7 +1643,7 @@ scroll-padding-top: 130px;}
     height: 100%;
     padding-top: 8px;                              /* évite que la valeur du haut soit coupée */
     box-sizing: border-box;
-    font-size: clamp(0.62rem, 2.8cqi, 0.75rem);    /* légendes qui rétrécissent avec la carte */
+    font-size: clamp(0.62rem, calc(2.8 * var(--cq)), 0.75rem);    /* légendes qui rétrécissent avec la carte */
     color: var(--text-secondary);
 }
 
@@ -1681,6 +1683,6 @@ scroll-padding-top: 130px;}
 .stock-chart__x span { white-space: nowrap; }
 
 /* Carte étroite : on n'affiche qu'une légende de temps sur deux */
-@container (max-width: 440px) {
+@media (max-width: 480px) {
     .stock-chart__x span:nth-child(even) { display: none; }
 }
