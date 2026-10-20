@@ -3,33 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeLab - Mon Portefeuille</title>
-    
+    <title>Mon Portefeuille - TradeLab</title>
+    <link href="/css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" type="image/png" href="/favicons/favicon-96x96.png?v=20260928" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg?v=20260928" />
+    <link rel="shortcut icon" href="/favicons/favicon.ico?v=20260928" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png?v=20260928" />
+    <meta name="apple-mobile-web-app-title" content="TradeLab" />
+    <link rel="manifest" href="/favicons/site.webmanifest?v=20260928" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="../css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-logo" onclick="window.location.href='../index.html'" style="cursor: pointer;"><img src="../favicons/favicon-96x96.png" sizes="96x96" width="20%"> TradeLab</div>
+        <div class="nav-logo" onclick="window.location.href='/index.html'" style="cursor: pointer;"><img src="/favicons/favicon-96x96.png" sizes="96x96" width="20%"> TradeLab</div>
         
         <ul class="nav-links">
             <li class="dropdown">
-                <a href="../trader-et-investir/" onclick="window.location.href='../trader-et-investir/'"><i class="fa-solid fa-arrow-trend-up"></i> Trader & Investir ▾</a>
+                <a href="/trader-et-investir/" onclick="window.location.href='/trader-et-investir/'"><i class="fa-solid fa-arrow-trend-up"></i> Trader & Investir ▾</a>
                 <ul class="dropdown-menu">
                     <li><a href="/trader-et-investir/actions/"><i class="fa-solid fa-building"></i> Actions</a></li>
                     <li><a href="/trader-et-investir/indices/"><i class="fa-solid fa-chart-pie"></i> Indices</a></li>
                     <li><a href="/trader-et-investir/devises/"><i class="fa-solid fa-coins"></i> Devises</a></li>
                 </ul>
             </li>
-            <li><a href="../actualites/"><i class="fa-regular fa-newspaper"></i> Actus</a></li>
-            <li><a href="../classement/classement.html"><i class="fa-solid fa-trophy"></i> Classement</a></li>
+            <li><a href="/actualites/index.html"><i class="fa-regular fa-newspaper"></i> Actus</a></li>
+            <li><a href="/classement/classement.html"><i class="fa-solid fa-trophy"></i> Classement</a></li>
         </ul>
 
         <div class="nav-auth">
-            <button class="btn-primary" onclick="window.location.href='../connexion/connexion.html'">Connexion</button>        
+            <button class="btn-primary" onclick="window.location.href='/connexion/connexion.html'">Connexion</button>        
         </div>
     </nav>
 
@@ -215,6 +221,6 @@
         </div>
         <div class="footer-bottom">&copy; 2026 SAE Simulateur Boursier - Équipe 4. Projet étudiant.</div>
     </footer>
-    <script src="../js/script.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 </html>
