@@ -17,6 +17,9 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
+// ==========================================
+// MIDDLEWARES
+// ========================
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -491,6 +494,7 @@ app.get('/api/sessions/:sessionId/leaderboard', wrap(async (req, res) => {
     });
 }));
 
+// ACTUALITÉS (flux RSS, avec cache de 5 min et un flux de secours)
 app.get('/api/news', async (req, res) => {
     try {
         const xml = await cachedFetch('news', [
@@ -504,6 +508,7 @@ app.get('/api/news', async (req, res) => {
     }
 });
 
+// AGENDA ÉCONOMIQUE (cache de 15 min)
 app.get('/api/calendar', async (req, res) => {
     try {
         const json = await cachedFetch('calendar',
