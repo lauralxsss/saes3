@@ -121,6 +121,38 @@ async function getParticipants(sessionId) {
     return data.map(toParticipant);
 }
 
+// Récupère une URL externe avec un petit cache mémoire (évite de marteler les sites sources)
+const cache = {};
+
+async function cachedFetch(key, urls, ttlMs) {
+    const hit = cache[key];
+    if (hit && Date.now() - hit.t < ttlMs) return hit.body;
+
+    const liste = Array.isArray(urls) ? urls : [urls];
+    let derniereErreur = null;
+
+    // On essaie chaque URL à tour de rôle jusqu'à ce qu'une réponde
+    for (const url of liste) {
+        try {
+            const r = await fetch(url, {
+                headers: { 'User-Agent': 'Mozilla/5.0 (TradeLab)' },
+                signal: AbortSignal.timeout(8000)
+            });
+            if (!r.ok) throw new Error(`HTTP ${r.status} (${url})`);
+            const body = await r.text();
+            cache[key] = { t: Date.now(), body };
+            return body;
+        } catch (e) {
+            derniereErreur = e;
+            console.error('⚠️ Source indisponible :', e.message);
+        }
+    }
+
+    // Toutes les sources ont échoué : on renvoie l'ancien cache s'il existe, même périmé
+    if (hit) return hit.body;
+    throw derniereErreur;
+}
+
 
 // ==========================================
 // ROUTES API - AUTHENTIFICATION
@@ -462,25 +494,29 @@ app.get('/api/sessions/:sessionId/leaderboard', wrap(async (req, res) => {
     });
 }));
 
-// ACTUALITÉS
+// ACTUALITÉS (flux RSS, avec cache de 5 min et un flux de secours)
 app.get('/api/news', async (req, res) => {
     try {
-        const rssUrl = 'https://www.lefigaro.fr/rss/figaro_economie.xml';
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
-
-        const response = await fetch(proxyUrl, {
-            headers: { 'User-Agent': 'Mozilla/5.0' },
-            signal: AbortSignal.timeout(8000)
-        });
-
-        if (!response.ok) throw new Error(`Erreur réseau: ${response.status}`);
-
-        const xml = await response.text();
+        const xml = await cachedFetch('news', [
+            'https://services.lesechos.fr/rss/les-echos-finance-marches.xml',
+            'https://www.lefigaro.fr/rss/figaro_economie.xml'
+        ], 5 * 60e3);
         res.type('application/xml').send(xml);
+    } catch (e) {
+        console.error('Erreur /api/news :', e.message);
+        res.status(502).json({ message: "Impossible de récupérer les actualités." });
+    }
+});
 
-    } catch (error) {
-        console.error("Erreur serveur actus :", error.message);
-        res.status(500).json({ error: "Impossible de récupérer les actualités" });
+// AGENDA ÉCONOMIQUE (cache de 15 min)
+app.get('/api/calendar', async (req, res) => {
+    try {
+        const json = await cachedFetch('calendar',
+            'https://nfs.faireconomy.media/ff_calendar_thisweek.json', 15 * 60e3);
+        res.type('application/json').send(json);
+    } catch (e) {
+        console.error('Erreur /api/calendar :', e.message);
+        res.status(502).json({ message: "Impossible de récupérer l'agenda." });
     }
 });
 

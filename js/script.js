@@ -42,53 +42,48 @@ async function rejoindre(sessionId, pseudo) {
 
 // ==========================================
 // 2. ACTUALITÉS & AGENDA ÉCONOMIQUE
+//    (passent par TON serveur : /api/news et /api/calendar)
 // ==========================================
 async function fetchFrenchNews() {
-    const container = document.getElementById('news-container');
-    if (!container) return;
+    const newsContainer = document.getElementById('news-container');
+    if (!newsContainer) return;
 
-    const fallbackArticles = [
-        { title: "🔴 En direct : Suivez l'évolution du CAC 40", link: "#", source: "Boursorama", image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=500&q=60" },
-        { title: "Analyse des marchés de la semaine", link: "#", source: "ZoneBourse", image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=500&q=60" }
-    ];
-
-    const renderArticles = (articles, isFallback = false) => {
-        container.innerHTML = '';
-        articles.forEach((article) => {
-            const dateText = isFallback ? "En direct" : article.dateStr;
-            container.innerHTML += `
-                <div class="news-article">
-                    <div class="news-image-container"><img src="${article.image}" alt="Actu" class="news-img"></div>
-                    <div class="news-content">
-                        <a href="${article.link}" target="_blank" style="text-decoration: none; font-weight: 500;">${article.title}</a>
-                        <div class="news-meta"><span>${article.source}</span> • <span>${dateText}</span></div>
-                    </div>
-                </div>`;
-        });
-    };
+    newsContainer.innerHTML = '<p class="loading-text" style="color: #94A3B8;"><i class="fa-solid fa-spinner fa-spin"></i> Chargement des actualités...</p>';
 
     try {
         const response = await fetch('/api/news');
-        if (!response.ok) throw new Error("HTTP " + response.status);
-        const text = await response.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(text, "text/xml");
-        const items = Array.from(xmlDoc.querySelectorAll("item")).slice(0, 3);
-        if (items.length === 0) throw new Error("Flux vide");
+        if (!response.ok) throw new Error('HTTP ' + response.status);
 
-        const liveArticles = items.map((item, index) => {
-            const dateObj = new Date(item.querySelector("pubDate")?.textContent);
-            return {
-                title: item.querySelector("title")?.textContent || "Titre indisponible",
-                link: item.querySelector("link")?.textContent || "#",
-                source: "Le Figaro Éco",
-                dateStr: dateObj.toLocaleDateString('fr-FR') + ' à ' + dateObj.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}),
-                image: fallbackArticles[index % fallbackArticles.length].image
-            };
-        });
-        renderArticles(liveArticles, false);
+        const xmlText = await response.text();
+        const xmlDoc = new DOMParser().parseFromString(xmlText, 'text/xml');
+        const items = xmlDoc.querySelectorAll('item');
+
+        if (items.length === 0) throw new Error('Aucun article trouvé');
+
+        let html = '';
+        for (let i = 0; i < Math.min(5, items.length); i++) {
+            const title = items[i].querySelector('title')?.textContent || 'Titre indisponible';
+            const link = items[i].querySelector('link')?.textContent || '#';
+            const pubDate = items[i].querySelector('pubDate')?.textContent;
+
+            const dateObj = pubDate ? new Date(pubDate) : new Date();
+            const date = dateObj.toLocaleDateString('fr-FR');
+
+            html += `
+                <div class="news-article" style="margin-bottom: 15px; border-bottom: 1px solid #2A2E39; padding-bottom: 10px;">
+                    <h3 style="font-size: 16px; margin-bottom: 5px;">
+                        <a href="${link}" target="_blank" rel="noopener" style="color: var(--color-primary, #3B82F6); text-decoration: none;">
+                            ${title}
+                        </a>
+                    </h3>
+                    <div style="font-size: 12px; color: #94A3B8;">Publié le ${date}</div>
+                </div>
+            `;
+        }
+        newsContainer.innerHTML = html;
     } catch (error) {
-        renderArticles(fallbackArticles, true);
+        console.error('Erreur RSS :', error);
+        newsContainer.innerHTML = '<p style="color: #EF4444; font-size: 0.9rem;">Impossible de charger les actualités.</p>';
     }
 }
 
@@ -97,9 +92,7 @@ async function fetchEconomicCalendar() {
     if (!container) return;
 
     try {
-        const targetUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
-        const apiUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`;
-        const response = await fetch(apiUrl);
+        const response = await fetch('/api/calendar');
         if (!response.ok) throw new Error("Bloqué");
         const events = await response.json();
 
@@ -124,6 +117,7 @@ async function fetchEconomicCalendar() {
                 </div>`;
         });
     } catch (error) {
+        console.error('Erreur calendrier :', error);
         container.innerHTML = `<p style="font-size:0.9rem; color:var(--text-secondary); text-align:center;">Aucun événement majeur à venir.</p>`;
     }
 }
@@ -1278,20 +1272,16 @@ document.addEventListener('DOMContentLoaded', () => {
 // 9. PORTEFEUILLE : Gestion des graphiques
 // ==========================================
 document.addEventListener("DOMContentLoaded", function() {
-    // bouton de scroll top
-    let scrollBtn = document.getElementById("scrollTopBtn");
-    const nav = document.querySelector('nav-auth');
-    
+    // Bouton de scroll top : on le récupère DANS le listener,
+    // car il est injecté dans la page après ce DOMContentLoaded
     window.addEventListener("scroll", function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        scrollBtn.style.display = "none";
+        const scrollBtn = document.getElementById("scrollTopBtn");
+        if (!scrollBtn) return;
+
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         // Min. 600px de scroll pour afficher le bouton
-        if (scrollTop > 600) {
-            scrollBtn.style.display = "flex";
-        } else {
-            scrollBtn.style.display = "none";
-        }
-    })
+        scrollBtn.style.display = scrollTop > 600 ? "flex" : "none";
+    });
 
 
     const ctxPerf = document.getElementById('portfolioPerformanceChart');
