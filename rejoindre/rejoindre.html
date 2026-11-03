@@ -15,6 +15,25 @@
     <script src="/js/script.js" defer></script>
 </head>
 <body class="pro-layout auth-body">
+    <nav class="navbar">
+        <div class="nav-logo" onclick="window.location.href='/index.html'" style="cursor: pointer;"><img src="/favicons/favicon-96x96.png" sizes="96x96" width="20%"> TradeLab</div>
+        
+        <ul class="nav-links">
+            <li class="dropdown">
+                <a href="#" onclick="window.location.href='/trader-et-investir/'"><i class="fa-solid fa-arrow-trend-up"></i> Trader & Investir ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="/trader-et-investir/actions/"><i class="fa-solid fa-building"></i> Actions</a></li>
+                    <li><a href="/trader-et-investir/indices/"><i class="fa-solid fa-chart-pie"></i> Indices</a></li>
+                    <li><a href="/trader-et-investir/devises/"><i class="fa-solid fa-coins"></i> Devises</a></li>
+                </ul>
+            </li>
+            <li><a href="/actualites/"><i class="fa-regular fa-newspaper"></i> Actus</a></li>
+            <li><a href="/classement/"><i class="fa-solid fa-trophy"></i> Classement</a></li>
+        </ul>
+
+        <div class="nav-auth">
+        <button class="btn-primary" onclick="window.location.href='/rejoindre/rejoindre.html'">Connexion</button>        </div>
+    </nav>
 
     <div class="auth-container">
         <div class="auth-card">
@@ -80,6 +99,19 @@
             </div>
         </div>
     </div>
+
+    <footer class="app-footer">
+        <div class="footer-content">
+            <div class="footer-logo"><i class="fa-solid fa-chart-line"></i> TradeLab</div>
+            <div class="footer-links">
+                <a href="/mentions-legales/#mentions-legales">Mentions légales</a>
+                <a href="/mentions-legales/#cgu">CGU</a>
+                <a href="/mentions-legales/#rgpd">RGPD</a>
+            </div>
+            <div class="footer-status"><span class="status-dot"></span> Systèmes opérationnels</div>
+        </div>
+        <div class="footer-bottom">&copy; 2026 SAE Simulateur Boursier - Équipe 4. Projet étudiant.</div>
+    </footer>
 
 </body>
 </html>

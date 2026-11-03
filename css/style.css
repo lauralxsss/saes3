@@ -1219,8 +1219,8 @@ body.trader-investir
 /* =========================================
    PARCOURS REJOINDRE SIMULATION (Fintech UX)
    ========================================= */
-.auth-body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background-color: var(--bg-main); padding: 20px; }
-.auth-container { width: 100%; max-width: 440px; }
+.auth-body { align-items: center; justify-content: center; min-height: 100vh; background-color: var(--bg-main); padding: 20px; }
+.auth-container { display:block; width: 100%; max-width: 440px; margin-left: auto; margin-right: auto; margin-top: 10vh; padding-bottom: 10vh;}
 .auth-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 32px; box-shadow: var(--shadow-panel); }
 .auth-logo { font-size: 1.25rem; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 24px; cursor: pointer; }
 .auth-logo i { color: #2962FF; }
@@ -1233,7 +1233,12 @@ body.trader-investir
 .auth-footer a:hover { color: #fff; }
 
 /* Input Code spécifique */
-.input-session-code { text-transform: uppercase; font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 2px; font-size: 1.1rem; text-align: center; }
+.input-session-code { text-transform: uppercase; font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 7px; font-size: 1.1rem; text-align: center; background-color: var(--bg-hover);
+  border-radius: 5px;
+  color: white;
+border-block-color:var(--bg-input);height: 2.7em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;}
 
 /* Alertes d'erreur */
 .alert-error { background: rgba(242, 54, 69, 0.1); border: 1px solid rgba(242, 54, 69, 0.3); color: var(--color-down); padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
