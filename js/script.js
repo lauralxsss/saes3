@@ -983,7 +983,7 @@ function updateAuthUI() {
         let menuLinks = "";
         if (role === 'admin') {
             menuLinks = `
-                <a href="../admin/sessions.html" style="${linkStyle}" ${hoverFx}>
+                <a href="../admin/sessions/" style="${linkStyle}" ${hoverFx}>
                     <i class="fa-solid fa-gauge" style="margin-right: 8px; width: 16px; text-align: center;"></i> Espace Professeur
                 </a>
             `;
@@ -1116,7 +1116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (result.ok) {
                 // Succès : C'est le prof !
-                window.location.href = '../admin/sessions.html'; 
+                window.location.href = '../admin/sessions/'; 
             } else {
                 // Échec : C'est pas le prof ! On envoie l'élève pour rejoindre une session.
                 window.location.href = '../rejoindre.html'; 
