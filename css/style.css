@@ -47,16 +47,6 @@ body {
 .change-down { color: var(--color-down); font-weight: 600; }
 
 
-
-
-
-
-
-
-
-
-
-
 /* =========================================
    3. CLASSES UTILITAIRES 
    ========================================= */
@@ -186,7 +176,6 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 
 
 /* classement */
-/* Bloc autonome : il ne dépend d'aucune ancienne règle de la page Classement */
 
 /* ---------- Base ---------- */
 .pro-layout { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; }
@@ -367,8 +356,6 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 @media (max-width: 480px) {
     .fin-table td:nth-child(5), .fin-table th:nth-child(5) { display: none; }
 }
-
-
 
 
 
@@ -655,7 +642,6 @@ body.trader-investir
 .actions-main {
     margin-top: 35px;
 }
-
 
 
 
@@ -1707,4 +1693,83 @@ scroll-padding-top: 130px;}
 /* Carte étroite : on n'affiche qu'une légende de temps sur deux */
 @media (max-width: 480px) {
     .stock-chart__x span:nth-child(even) { display: none; }
+}
+
+/* ==========================================
+   DESIGN FLUX ACTUALITÉS (Sans modifier le JS)
+   ========================================== */
+
+/* Boîte principale */
+.news-section {
+    background-color: var(--bg-card, #1A1F2C);
+    border: 1px solid var(--border-color, #2A2E39);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 20px;
+}
+
+.news-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* On cible les articles générés par ton script actuel */
+.news-article {
+    background-color: var(--bg-body, #151924);
+    border: 1px solid var(--border-color, #2A2E39) !important; /* Écrase le border du style inline */
+    border-radius: 8px;
+    padding: 16px !important; /* Écrase le padding du style inline */
+    margin-bottom: 12px !important;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Barre latérale bleue qui apparaît au survol */
+.news-article::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: var(--color-primary, #3B82F6);
+    transform: scaleY(0);
+    transition: transform 0.2s ease;
+}
+
+/* Effets au survol sur l'article entier */
+.news-article:hover {
+    background-color: #1E2532;
+    border-color: var(--color-primary, #3B82F6) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.news-article:hover::before {
+    transform: scaleY(1);
+}
+
+/* Titre du lien */
+.news-article h3 {
+    margin-bottom: 8px !important;
+}
+
+.news-article h3 a {
+    color: #E2E8F0 !important; 
+    font-weight: 600;
+    line-height: 1.4;
+    transition: color 0.2s ease;
+}
+
+.news-article:hover h3 a {
+    color: var(--color-primary, #3B82F6) !important;
+}
+
+/* Date */
+.news-article > div:last-child {
+    color: #94A3B8 !important;
+    font-weight: 500;
 }

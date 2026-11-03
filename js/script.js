@@ -87,40 +87,7 @@ async function fetchFrenchNews() {
     }
 }
 
-async function fetchEconomicCalendar() {
-    const container = document.getElementById('calendar-container');
-    if (!container) return;
 
-    try {
-        const response = await fetch('/api/calendar');
-        if (!response.ok) throw new Error("Bloqué");
-        const events = await response.json();
-
-        const filteredEvents = events.filter(e => (e.impact === 'High' || e.impact === 'Medium') && ['USD','EUR','FR','DE'].includes(e.country));
-        const now = new Date();
-        const upcomingEvents = filteredEvents.filter(e => new Date(e.date) >= now).slice(0, 4);
-        if (upcomingEvents.length === 0) throw new Error("Vide");
-
-        container.innerHTML = '';
-        const days = ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'];
-        upcomingEvents.forEach(e => {
-            const eventDate = new Date(e.date);
-            const timeStr = eventDate.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
-            const isHigh = e.impact === 'High';
-            container.innerHTML += `
-                <div class="calendar-item">
-                    <div class="cal-date">${days[eventDate.getDay()]}<br><span>${timeStr}</span></div>
-                    <div class="cal-event">
-                        <span class="event-title">[${e.country}] ${e.title.substring(0, 30)}...</span>
-                        <span class="event-impact ${isHigh ? 'impact-high' : 'impact-medium'}">${isHigh ? 'Impact Fort' : 'Impact Moyen'}</span>
-                    </div>
-                </div>`;
-        });
-    } catch (error) {
-        console.error('Erreur calendrier :', error);
-        container.innerHTML = `<p style="font-size:0.9rem; color:var(--text-secondary); text-align:center;">Aucun événement majeur à venir.</p>`;
-    }
-}
 
 // ==========================================
 // 3. SIMULATEUR DE MARCHÉ (Effet Flash)
@@ -1048,12 +1015,9 @@ function updateAuthUI() {
 // 7. INITIALISATION GLOBALE DU SITE
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // ---> Lancement de l'affichage du profil connecté
     updateAuthUI();
 
     fetchFrenchNews();
-    fetchEconomicCalendar();
-
     isLive = true;
     marketInterval = setInterval(tickMarket, 2000);
     const actionsContainerTEI = document.getElementById('actions-container-TEI');
@@ -1069,8 +1033,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(typeof cardsHTML !== 'undefined') actionsContainer.innerHTML += cardsHTML;
         buildActionsNav(marketData.actions);
     }
-
-    // Pages Indices et Devises : mêmes cartes que les actions
     const indicesDetail = document.getElementById('indices-detail-container');
     if (indicesDetail) {
         indicesDetail.innerHTML = marketData.indices.map(createCardHTML).join('');
