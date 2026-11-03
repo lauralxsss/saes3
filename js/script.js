@@ -1319,13 +1319,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
             if (period === '1S') {
                 newLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
-                newData = [112000, 113100, 112500, 113800, 114000, 114250, 114250];
+                newData = [113200, 113500, 112900, 113800, 114000, 114250, 114250];
             } else if (period === '1M') {
                 newLabels = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
                 newData = [109000, 111200, 110500, 114250];
             } else if (period === '1A') {
-                newLabels = ['Janv', 'Mars', 'Juin', 'Sept'];
-                newData = [100000, 99800, 104200, 114250];
+                newLabels = ['Janv', 'Févr', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept'];
+                newData = [100000, 101200, 99800, 103500, 106000, 104200, 109800, 112000, 114250];
             }
 
             if (performanceChart) {
