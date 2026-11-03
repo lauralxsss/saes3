@@ -1253,7 +1253,7 @@ document.addEventListener("DOMContentLoaded", function() {
         gradient.addColorStop(0, 'rgba(34, 197, 94, 0.35)');
         gradient.addColorStop(1, 'rgba(34, 197, 94, 0.0)');
 
-        new Chart(contextPerf, {
+        performanceChart = new Chart(contextPerf, {
             type: 'line',
             data: {
                 labels: ['Janv', 'Févr', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept'],
@@ -1304,6 +1304,37 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+
+    // Gestion des boutons de période (1S, 1M, 1A)
+    const timeButtons = document.querySelectorAll('.time-btn');
+
+    timeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            timeButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            const period = this.getAttribute('data-period');
+
+            let newLabels = [];
+            let newData = [];
+
+            if (period === '1S') {
+                newLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+                newData = [112000, 113100, 112500, 113800, 114000, 114250, 114250];
+            } else if (period === '1M') {
+                newLabels = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
+                newData = [109000, 111200, 110500, 114250];
+            } else if (period === '1A') {
+                newLabels = ['Janv', 'Mars', 'Juin', 'Sept'];
+                newData = [100000, 99800, 104200, 114250];
+            }
+
+            if (performanceChart) {
+                performanceChart.data.labels = newLabels;
+                performanceChart.data.datasets[0].data = newData;
+                performanceChart.update();
+            }
+        });
+    });
 });
 
 
