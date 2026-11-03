@@ -1554,7 +1554,7 @@ scroll-padding-top: 130px;}
 .stock-card { scroll-margin-top: 24px; }       /* marge à l'arrivée sur une carte */
  
 .actions-nav {
-    --actions-nav-top: 96px;                   /* distance sous le haut de l'écran (sous ta navbar) */
+    --actions-nav-top: 155px;                   /* distance sous le haut de l'écran (sous ta navbar) */
     --actions-nav-bg: #12161e;                 /* fond opaque, à adapter à ton thème */
  
     position: fixed;                           /* suit le scroll */
@@ -1611,7 +1611,7 @@ scroll-padding-top: 130px;}
 }
  
 /* ===== Responsive : bouton flottant + menu par-dessus ===== */
-@media (max-width: 1000px) {
+@media (max-width: 1410px) {
     .actions-nav {
         top: auto;                             /* ancré en bas de l'écran */
         bottom: 16px;
