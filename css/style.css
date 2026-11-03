@@ -1783,47 +1783,27 @@ scroll-padding-top: 130px;}
    AGENDA ÉCONOMIQUE (Widget Investing.com)
    ========================================== */
 
-/* Conteneur du calendrier */
 .calendar-wrapper {
     margin-top: 15px;
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid var(--border-color, #2A2E39);
-    background: #fff; /* Requis pour que l'inversion fonctionne bien */
-    /* Petite ombre douce */
+    background: #fff; 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    height: 650px; 
 }
 
 .calendar-wrapper iframe {
     display: block;
-    width: 100%;
+    width: 125%;
+    height: 125%;
+    
+    transform: scale(0.8);
+    transform-origin: top left;
+    
+    /* Filtre Dark Mode */
     filter: invert(0.9) hue-rotate(180deg) brightness(1.1) contrast(0.85);
     transition: filter 0.3s ease;
-}
-
-/* Texte de mention légale en bas */
-.calendar-attribution {
-    font-family: 'Inter', sans-serif;
-    text-align: center;
-    margin-top: 10px;
-}
-
-.calendar-attribution span {
-    font-size: 11px;
-    color: #64748B; /* Gris discret */
-}
-
-.calendar-attribution a {
-    font-size: 11px;
-    color: var(--color-primary, #3B82F6);
-    font-weight: 600;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.calendar-attribution a:hover {
-    color: #60A5FA;
-    text-decoration: underline;
 }
 
 /* ==========================================

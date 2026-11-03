@@ -41,12 +41,11 @@ async function rejoindre(sessionId, pseudo) {
 
 
 // ==========================================
-// 2. ACTUALITÉS & AGENDA ÉCONOMIQUE
-//    (passent par TON serveur : /api/news et /api/calendar)
+// 2. ACTUALITÉS & AGENDA ÉCONOMIQUE (Page d'accueil)
 // ==========================================
 async function fetchFrenchNews() {
     const newsContainer = document.getElementById('news-container');
-    if (!newsContainer) return;
+    if (!newsContainer) return; // Sécurité : arrête la fonction si on n'est pas sur l'accueil
 
     newsContainer.innerHTML = '<p class="loading-text" style="color: #94A3B8;"><i class="fa-solid fa-spinner fa-spin"></i> Chargement des actualités...</p>';
 
@@ -86,7 +85,6 @@ async function fetchFrenchNews() {
         newsContainer.innerHTML = '<p style="color: #EF4444; font-size: 0.9rem;">Impossible de charger les actualités.</p>';
     }
 }
-
 
 
 // ==========================================
@@ -272,17 +270,11 @@ const actionsIndex = {};
 
 const DEFAULT_PERIOD = '1y';
 
-// chartData peut être :
-//  - un tableau simple          -> devient la série 1 an, les autres périodes sont générées (voir ensureChartData)
-//  - un objet { '1d': [...], '7d': [...], '1mo': [...], '6mo': [...], '1y': [...] }
 function getSeries(chartData, period) {
     if (Array.isArray(chartData)) return chartData;
     return chartData[period] || chartData[DEFAULT_PERIOD] || [];
 }
 
-/* ===== Graphique : courbe + légendes (valeurs à gauche, temps en bas) ===== */
-
-// Durée couverte par chaque période + format des légendes de temps
 const PERIOD_CONFIG = {
     '1d':  { ms: 24 * 3600e3,  format: { hour: '2-digit', minute: '2-digit' } },
     '7d':  { ms: 7 * 86400e3,  format: { weekday: 'short', day: 'numeric' } },
@@ -291,14 +283,13 @@ const PERIOD_CONFIG = {
     '1y':  { ms: 365 * 86400e3, format: { month: 'short', year: '2-digit' } }
 };
 
-// Calcule des graduations "rondes" (10, 20, 30...) qui encadrent les données
 function niceScale(min, max, targetTicks = 5) {
     if (min === max) {
         const flat = Math.abs(min) * 0.01 || 1;
         min -= flat;
         max += flat;
     }
-    const margin = (max - min) * 0.03;           // un peu d'air au-dessus et en dessous de la courbe
+    const margin = (max - min) * 0.03;
     min -= margin;
     max += margin;
 
@@ -311,14 +302,12 @@ function niceScale(min, max, targetTicks = 5) {
     const lo = Math.floor(min / step) * step;
     const hi = Math.ceil(max / step) * step;
     const count = Math.round((hi - lo) / step) + 1;
-    const decimals = Math.min(4, (String(step).split('.')[1] || '').length);   // 4 décimales max (paires de devises)
+    const decimals = Math.min(4, (String(step).split('.')[1] || '').length);
 
-    // Du haut vers le bas, comme à l'écran
     const ticks = Array.from({ length: count }, (_, i) => hi - i * step);
     return { lo, hi, ticks, decimals };
 }
 
-// Légendes de temps : 5 repères répartis de "il y a X" jusqu'à maintenant
 function getTimeLabels(period, count = 5) {
     const cfg = PERIOD_CONFIG[period] || PERIOD_CONFIG[DEFAULT_PERIOD];
     const end = Date.now();
@@ -345,7 +334,6 @@ function createChartHTML(data, period, devise) {
     const isUp = data[data.length - 1] >= data[0];
     const strokeColor = isUp ? 'var(--color-up)' : 'var(--color-down)';
 
-    // Lignes de repère horizontales + légendes de valeur (alignées sur les mêmes positions)
     const lastTick = ticks.length - 1;
     const gridLines = ticks.map((_, i) => {
         const y = (i / lastTick) * height;
@@ -356,7 +344,6 @@ function createChartHTML(data, period, devise) {
         `${v.toLocaleString('fr-FR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} ${devise}`
     );
     const yLabels = yTexts.map((text, i) => `<span style="top:${(i / lastTick) * 100}%">${text}</span>`).join('');
-    // La colonne des valeurs s'adapte à la longueur du texte (ex. "14 000 pts")
     const yWidth = (Math.max(...yTexts.map(t => t.length)) * 0.62 + 0.4).toFixed(2);
 
     const xLabels = getTimeLabels(period).map(t => `<span>${t}</span>`).join('');
@@ -376,12 +363,6 @@ function createChartHTML(data, period, devise) {
     `;
 }
 
-/* ===== Séries générées à partir des variations (actions, indices, devises) =====
-   Pas d'historique complet, seulement hist { 1J, 7J, 1M, 6M }.
-   On fabrique donc une courbe qui part du bon niveau et finit au cours actuel.
-   (À remplacer par de vraies séries quand tu en auras : item.chartData = { '1d': [...], ... }) */
-
-// Générateur pseudo-aléatoire : même ticker + même période = toujours la même courbe
 function seededRandom(seed) {
     let h = 1779033703 ^ seed.length;
     for (let i = 0; i < seed.length; i++) {
@@ -398,7 +379,7 @@ function seededRandom(seed) {
 
 function buildSeries(prix, pct, seed, points = 30) {
     const rand = seededRandom(seed);
-    const start = prix / (1 + pct / 100);                       // niveau d'il y a une période
+    const start = prix / (1 + pct / 100);
     const amp = Math.max(Math.abs(prix - start), prix * 0.004) * 0.25;
 
     const walk = [0];
@@ -407,14 +388,13 @@ function buildSeries(prix, pct, seed, points = 30) {
 
     return walk.map((w, i) => {
         const t = i / (points - 1);
-        const bridge = w - t * last;                            // vaut 0 au début et à la fin
+        const bridge = w - t * last;
         return start + (prix - start) * t + bridge * amp;
     });
 }
 
 function ensureChartData(item) {
     if (!item.hist) return;
-    // Déjà une série par période : rien à faire
     if (item.chartData && !Array.isArray(item.chartData)) return;
 
     const pct = key => parseFloat(item.hist[key]) || 0;
@@ -423,7 +403,6 @@ function ensureChartData(item) {
         '7d':  buildSeries(item.prix, pct('7J'), item.ticker + '7d'),
         '1mo': buildSeries(item.prix, pct('1M'), item.ticker + '1mo'),
         '6mo': buildSeries(item.prix, pct('6M'), item.ticker + '6mo'),
-        // 1 an : la courbe déjà écrite à la main pour l'action si elle existe, sinon une estimation (2 x variation 6 mois)
         '1y':  Array.isArray(item.chartData)
                    ? item.chartData
                    : buildSeries(item.prix, pct('6M') * 2, item.ticker + '1y')
@@ -443,7 +422,6 @@ function changeClass(variation) {
     return String(variation).startsWith('-') ? 'change-down' : 'change-up';
 }
 
-// Infos d'une action : fondamentaux
 function createFundamentalsRows(action) {
     const isUpRes = action.resEvol.startsWith('+');
     const isUpDiv = action.divEvol.startsWith('+');
@@ -457,7 +435,6 @@ function createFundamentalsRows(action) {
     `;
 }
 
-// Infos d'un indice ou d'une paire de devises : type, cotation et variations
 function createMarketRows(item) {
     const type = item.ticker.includes('/') ? 'Paire de devises' : 'Indice boursier';
     const variation = key => `<span class="${changeClass(item.hist[key])}">${item.hist[key]}</span>`;
@@ -471,7 +448,6 @@ function createMarketRows(item) {
     `;
 }
 
-// Un cours < 10 (paires de devises) est affiché avec 4 décimales
 function formatPrice(prix) {
     return prix.toFixed(prix < 10 ? 4 : 2);
 }
@@ -489,18 +465,15 @@ function createCardHTML(action) {
 
     return `
         <article class="stock-card" id="trader-${action.ticker}" data-symbol="${action.ticker}">
-
             <header class="stock-card__header">
                 <h2 class="stock-card__name">${action.nom} (${action.ticker})</h2>
                 <p class="stock-card__price">${formatPrice(action.prix)} ${action.devise}</p>
             </header>
-
             <aside class="stock-card__infos">
                 <dl class="stock-infos">
                     ${infosRows}
                 </dl>
             </aside>
-
             <section class="stock-card__chart">
                 <div class="stock-chart__periods" role="group" aria-label="Période du graphique">
                     ${periods}
@@ -509,11 +482,9 @@ function createCardHTML(action) {
                     ${createChartHTML(getSeries(action.chartData, DEFAULT_PERIOD), DEFAULT_PERIOD, action.devise)}
                 </div>
             </section>
-
             <footer class="stock-card__actions">
                 <a href="#achat-${action.ticker}" class="stock-btn stock-btn--buy">Acheter ${action.nom}</a>
                 <a href="#vente-${action.ticker}" class="stock-btn stock-btn--sell">Vendre ${action.nom}</a>
-
                 <div class="stock-tooltip">
                     <button type="button" class="stock-tooltip__trigger" aria-label="Informations sur ${action.nom}">
                         <i class="fa-solid fa-circle-info"></i>
@@ -524,14 +495,10 @@ function createCardHTML(action) {
                     </div>
                 </div>
             </footer>
-
         </article>
     `;
 }
 
-/* ===== Navigation entre les actions ===== */
-
-// À appeler une fois après avoir généré les cartes, avec le même tableau de données
 function buildActionsNav(actions) {
     const list = document.getElementById('actions-nav-list');
     if (!list) return;
@@ -545,7 +512,6 @@ function buildActionsNav(actions) {
     `).join('');
 }
 
-// Ouverture / fermeture du menu en responsive
 (function initActionsNav() {
     const nav = document.getElementById('actions-nav');
     if (!nav) return;
@@ -557,25 +523,20 @@ function buildActionsNav(actions) {
         toggle.setAttribute('aria-expanded', open);
     }
 
-    // Clic sur le bouton : ouvre / ferme
     toggle.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
 
-    // Clic sur un lien : on navigue puis on referme
     nav.addEventListener('click', (e) => {
         if (e.target.closest('.actions-nav__link')) setOpen(false);
     });
 
-    // Clic / toucher n'importe où ailleurs : on referme
     document.addEventListener('click', (e) => {
         if (!nav.contains(e.target)) setOpen(false);
     });
 
-    // Touche Échap : on referme
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') setOpen(false);
     });
 })();
-
 
 // ==========================================
 // 4. CLASSEMENT DYNAMIQUE (Page Classement)
@@ -907,13 +868,12 @@ async function closeSession(id) {
 // 6. FONCTION : GESTION DE L'AFFICHAGE DU PROFIL (Menu déroulant)
 // ==========================================
 function updateAuthUI() {
-    // On cherche n'importe quel lien ou bouton qui contient le mot "Connexion"
     const loginBtn = Array.from(document.querySelectorAll('a, button, .btn')).find(el => 
         el.textContent.trim().toLowerCase() === 'connexion' || 
         el.textContent.trim().toLowerCase() === 'se connecter'
     );
     
-    if (!loginBtn) return; // Si on ne le trouve pas, on arrête
+    if (!loginBtn) return;
 
     const adminToken = sessionStorage.getItem('tradelab_admin_token');
     const studentToken = localStorage.getItem('tradelab_token');
@@ -1077,10 +1037,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await loginProf(pwd); 
             
             if (result.ok) {
-                // Succès : C'est le prof !
                 window.location.href = '../admin/sessions/'; 
             } else {
-                // Échec : C'est pas le prof ! On envoie l'élève pour rejoindre une session.
                 window.location.href = '../rejoindre.html'; 
             }
         });
@@ -1234,14 +1192,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // 9. PORTEFEUILLE : Gestion des graphiques
 // ==========================================
 document.addEventListener("DOMContentLoaded", function() {
-    // Bouton de scroll top : on le récupère DANS le listener,
-    // car il est injecté dans la page après ce DOMContentLoaded
     window.addEventListener("scroll", function() {
         const scrollBtn = document.getElementById("scrollTopBtn");
         if (!scrollBtn) return;
 
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        // Min. 600px de scroll pour afficher le bouton
         scrollBtn.style.display = scrollTop > 600 ? "flex" : "none";
     });
 
@@ -1305,7 +1260,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Gestion des boutons de période (1S, 1M, 1A)
     const timeButtons = document.querySelectorAll('.time-btn');
 
     timeButtons.forEach(button => {
@@ -1411,7 +1365,6 @@ function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function injectScrollTopButton() {
-    // Évite les doublons si le bouton est déjà dans la page
     if (document.getElementById('scrollTopBtn')) return;
 
     const buttonHTML = `
@@ -1420,7 +1373,6 @@ function injectScrollTopButton() {
         </button>
     `;
 
-    // Dans le footer en priorité, sinon à la fin du body
     const target = document.querySelector('footer.app-footer') || document.querySelector('footer') || document.body;
     target.insertAdjacentHTML('beforeend', buttonHTML);
 }
@@ -1431,8 +1383,15 @@ if (document.readyState === 'loading') {
     injectScrollTopButton();
 }
 
+// ==========================================
+// 11. PAGE ACTUALITÉS (Filtres & Grille complète)
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
+    const fullNewsContainer = document.getElementById('full-news-container');
+        if (!fullNewsContainer) return;
+
     let allNews = [];
+    let currentFilters = { category: 'all', sector: 'all', geo: 'all', search: '' };
     const keywords = {
         category: {
             bourse: ['bourse', 'cac 40', 'wall street', 'action', 'nasdaq', 'dow jones', 'dividende', 'taux'],
@@ -1441,9 +1400,9 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         sector: {
             tech: ['apple', 'microsoft', 'google', 'tesla', 'nvidia', 'tech', 'intelligence artificielle', 'ia', 'amazon', 'meta'],
-            energie: ['pétrole', 'gaz', 'totalenergies', 'nucléaire', 'renouvelable', 'électricité'],
+            energie: ['pétrole', 'gaz', 'total', 'nucléaire', 'renouvelable', 'électricité'],
             luxe: ['lvmh', 'kering', 'hermès', 'luxe', 'beauté', 'l\'oréal'],
-            banque: ['banque', 'bnp', 'société générale', 'crédit agricole', 'assurance']
+            banque: ['banque', 'bnp', 'société générale', 'crédit', 'assurance']
         },
         geo: {
             france: ['france', 'macron', 'paris', 'gouvernement', 'français', 'cac 40'],
@@ -1470,9 +1429,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function loadFullNews() {
-        const container = document.getElementById('full-news-container');
-        if (!container) return;
-
         try {
             const response = await fetch('/api/news');
             if (!response.ok) throw new Error('HTTP erreur');
@@ -1487,52 +1443,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 const description = item.querySelector('description')?.textContent.replace(/(<([^>]+)>)/gi, "") || '';
                 const pubDate = item.querySelector('pubDate')?.textContent;
                 
-                let imageUrl = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=600'; // Image par défaut
+                // Cherche une image attachée à l'article, sinon met une image par défaut
+                let imageUrl = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=600'; 
                 const enclosure = item.querySelector('enclosure');
                 if (enclosure && enclosure.getAttribute('url')) {
                     imageUrl = enclosure.getAttribute('url');
                 }
 
                 const dateObj = pubDate ? new Date(pubDate) : new Date();
-                
                 const combinedText = title + " " + description;
-                const tags = extractTags(combinedText);
-
+                
                 allNews.push({
                     title,
                     link,
                     description: description.substring(0, 150) + '...',
-                    date: dateObj,
                     dateFormatted: dateObj.toLocaleDateString('fr-FR'),
                     imageUrl,
-                    tags,
+                    tags: extractTags(combinedText),
                     searchString: combinedText.toLowerCase()
                 });
             });
 
-            renderGrid(allNews);
+            applyFilters();
 
         } catch (error) {
             console.error(error);
-            container.innerHTML = '<p style="color: #EF4444;">Impossible de charger les actualités.</p>';
+            fullNewsContainer.innerHTML = '<p style="color: #EF4444; grid-column: 1 / -1;">Impossible de charger les actualités.</p>';
         }
     }
 
     function renderGrid(newsArray) {
-        const container = document.getElementById('full-news-container');
-        container.innerHTML = '';
+        fullNewsContainer.innerHTML = '';
 
         if (newsArray.length === 0) {
-            container.innerHTML = '<p style="color: #94A3B8; grid-column: 1 / -1;">Aucun article ne correspond à vos critères.</p>';
+            fullNewsContainer.innerHTML = '<p style="color: #94A3B8; grid-column: 1 / -1;">Aucun article ne correspond à vos critères.</p>';
             return;
         }
 
+        let html = '';
         newsArray.forEach(news => {
             let visibleTagsHtml = '';
             if(news.tags.sector.length > 0) visibleTagsHtml += `<span class="tag-badge">${news.tags.sector[0]}</span>`;
             if(news.tags.geo.length > 0) visibleTagsHtml += `<span class="tag-badge">${news.tags.geo[0]}</span>`;
 
-            container.innerHTML += `
+            html += `
                 <a href="${news.link}" target="_blank" rel="noopener" class="news-card">
                     <div class="news-card-image" style="background-image: url('${news.imageUrl}')"></div>
                     <div class="news-card-body">
@@ -1547,9 +1501,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 </a>
             `;
         });
+        fullNewsContainer.innerHTML = html;
     }
-
-    let currentFilters = { category: 'all', sector: 'all', geo: 'all', search: '' };
 
     function applyFilters() {
         const filtered = allNews.filter(news => {
@@ -1565,7 +1518,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const parent = e.target.closest('.filter-options');
-            const type = parent.id.replace('filter-', ''); // category, sector, ou geo
+            const type = parent.id.replace('filter-', ''); 
             
             parent.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
