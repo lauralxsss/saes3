@@ -494,14 +494,61 @@ app.get('/api/sessions/:sessionId/leaderboard', wrap(async (req, res) => {
     });
 }));
 
-// ACTUALITÉS (flux RSS, avec cache de 5 min et un flux de secours)
+// Liste des flux à fusionner : ajoute les tiens ici
+const NEWS_FEEDS = [
+    'https://services.lesechos.fr/rss/les-echos-finance-marches.xml',
+    'https://www.lefigaro.fr/rss/figaro_economie.xml',
+    'https://www.lemonde.fr/economie/rss_full.xml'
+];
+
+async function getMergedNews() {
+    const hit = cache['news-merged'];
+    if (hit && Date.now() - hit.t < 5 * 60e3) return hit.body;
+
+    // On interroge tous les flux en parallèle ; un flux en panne n'empêche pas les autres
+    const results = await Promise.allSettled(NEWS_FEEDS.map(async (url) => {
+        const r = await fetch(url, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (TradeLab)' },
+            signal: AbortSignal.timeout(8000)
+        });
+        if (!r.ok) throw new Error(`HTTP ${r.status} (${url})`);
+        return r.text();
+    }));
+
+    const items = [];
+    const vus = new Set();
+
+    results.forEach((res) => {
+        if (res.status !== 'fulfilled') {
+            console.error('⚠️ Flux indisponible :', res.reason.message);
+            return;
+        }
+        (res.value.match(/<item[\s>][\s\S]*?<\/item>/g) || []).forEach((bloc) => {
+            const lien = (bloc.match(/<link>(?:<!\[CDATA\[)?\s*(.*?)\s*(?:\]\]>)?<\/link>/) || [])[1];
+            if (!lien || vus.has(lien)) return;      // évite les doublons
+            vus.add(lien);
+            const date = new Date((bloc.match(/<pubDate>(.*?)<\/pubDate>/) || [])[1] || 0);
+            items.push({ bloc, time: date.getTime() || 0 });
+        });
+    });
+
+    if (items.length === 0) {
+        if (hit) return hit.body;                    // tout est en panne : ancien cache
+        throw new Error('Aucun flux disponible');
+    }
+
+    items.sort((a, b) => b.time - a.time);           // les plus récents d'abord
+    const body = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>${items.map(i => i.bloc).join('\n')}</channel></rss>`;
+
+    cache['news-merged'] = { t: Date.now(), body };
+    return body;
+}
+
 app.get('/api/news', async (req, res) => {
     try {
-        const xml = await cachedFetch('news', [
-            'https://services.lesechos.fr/rss/les-echos-finance-marches.xml',
-            'https://www.lefigaro.fr/rss/figaro_economie.xml'
-        ], 5 * 60e3);
-        res.type('application/xml').send(xml);
+        res.type('application/xml').send(await getMergedNews());
     } catch (e) {
         console.error('Erreur /api/news :', e.message);
         res.status(502).json({ message: "Impossible de récupérer les actualités." });
