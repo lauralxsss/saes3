@@ -11,7 +11,6 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png?v=20260928" />
     <meta name="apple-mobile-web-app-title" content="TradeLab" />
     <link rel="manifest" href="/favicons/site.webmanifest?v=20260928" />
-    <script src="/js/script.js" async></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -54,8 +53,11 @@
         "url": "https://saes3.onrender.com/actualites"
     }
     </script>
+        <script src="js/script.js" defer></script>
 </head>
 <body>
+    
+    <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-logo" onclick="window.location.href='/index.html'" style="cursor: pointer;"><img src="/favicons/favicon-96x96.png" sizes="96x96" width="20%"> TradeLab</div>
         
@@ -68,14 +70,80 @@
                     <li><a href="/trader-et-investir/devises/"><i class="fa-solid fa-coins"></i> Devises</a></li>
                 </ul>
             </li>
-            <li><a href="/actualites/"><i class="fa-regular fa-newspaper"></i> Actus</a></li>
+            <!-- Lien Actus mis en surbrillance pour indiquer qu'on est sur cette page -->
+            <li><a href="/actualites/" style="color: var(--color-primary);"><i class="fa-regular fa-newspaper"></i> Actus</a></li>
             <li><a href="/classement/"><i class="fa-solid fa-trophy"></i> Classement</a></li>
         </ul>
 
         <div class="nav-auth">
-        <button class="btn-primary" onclick="window.location.href='/rejoindre/rejoindre.html'">Connexion</button>        </div>
+            <button class="btn-primary" onclick="window.location.href='/rejoindre/rejoindre.html'">Connexion</button>        
+        </div>
     </nav>
-    <p>Actualités</p>
+    
+    <!-- Contenu Principal -->
+    <div id="app" style="margin-top: 80px; padding-bottom: 60px;">
+        <main style="max-width: 1400px; margin: 0 auto; padding: 20px;">
+            
+            <header class="dashboard-header" style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                <div class="header-titles">
+                    <h1>Actualités & Marchés</h1>
+                    <p style="color: #94A3B8; margin-top: 5px;">Toute l'information financière en temps réel</p>
+                </div>
+                <div class="search-bar" style="position: relative;">
+                    <i class="fa-solid fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94A3B8;"></i>
+                    <input type="text" id="news-search" placeholder="Rechercher (ex: IA, Total, BCE...)" style="background: var(--bg-card); border: 1px solid var(--border-color); color: white; padding: 12px 15px 12px 40px; border-radius: 8px; width: 300px; font-family: 'Inter', sans-serif;">
+                </div>
+            </header>
+
+            <div class="news-page-layout" style="display: grid; grid-template-columns: 280px 1fr; gap: 30px;">
+                
+                <!-- COLONNE FILTRES -->
+                <aside class="filters-sidebar">
+                    <div class="filter-group">
+                        <h3>Catégorie</h3>
+                        <div class="filter-options" id="filter-category">
+                            <button class="filter-btn active" data-value="all">Tout</button>
+                            <button class="filter-btn" data-value="bourse">Bourse & Marchés</button>
+                            <button class="filter-btn" data-value="eco">Économie</button>
+                            <button class="filter-btn" data-value="finance">Finance d'entreprise</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <h3>Secteurs</h3>
+                        <div class="filter-options" id="filter-sector">
+                            <button class="filter-btn active" data-value="all">Tous les secteurs</button>
+                            <button class="filter-btn" data-value="tech">Technologie</button>
+                            <button class="filter-btn" data-value="energie">Énergie</button>
+                            <button class="filter-btn" data-value="luxe">Luxe & Consommation</button>
+                            <button class="filter-btn" data-value="banque">Banque & Assurance</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <h3>Zones Géographiques</h3>
+                        <div class="filter-options" id="filter-geo">
+                            <button class="filter-btn active" data-value="all">Monde entier</button>
+                            <button class="filter-btn" data-value="france">France</button>
+                            <button class="filter-btn" data-value="usa">États-Unis</button>
+                            <button class="filter-btn" data-value="europe">Europe</button>
+                            <button class="filter-btn" data-value="asie">Asie</button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- COLONNE ARTICLES (GRILLE) -->
+                <div class="news-grid-container">
+                    <div id="full-news-container" class="news-grid">
+                        <p class="loading-text" style="color: #94A3B8;"><i class="fa-solid fa-spinner fa-spin"></i> Analyse et chargement des flux en cours...</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
     <footer class="app-footer">
         <div class="footer-content">
             <div class="footer-logo"><i class="fa-solid fa-chart-line"></i> TradeLab</div>

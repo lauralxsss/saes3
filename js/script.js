@@ -1430,3 +1430,158 @@ if (document.readyState === 'loading') {
 } else {
     injectScrollTopButton();
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    let allNews = [];
+    const keywords = {
+        category: {
+            bourse: ['bourse', 'cac 40', 'wall street', 'action', 'nasdaq', 'dow jones', 'dividende', 'taux'],
+            eco: ['inflation', 'chômage', 'croissance', 'pib', 'bce', 'fed', 'taux', 'banque centrale'],
+            finance: ['bénéfice', 'chiffre d\'affaires', 'fusion', 'acquisition', 'faillite', 'résultats']
+        },
+        sector: {
+            tech: ['apple', 'microsoft', 'google', 'tesla', 'nvidia', 'tech', 'intelligence artificielle', 'ia', 'amazon', 'meta'],
+            energie: ['pétrole', 'gaz', 'totalenergies', 'nucléaire', 'renouvelable', 'électricité'],
+            luxe: ['lvmh', 'kering', 'hermès', 'luxe', 'beauté', 'l\'oréal'],
+            banque: ['banque', 'bnp', 'société générale', 'crédit agricole', 'assurance']
+        },
+        geo: {
+            france: ['france', 'macron', 'paris', 'gouvernement', 'français', 'cac 40'],
+            usa: ['etats-unis', 'américain', 'usa', 'washington', 'fed', 'biden', 'trump'],
+            europe: ['europe', 'ue', 'bruxelles', 'allemagne', 'bce'],
+            asie: ['chine', 'japon', 'asie', 'tokyo', 'pékin']
+        }
+    };
+
+    function extractTags(text) {
+        text = text.toLowerCase();
+        let tags = { category: [], sector: [], geo: [] };
+
+        for (const [key, words] of Object.entries(keywords.category)) {
+            if (words.some(w => text.includes(w))) tags.category.push(key);
+        }
+        for (const [key, words] of Object.entries(keywords.sector)) {
+            if (words.some(w => text.includes(w))) tags.sector.push(key);
+        }
+        for (const [key, words] of Object.entries(keywords.geo)) {
+            if (words.some(w => text.includes(w))) tags.geo.push(key);
+        }
+        return tags;
+    }
+
+    async function loadFullNews() {
+        const container = document.getElementById('full-news-container');
+        if (!container) return;
+
+        try {
+            const response = await fetch('/api/news');
+            if (!response.ok) throw new Error('HTTP erreur');
+            
+            const xmlText = await response.text();
+            const xmlDoc = new DOMParser().parseFromString(xmlText, 'text/xml');
+            const items = xmlDoc.querySelectorAll('item');
+
+            items.forEach(item => {
+                const title = item.querySelector('title')?.textContent || '';
+                const link = item.querySelector('link')?.textContent || '#';
+                const description = item.querySelector('description')?.textContent.replace(/(<([^>]+)>)/gi, "") || '';
+                const pubDate = item.querySelector('pubDate')?.textContent;
+                
+                let imageUrl = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=600'; // Image par défaut
+                const enclosure = item.querySelector('enclosure');
+                if (enclosure && enclosure.getAttribute('url')) {
+                    imageUrl = enclosure.getAttribute('url');
+                }
+
+                const dateObj = pubDate ? new Date(pubDate) : new Date();
+                
+                const combinedText = title + " " + description;
+                const tags = extractTags(combinedText);
+
+                allNews.push({
+                    title,
+                    link,
+                    description: description.substring(0, 150) + '...',
+                    date: dateObj,
+                    dateFormatted: dateObj.toLocaleDateString('fr-FR'),
+                    imageUrl,
+                    tags,
+                    searchString: combinedText.toLowerCase()
+                });
+            });
+
+            renderGrid(allNews);
+
+        } catch (error) {
+            console.error(error);
+            container.innerHTML = '<p style="color: #EF4444;">Impossible de charger les actualités.</p>';
+        }
+    }
+
+    function renderGrid(newsArray) {
+        const container = document.getElementById('full-news-container');
+        container.innerHTML = '';
+
+        if (newsArray.length === 0) {
+            container.innerHTML = '<p style="color: #94A3B8; grid-column: 1 / -1;">Aucun article ne correspond à vos critères.</p>';
+            return;
+        }
+
+        newsArray.forEach(news => {
+            let visibleTagsHtml = '';
+            if(news.tags.sector.length > 0) visibleTagsHtml += `<span class="tag-badge">${news.tags.sector[0]}</span>`;
+            if(news.tags.geo.length > 0) visibleTagsHtml += `<span class="tag-badge">${news.tags.geo[0]}</span>`;
+
+            container.innerHTML += `
+                <a href="${news.link}" target="_blank" rel="noopener" class="news-card">
+                    <div class="news-card-image" style="background-image: url('${news.imageUrl}')"></div>
+                    <div class="news-card-body">
+                        <div class="news-card-tags">${visibleTagsHtml}</div>
+                        <h3 class="news-card-title">${news.title}</h3>
+                        <p class="news-card-desc">${news.description}</p>
+                    </div>
+                    <div class="news-card-footer">
+                        <span><i class="fa-regular fa-clock"></i> ${news.dateFormatted}</span>
+                        <span style="color: var(--color-primary);">Lire l'article</span>
+                    </div>
+                </a>
+            `;
+        });
+    }
+
+    let currentFilters = { category: 'all', sector: 'all', geo: 'all', search: '' };
+
+    function applyFilters() {
+        const filtered = allNews.filter(news => {
+            const matchCat = currentFilters.category === 'all' || news.tags.category.includes(currentFilters.category);
+            const matchSec = currentFilters.sector === 'all' || news.tags.sector.includes(currentFilters.sector);
+            const matchGeo = currentFilters.geo === 'all' || news.tags.geo.includes(currentFilters.geo);
+            const matchSearch = currentFilters.search === '' || news.searchString.includes(currentFilters.search);
+            return matchCat && matchSec && matchGeo && matchSearch;
+        });
+        renderGrid(filtered);
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const parent = e.target.closest('.filter-options');
+            const type = parent.id.replace('filter-', ''); // category, sector, ou geo
+            
+            parent.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+
+            currentFilters[type] = e.target.getAttribute('data-value');
+            applyFilters();
+        });
+    });
+
+    const searchInput = document.getElementById('news-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            currentFilters.search = e.target.value.toLowerCase();
+            applyFilters();
+        });
+    }
+
+    loadFullNews();
+});
