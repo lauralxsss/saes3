@@ -917,16 +917,16 @@ function updateAuthUI() {
         let menuLinks = "";
         if (role === 'admin') {
             menuLinks = `
-                <a href="../admin/sessions/" style="${linkStyle}" ${hoverFx}>
+                <a href="/admin/sessions/" style="${linkStyle}" ${hoverFx}>
                     <i class="fa-solid fa-gauge" style="margin-right: 8px; width: 16px; text-align: center;"></i> Espace Professeur
                 </a>
             `;
         } else {
             menuLinks = `
-                <a href="../portefeuille.html" style="${linkStyle}" ${hoverFx}>
+                <a href="/portefeuille/index.html" style="${linkStyle}" ${hoverFx}>
                     <i class="fa-solid fa-wallet" style="margin-right: 8px; width: 16px; text-align: center;"></i> Mon Portefeuille
                 </a>
-                <a href="../parametres.html" style="${linkStyle}" ${hoverFx}>
+                <a href="/parametres.html" style="${linkStyle}" ${hoverFx}>
                     <i class="fa-solid fa-gear" style="margin-right: 8px; width: 16px; text-align: center;"></i> Paramètres
                 </a>
             `;
@@ -973,7 +973,7 @@ function updateAuthUI() {
             localStorage.removeItem('tradelab_participant');
             localStorage.removeItem('tradelab_active_session_id');
             localStorage.removeItem('tradelab_active_session_name');
-            window.location.href = '../index.html'; 
+            window.location.href = '/index.html'; 
         });
     }
 }
