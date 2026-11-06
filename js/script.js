@@ -1332,7 +1332,23 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     });
+    let btnExport = document.getElementById('btnExportGlobalExcel')
+    if(btnExport){
+        btnExport.addEventListener('click',function(){
+            let wb = XLSX.utils.book_new();
+            let tableCurrent = document.getElementById('tableCurrentStock');
+            let tableHistory = document.getElementById('tableTradeHistory');
+            if(tableCurrent && tableHistory){
+                let wsCurrent = XLSX.utils.table_to_sheet(tableCurrent);
+                let wsHistory = XLSX.utils.table_to_sheet(tableHistory);
+                XLSX.utils.book_append_sheet(wb, wsCurrent, "Portefeuille Actuel");
+                XLSX.utils.book_append_sheet(wb, wsHistory, "Historique Opérations");
+                XLSX.writeFile(wb, "testPortefeui.xlsx");
+            }
+         });
+    } 
 });
+
 
 
 // ==========================================
