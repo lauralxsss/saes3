@@ -669,19 +669,25 @@ function initLeaderboard() {
 // 5. GESTION DE L'ESPACE ADMIN (Sessions & Codes)
 // ==========================================
 
-// Fausse fonction pour simuler le serveur (Mock)
-function loginProf(password) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            if (password === 'prof2026') {
-                // Simule la sauvegarde d'un token
-                sessionStorage.setItem('tradelab_admin_token', 'mock_token_123');
-                resolve({ ok: true });
-            } else {
-                resolve({ ok: false, message: "Mot de passe incorrect. Veuillez réessayer." });
-            }
-        }, 1000);
-    });
+async function loginProf(password) {
+    try {
+        const res = await fetch('/api/auth/admin-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+        });
+        const data = await res.json().catch(() => null);
+        
+        if (res.ok && data && data.success) {
+            sessionStorage.setItem('tradelab_admin_token', data.token);
+            return { ok: true };
+        }
+        
+        return { ok: false, message: (data && data.message) || "Identifiants incorrects." };
+    } catch (err) {
+        console.error(err);
+        return { ok: false, message: "Erreur de communication avec le serveur." };
+    }
 }
 
 async function adminFetch(url, options = {}) {

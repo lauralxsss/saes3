@@ -646,95 +646,259 @@ body.trader-investir
 
 
 /* =========================================
-   9. PAGES CONNEXION & INSCRIPTION RESTAURÉES
+   9. PAGE CONNEXION PROFESSEUR (Nouveau Design Fintech)
    ========================================= */
-/* On garde tes classes exactes, mais on les lie aux couleurs du thème sombre */
-.connexion, .inscription {
-  padding: 0px;
-  font-family: 'Inter', sans-serif;
-  color: var(--text-main);
-  background: var(--bg-main);
-  min-height: 100vh;
-}
-.connexion a, .inscription a { color: inherit; }
-
-.connexion .layout, .inscription .layout { display: grid; grid-template-columns: minmax(280px, 38%) 1fr; min-height: 100vh; }
-
-.connexion .brand, .inscription .brand {
-  background: linear-gradient(135deg, rgba(41, 98, 255, 0.05), transparent);
-  padding: 64px 48px;
-  display: flex; flex-direction: column; justify-content: space-between; position: relative;
-  border-right: 1px solid var(--border-color); overflow: hidden;
+.connexion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    width: 100%;
 }
 
-.connexion .spark, .inscription .spark { position: absolute; bottom: 0; left: 0; right: 0; opacity: 0.9; }
-
-.connexion .wordmark, .inscription .wordmark { font-weight: 700; font-size: clamp(1.9rem, 3vw + 1rem, 2.5rem); line-height: 1.1; margin: 0; position: relative; z-index: 1; color: #fff; }
-.connexion .wordmark i, .inscription .wordmark i { color: var(--color-primary); }
-
-.connexion .brand-tagline, .inscription .brand-tagline { font-size: 1.02rem; line-height: 1.6; color: var(--text-secondary); max-width: 32ch; margin-top: 16px; position: relative; z-index: 1; }
-
-.connexion .ticker, .inscription .ticker { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--color-up); display: flex; align-items: center; gap: 8px; position: relative; z-index: 1; }
-.connexion .ticker .dot, .inscription .ticker .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-up); flex: none; box-shadow: 0 0 8px var(--color-up); }
-.connexion .brand-foot, .inscription .brand-foot { font-size: 0.85rem; color: var(--text-secondary); opacity: 0.7; position: relative; z-index: 1; }
-
-.connexion .form-panel, .inscription .form-panel { display: flex; align-items: center; justify-content: center; padding: 48px 32px; background: var(--bg-main); }
-.connexion .form-wrap, .inscription .form-wrap { width: 100%; max-width: 400px; }
-.inscription .form-wrap { max-width: 440px; }
-
-.connexion h1.form-title, .inscription h1.form-title { font-weight: 600; font-size: 1.9rem; margin: 0 0 6px; color: #fff; }
-.connexion .form-sub, .inscription .form-sub { color: var(--text-secondary); margin: 0 0 36px; font-size: 0.98rem; }
-
-.inscription .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-.connexion .field, .inscription .field { margin-bottom: 22px; }
-.connexion .field label, .inscription .field label { display: block; font-size: 0.88rem; font-weight: 500; margin-bottom: 7px; color: var(--text-main); }
-
-.connexion .field input, .inscription .field input {
-  width: 100%; padding: 12px 14px; font-size: 1rem; font-family: inherit;
-  color: #fff; background: var(--bg-input); border: 1px solid var(--border-color);
-  border-radius: 8px; transition: border-color .15s ease, box-shadow .15s ease;
+.connexion .layout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    max-width: 900px;
+    width: 100%;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
 }
-.connexion .field input::placeholder, .inscription .field input::placeholder { color: var(--text-secondary); }
-.connexion .field input:focus, .inscription .field input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(41, 98, 255, 0.2); }
 
-.connexion .field-error, .inscription .field-error { display: none; font-size: 0.85rem; color: var(--color-down); margin-top: 6px; }
-.connexion .field.has-error .field-error, .inscription .field.has-error .field-error { display: block; }
-.connexion .field.has-error input, .inscription .field.has-error input { border-color: var(--color-down); }
-.inscription .field-hint { font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px; }
-
-.connexion .password-row, .inscription .password-row { position: relative; }
-.connexion .toggle-visibility, .inscription .toggle-visibility { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 6px; color: var(--text-secondary); display: flex; }
-.connexion .toggle-visibility:hover, .inscription .toggle-visibility:hover { color: #fff; }
-.connexion .password-row input, .inscription .password-row input { padding-right: 42px; }
-
-.connexion .row-between { display: flex; justify-content: flex-end; margin-top: -10px; margin-bottom: 26px; }
-.connexion .link-quiet { font-size: 0.88rem; color: var(--color-primary); text-decoration: none; border-bottom: 1px solid transparent; }
-.connexion .link-quiet:hover { border-bottom-color: var(--color-primary); }
-
-.connexion button.submit, .inscription button.submit {
-  width: 100%; padding: 13px 16px; font-family: inherit; font-size: 1rem; font-weight: 600;
-  color: white; background: linear-gradient(135deg, #2962FF, #1E4BD8); border: none; border-radius: 8px; cursor: pointer; transition: filter .15s ease, transform 0.2s;
+.connexion .brand {
+    background: linear-gradient(135deg, rgba(41, 98, 255, 0.08), rgba(8, 153, 129, 0.03));
+    padding: 50px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    border-right: 1px solid var(--border-color);
 }
-.connexion button.submit:hover, .inscription button.submit:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(41, 98, 255, 0.3); }
-.connexion button.submit:focus-visible, .inscription button.submit:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; }
 
-.connexion .divider, .inscription .divider { display: flex; align-items: center; gap: 14px; margin: 30px 0 22px; color: var(--text-secondary); font-size: 0.85rem; }
-.connexion .divider::before, .connexion .divider::after, .inscription .divider::before, .inscription .divider::after { content: ""; flex: 1; height: 1px; background: var(--border-color); }
-
-.connexion .signup-cta, .inscription .login-cta { text-align: center; font-size: 0.94rem; color: var(--text-secondary); }
-.connexion .signup-cta a, .inscription .login-cta a { color: var(--color-primary); font-weight: 600; text-decoration: none; border-bottom: 1px solid transparent; transition: 0.2s; }
-.connexion .signup-cta a:hover, .inscription .login-cta a:hover { color: #fff; border-bottom-color: #fff; }
-
-@media (max-width: 860px) {
-  .connexion .layout, .inscription .layout { grid-template-columns: 1fr; }
-  .connexion .brand, .inscription .brand { padding: 32px 28px; flex-direction: row; align-items: center; justify-content: space-between; border-right: none; border-bottom: 1px solid var(--border-color); }
-  .connexion .spark, .connexion .brand-tagline, .inscription .spark, .inscription .brand-tagline { display: none; }
-  .connexion .wordmark, .inscription .wordmark { font-size: 1.4rem; }
-  .connexion .form-panel, .inscription .form-panel { padding: 40px 24px 56px; }
+.connexion .wordmark {
+    font-weight: 700;
+    font-size: 2.2rem;
+    color: #fff;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
-@media (max-width: 480px) {
-  .inscription .field-row { grid-template-columns: 1fr; gap: 0; }
+
+.connexion .wordmark i { 
+    color: var(--color-primary); 
+}
+
+.connexion .brand-tagline {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-top: 15px;
+    max-width: 90%;
+}
+
+.connexion .ticker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--color-up);
+    margin-top: 40px;
+}
+
+.connexion .ticker .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-up);
+    box-shadow: 0 0 10px var(--color-up);
+    animation: pulse 2s infinite;
+}
+
+.connexion .brand-foot {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    opacity: 0.6;
+    margin-top: 20px;
+}
+
+.connexion .form-panel {
+    padding: 50px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-main); 
+}
+
+.connexion .form-wrap {
+    width: 100%;
+    max-width: 360px;
+}
+
+.connexion h1.form-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+}
+
+.connexion .form-sub {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin: 0 0 30px 0;
+}
+
+/* Champs du formulaire */
+.connexion .field { 
+    margin-bottom: 20px; 
+}
+
+.connexion .field label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.connexion .password-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.connexion .password-row input {
+    width: 100%;
+    padding: 12px 45px 12px 15px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #fff;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: 0.2s ease;
+}
+
+.connexion .password-row input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(41, 98, 255, 0.2);
+}
+
+.connexion .toggle-visibility {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+.connexion .toggle-visibility:hover { 
+    color: #fff; 
+}
+
+/* Erreurs */
+.connexion .field-error {
+    display: none;
+    color: var(--color-down);
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+.connexion .field.has-error .field-error { display: block; }
+.connexion .field.has-error input { border-color: var(--color-down); }
+
+/* Bouton d'action */
+.connexion button.submit {
+    width: 100%;
+    padding: 14px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, #2962FF, #1E4BD8);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.connexion button.submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(41, 98, 255, 0.4);
+}
+.connexion button.submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Séparateur ("ou") */
+.connexion .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 25px 0;
+}
+.connexion .divider::before, .connexion .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color);
+}
+.connexion .divider:not(:empty)::before { margin-right: 15px; }
+.connexion .divider:not(:empty)::after { margin-left: 15px; }
+
+/* Lien vers l'espace élève */
+.connexion .signup-cta {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+.connexion .signup-cta a {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s;
+}
+.connexion .signup-cta a:hover {
+    color: #fff;
+}
+
+/* Responsive Mobile / Tablette */
+@media (max-width: 800px) {
+    .connexion .layout {
+        grid-template-columns: 1fr;
+        max-width: 450px;
+    }
+    .connexion .brand {
+        padding: 30px;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        text-align: center;
+        align-items: center;
+    }
+    .connexion .brand-tagline {
+        text-align: center;
+    }
+    .connexion .ticker { 
+        justify-content: center; 
+        margin-top: 20px; 
+    }
+    .connexion .form-panel { 
+        padding: 40px 30px; 
+    }
 }
 
 .news-article { 
@@ -769,7 +933,6 @@ body.trader-investir
 .impact-high { background-color: rgba(242, 54, 69, 0.15); color: var(--color-down); border: 1px solid rgba(242, 54, 69, 0.3); }
 .impact-medium { background-color: rgba(245, 158, 11, 0.15); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.3); }
 
-/* Bouton retour pour les deux pages */
 
 .back-button{
   position: absolute;
@@ -808,21 +971,6 @@ body.trader-investir
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* =========================================
    SENTIMENT DU MARCHÉ
    ========================================= */
@@ -853,16 +1001,6 @@ body.trader-investir
     font-size: 0.85rem; 
     font-weight: 600; 
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1437,12 +1575,8 @@ border-block-color:var(--bg-input);height: 2.7em;
     }
 }
 
-/* ===== Carte d'action : adaptation à la largeur =====
-   À coller APRÈS le CSS de la carte et de la nav (il surcharge certaines règles).
-   Principe : les tailles (texte, boutons, graphique) se calculent à partir de --cq,
-   qui vaut environ 1% de la largeur d'une carte (estimée depuis la largeur de l'écran). */
 
-:root { --cq: 0.64vw; }                         /* grand écran : cartes avec 18% de marge de chaque côté */
+:root { --cq: 0.64vw; }                         
 @media (max-width: 1000px) {
     :root { --cq: 0.92vw; }                     /* écran réduit : cartes quasi pleine largeur */
 }
@@ -1501,17 +1635,6 @@ border-block-color:var(--bg-input);height: 2.7em;
     .stock-infos       { margin-top: 0; }
 }
 
-
-
-
-
-
-
-
-
-
-
-/* ===== Navigation entre les actions ===== */
 html { scroll-behavior: smooth;
 scroll-padding-top: 130px;}
 
@@ -1642,10 +1765,6 @@ scroll-padding-top: 130px;}
         transform: translateY(0);
     }
 }
-
-/* ===== Graphique avec légendes =====
-   À coller À LA FIN de style.css. Le conteneur .stock-chart__canvas garde exactement
-   la même taille qu'avant : les légendes sont à l'intérieur, la tuile ne bouge pas. */
 
 .stock-chart {
     display: grid;
