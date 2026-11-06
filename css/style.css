@@ -366,7 +366,8 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .chart-header h3 { margin: 0; font-size: 1rem; color: var(--text-main); }
 .chart-time { display: flex; gap: 4px; }
-.time-btn { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 3px 8px; font-size: 0.75rem; border-radius: 4px; cursor: pointer; }
+.chart-placeholder {height: 250px; padding : 15px; border: 1px dashed var(--border-color); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 0.9rem; background-color: var(--bg-main);}
+.time-btn { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 3px 8px; font-size: 0.75rem; border-radius: 4px; cursor: pointer;}
 .time-btn.active { background-color: var(--color-primary); color: white; border-color: var(--color-primary); }
 
 .table-zone { background-color: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
