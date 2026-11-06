@@ -669,18 +669,19 @@ function initLeaderboard() {
 // 5. GESTION DE L'ESPACE ADMIN (Sessions & Codes)
 // ==========================================
 
-async function loginProf(password) {
-    const res = await fetch('/api/auth/admin-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
+// Fausse fonction pour simuler le serveur (Mock)
+function loginProf(password) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            if (password === 'prof2026') {
+                // Simule la sauvegarde d'un token
+                sessionStorage.setItem('tradelab_admin_token', 'mock_token_123');
+                resolve({ ok: true });
+            } else {
+                resolve({ ok: false, message: "Mot de passe incorrect. Veuillez réessayer." });
+            }
+        }, 1000);
     });
-    const data = await res.json().catch(() => null);
-    if (res.ok && data && data.success) {
-        sessionStorage.setItem('tradelab_admin_token', data.token);
-        return { ok: true };
-    }
-    return { ok: false, message: (data && data.message) || "Connexion impossible." };
 }
 
 async function adminFetch(url, options = {}) {
@@ -980,6 +981,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchFrenchNews();
     isLive = true;
     marketInterval = setInterval(tickMarket, 2000);
+    
     const actionsContainerTEI = document.getElementById('actions-container-TEI');
     const actionsContainer = document.getElementById('actions-container');
     const indicesContainer = document.getElementById('indices-container');
@@ -1006,8 +1008,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (indicesContainer) indicesContainer.innerHTML = marketData.indices.map(createCard).join('');
     if (devisesContainer) devisesContainer.innerHTML = marketData.devises.map(createCard).join('');
 
-
-    
     initialiserCarrousels();
 
     if (document.getElementById('leaderboard-body')) {
@@ -1017,33 +1017,71 @@ document.addEventListener('DOMContentLoaded', () => {
         initAdminSessions();
     }
 
-    const toggleBtn = document.getElementById('toggle-password');
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            const pwd = document.getElementById('password');
-            if (pwd) pwd.type = pwd.type === 'password' ? 'text' : 'password';
-        });
+    // --- NAVIGATION LOGO ET BOUTON ---
+    const navLogoBtn = document.getElementById('nav-logo-btn');
+    if (navLogoBtn) {
+        navLogoBtn.addEventListener('click', () => window.location.href = '/index.html');
     }
 
-    // Gestion du formulaire de connexion
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        const passwordInput = document.getElementById('password');
-        
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const pwd = passwordInput ? passwordInput.value : '';
-            const result = await loginProf(pwd); 
-            
-            if (result.ok) {
-                window.location.href = '../admin/sessions/'; 
+    const btnLoginNav = document.getElementById('btn-login-nav');
+    if (btnLoginNav) {
+        btnLoginNav.addEventListener('click', () => window.location.href = '/rejoindre/rejoindre.html');
+    }
+
+    // --- AFFICHER / MASQUER LE MOT DE PASSE ---
+    const toggleBtn = document.getElementById('toggle-password');
+    const passwordInput = document.getElementById('password');
+    if (toggleBtn && passwordInput) {
+        toggleBtn.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            const icon = toggleBtn.querySelector('i');
+            if (type === 'text') {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
             } else {
-                window.location.href = '../rejoindre.html'; 
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
             }
         });
     }
-});
+
+    // --- SOUMISSION DU FORMULAIRE PROFESSEUR ---
+    const profForm = document.getElementById('prof-form');
+    if (profForm) {
+        const champ = document.getElementById('password-field');
+        const erreur = document.getElementById('password-error');
+        const bouton = document.getElementById('submit-btn');
+
+        profForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            champ.classList.remove('has-error');
+            erreur.innerText = '';
+            
+            bouton.disabled = true;
+            bouton.innerText = 'Connexion...';
+
+            let result;
+            try {
+                result = await loginProf(passwordInput.value);
+            } catch (err) {
+                console.error(err);
+                result = { ok: false, message: "Erreur serveur." };
+            }
+
+            if (result && result.ok) {
+                window.location.href = '/admin/sessions/';
+            } else {
+                erreur.innerText = result ? result.message : "Identifiants incorrects.";
+                champ.classList.add('has-error');
+                
+                bouton.disabled = false;
+                bouton.innerText = "Accéder à l'espace professeur";
+            }
+        });
+    }
+}); // <-- FIN SECTION 7
 
 // ==========================================
 // 8. PARCOURS ÉLÈVE : GESTION DE LA PAGE REJOINDRE
@@ -1199,7 +1237,6 @@ document.addEventListener("DOMContentLoaded", function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         scrollBtn.style.display = scrollTop > 600 ? "flex" : "none";
     });
-
 
     const ctxPerf = document.getElementById('portfolioPerformanceChart');
     if (ctxPerf) {
