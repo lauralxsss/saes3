@@ -370,7 +370,7 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 .time-btn { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 3px 8px; font-size: 0.75rem; border-radius: 4px; cursor: pointer;}
 .time-btn.active { background-color: var(--color-primary); color: white; border-color: var(--color-primary); }
 
-.table-zone { background-color: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; }
+.table-zone { background-color: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-top :30px;}
 .stock-table { width: 100%; border-collapse: collapse; text-align: left; }
 .stock-table th, .stock-table td { padding: 12px 10px; border-bottom: 1px solid var(--border-color); }
 .stock-table th { color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; }

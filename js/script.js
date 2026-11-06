@@ -1335,12 +1335,91 @@ document.addEventListener("DOMContentLoaded", function() {
     let btnExport = document.getElementById('btnExportGlobalExcel')
     if(btnExport){
         btnExport.addEventListener('click',function(){
+
             let wb = XLSX.utils.book_new();
             let tableCurrent = document.getElementById('tableCurrentStock');
             let tableHistory = document.getElementById('tableTradeHistory');
+
+
             if(tableCurrent && tableHistory){
                 let wsCurrent = XLSX.utils.table_to_sheet(tableCurrent);
                 let wsHistory = XLSX.utils.table_to_sheet(tableHistory);
+
+                 // --- DÉFINITION DES STYLES ---
+                // Style des en-têtes (Vert Excel, texte blanc gras, centré)
+                const headerStyle = {
+                    font: { name: "Segoe UI", sz: 11, bold: true, color: { rgb: "FFFFFF" } },
+                    fill: { patternType: "solid", fgColor: { rgb: "107C41" } },
+                    alignment: { horizontal: "center", vertical: "center" },
+                    border: {
+                        bottom: { style: "medium", color: { rgb: "054B25" } }
+                    }
+                };
+
+                // Style des cellules de données (Texte propre + bordures fines)
+                const cellStyleEven = {
+                    font: { name: "Segoe UI", sz: 10, color: { rgb: "1F2937" } },
+                    fill: { patternType: "solid", fgColor: { rgb: "FFFFFF" } },
+                    alignment: { vertical: "center" },
+                    border: {
+                        bottom: { style: "thin", color: { rgb: "E5E7EB" } },
+                        right: { style: "thin", color: { rgb: "F3F4F6" } }
+                    }
+                };
+
+                // Style des lignes alternées (Gris très clair pour la lisibilité)
+                const cellStyleOdd = {
+                    font: { name: "Segoe UI", sz: 10, color: { rgb: "1F2937" } },
+                    fill: { patternType: "solid", fgColor: { rgb: "F9FAFB" } },
+                    alignment: { vertical: "center" },
+                    border: {
+                        bottom: { style: "thin", color: { rgb: "E5E7EB" } },
+                        right: { style: "thin", color: { rgb: "F3F4F6" } }
+                    }
+                };
+
+                // --- FONCTION DE MISE EN PAGE NORMALE ET LISIBLE ---
+                function formatWorksheet(ws) {
+                    if (!ws['!ref']) return;
+                    const range = XLSX.utils.decode_range(ws['!ref']);
+
+                    // Styliser chaque cellule
+                    for (let R = range.s.r; R <= range.e.r; ++R) {
+                        for (let C = range.s.c; C <= range.e.c; ++C) {
+                            const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+                            if (!ws[cellAddress]) continue;
+
+                            if (R === 0) {
+                                // Ligne d'en-tête
+                                ws[cellAddress].s = headerStyle;
+                            } else {
+                                // Lignes de données (alternance de couleurs)
+                                ws[cellAddress].s = (R % 2 === 0) ? cellStyleEven : cellStyleOdd;
+                            }
+                        }
+                    }
+
+                    // Calcul de la largeur automatique des colonnes selon le contenu
+                    const colWidths = [];
+                    for (let C = range.s.c; C <= range.e.c; ++C) {
+                        let maxLen = 10; // Largeur minimale par défaut
+                        for (let R = range.s.r; R <= range.e.r; ++R) {
+                            const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+                            if (ws[cellAddress] && ws[cellAddress].v) {
+                                const valStr = String(ws[cellAddress].v);
+                                if (valStr.length > maxLen) {
+                                    maxLen = valStr.length;
+                                }
+                            }
+                        }
+                        colWidths.push({ wch: maxLen + 4 }); // Marge de confort
+                    }
+                    ws['!cols'] = colWidths;
+                }
+
+                formatWorksheet(wsCurrent);
+                formatWorksheet(wsHistory);
+
                 XLSX.utils.book_append_sheet(wb, wsCurrent, "Portefeuille Actuel");
                 XLSX.utils.book_append_sheet(wb, wsHistory, "Historique Opérations");
                 XLSX.writeFile(wb, "testPortefeui.xlsx");
