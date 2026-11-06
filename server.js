@@ -31,7 +31,7 @@ app.use(express.static(__dirname));
 // ========================================================
 
 // Mot de passe et clé secrète (récupérés depuis Render, ou valeur par défaut)
-const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'prof123';
+const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'test124';
 const SECRET_KEY = process.env.AUTH_SECRET || 'super_secret_tradelab_2026';
 
 // Fonction pour fabriquer un jeton sécurisé
