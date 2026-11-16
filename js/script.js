@@ -1526,7 +1526,129 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
-    
+
+    //Export PDF
+    function exportTablesToPDF() {
+        if (!window.jspdf) {
+            alert("jsPDF n'est pas chargé : vérifie le chemin du fichier.");
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+        // Les espaces insécables (séparateurs de milliers) s'affichent mal dans un PDF
+        const clean = (s) => String(s).replace(/[   ]/g, ' ').trim();
+
+        // Lit un <table> HTML -> { head, body }
+        function readTable(table) {
+            const head = [[...table.querySelectorAll('thead th')].map((th) => clean(th.textContent))];
+            const body = [...table.querySelectorAll('tbody tr')].map((tr) =>
+                [...tr.querySelectorAll('td')].map((td) => clean(td.textContent))
+            );
+            return { head, body };
+        }
+
+        // Compatible avec les deux versions d'AutoTable
+        function drawTable(options) {
+            if (typeof doc.autoTable === 'function') doc.autoTable(options);
+            else if (window.autoTable) window.autoTable(doc, options);
+            else throw new Error("jsPDF-AutoTable n'est pas chargé.");
+        }
+
+        const baseOptions = {
+            theme: 'grid',
+            margin: { left: 14, right: 14 },
+            styles: { font: 'helvetica', fontSize: 9, cellPadding: 2.5, valign: 'middle' },
+            headStyles: { fillColor: [29, 111, 66], textColor: 255, fontStyle: 'bold', halign: 'center' },
+            alternateRowStyles: { fillColor: [232, 245, 233] }
+        };
+
+        // ----- Titre -----
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Rapport de portefeuille', 14, 16);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text("Date d'export : " + new Date().toLocaleDateString('fr-FR'), 14, 22);
+
+        // ----- Tableau 1 : Mes Actions -----
+        const actions = readTable(document.getElementById('tableCurrentStock'));
+        doc.setFontSize(13);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Mes Actions', 14, 32);
+
+        drawTable({
+            ...baseOptions,
+            startY: 35,
+            head: actions.head,
+            body: actions.body,
+            columnStyles: {
+                2: { halign: 'right' },
+                3: { halign: 'right' },
+                4: { halign: 'right' },
+                5: { halign: 'right' },
+                6: { halign: 'right', fontStyle: 'bold' }
+            },
+            // Vert pour un gain, rouge pour une perte (colonne Gain / Perte)
+            didParseCell: (data) => {
+                if (data.section === 'body' && data.column.index === 6) {
+                    const txt = data.cell.raw;
+                    if (txt.startsWith('+')) data.cell.styles.textColor = [27, 128, 56];
+                    else if (txt.startsWith('-')) data.cell.styles.textColor = [192, 0, 0];
+                }
+            }
+        });
+
+        // ----- Tableau 2 : Historique -----
+        const history = readTable(document.getElementById('tableTradeHistory'));
+        const y = doc.lastAutoTable.finalY + 14;
+
+        doc.setFontSize(13);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Historique des Opérations', 14, y);
+
+        drawTable({
+            ...baseOptions,
+            startY: y + 3,
+            head: history.head,
+            body: history.body,
+            columnStyles: {
+                0: { halign: 'center', cellWidth: 24 },
+                2: { halign: 'center', cellWidth: 20 },
+                3: { halign: 'right', cellWidth: 22 },
+                4: { halign: 'right', cellWidth: 30 },
+                5: { halign: 'right', cellWidth: 32 },
+                6: { cellWidth: 'auto' }
+            }
+        });
+
+        // ----- Numéros de page -----
+        const pages = doc.getNumberOfPages();
+        for (let i = 1; i <= pages; i++) {
+            doc.setPage(i);
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Page ' + i + ' / ' + pages, doc.internal.pageSize.getWidth() - 14,
+                    doc.internal.pageSize.getHeight() - 8, { align: 'right' });
+        }
+
+        const today = new Date().toISOString().slice(0, 10);
+        doc.save('portefeuille_' + today + '.pdf');
+    }
+
+    /* ---------- Bouton ---------- */
+    let btnExportPDF = document.getElementById('btnExportGlobalPDF');
+    if (btnExportPDF) {
+        btnExportPDF.addEventListener('click', function () {
+            try {
+                exportTablesToPDF();
+            } catch (err) {
+                console.error('Erreur export PDF :', err);
+                alert('Erreur export PDF : ' + err.message);
+            }
+        });
+    }
 });
 
 
