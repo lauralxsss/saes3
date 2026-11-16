@@ -469,7 +469,7 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
    9. PAGE CONNEXION PROFESSEUR & REJOINDRE
    ========================================= */
 .connexion, .auth-body {
-    display: flex;
+    /*display: flex;*/
     justify-content: center;
     align-items: center;
     padding: 60px 20px;
@@ -548,7 +548,7 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 .preview-badge { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: #2962FF; font-weight: 600; display: block; margin-bottom: 4px; }
 .preview-title { font-size: 1.1rem; font-weight: 600; color: #fff; margin: 0; }
 .preview-details { display: flex; flex-direction: column; gap: 10px; background: var(--bg-main); border: 1px solid var(--border-color); padding: 16px; border-radius: 8px; margin-bottom: 16px; }
-.preview-row { display: flex; justify-content: space-between; font-size: 0.85rem; }
+.preview-row { justify-content: space-between; font-size: 0.85rem; }
 .preview-label { color: var(--text-secondary); }
 .preview-val { color: #fff; font-weight: 500; }
 
@@ -643,7 +643,7 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 .session-code-val { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: 1.5px; }
 
 .session-students-box { margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px; }
-.student-mini-list { max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.student-mini-list { max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-left:auto; margin-right:auto; width:70%}
 .student-row-item { display: flex; justify-content: space-between; font-size: 0.85rem; background: rgba(255,255,255,0.02); padding: 6px 10px; border-radius: 4px; align-items: center; }
 
 .btn-danger-outline { color: var(--color-down); border-color: rgba(242, 54, 69, 0.3); background: transparent; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; }
@@ -666,3 +666,5 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 .mentions-legales a:hover { filter: brightness(1.2); }
 .mentions-legales h1, .mentions-legales h2, .mentions-legales h3 { color: #fff; }
 .mentions-legales #mentions-legales, .mentions-legales #cgu, .mentions-legales #rgpd { scroll-margin-top: 80px; }
+.mentions-legales .contest-banner {margin-bottom:2em}
+.mentions-legales .preview-details {margin-left:auto; margin-right:auto; width:70%}

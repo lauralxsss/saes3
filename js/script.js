@@ -1031,7 +1031,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const btnLoginNav = document.getElementById('btn-login-nav');
     if (btnLoginNav) {
-        btnLoginNav.addEventListener('click', () => window.location.href = '/rejoindre/rejoindre.html');
+        btnLoginNav.addEventListener('click', () => window.location.href = '/rejoindre/');
     }
 
     // --- AFFICHER / MASQUER LE MOT DE PASSE ---
