@@ -870,6 +870,56 @@ async function closeSession(id) {
         }
     }
 }
+// ==========================================
+// AFFICHAGE EN DIRECT POUR LE PROFESSEUR
+// ==========================================
+async function loadLivePortfolios() {
+    const tbody = document.getElementById('live-students-body');
+    if (!tbody) return; // Sécurité si on n'est pas sur la bonne page
+
+    try {
+        // Tu as déjà créé "adminFetch", c'est parfait pour passer le jeton de sécurité !
+        const res = await adminFetch('/api/admin/live-portfolios');
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            tbody.innerHTML = ''; // On vide le tableau
+
+            if (data.participants.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #94A3B8; padding: 10px;">Aucun élève actuellement connecté.</td></tr>';
+                return;
+            }
+
+            data.participants.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid #2A2E39';
+                tr.innerHTML = `
+                    <td style="padding: 10px;"><strong>${p.name}</strong></td>
+                    <td style="padding: 10px;">${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(p.cash)}</td>
+                    <td style="padding: 10px; color: var(--color-primary);">${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(p.value)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    } catch (err) {
+        console.error("Erreur chargement portefeuilles en direct", err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const adminToken = sessionStorage.getItem('tradelab_admin_token');
+    const liveBody = document.getElementById('live-students-body');
+
+    if (adminToken && liveBody) {
+        const socket = io();
+        
+        loadLivePortfolios();
+
+        socket.on('update_prof_dashboard', () => {
+            loadLivePortfolios();
+        });
+    }
+});
 
 // ==========================================
 // 6. FONCTION : GESTION DE L'AFFICHAGE DU PROFIL (Menu déroulant)
@@ -1675,4 +1725,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     loadFullNews();
+});
+
+// ==========================================
+// 12. TEMPS RÉEL : CONNEXION DES ÉLÈVES
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const studentDataStr = localStorage.getItem('tradelab_participant');
+    
+    // Si l'utilisateur est un élève connecté
+    if (studentDataStr) {
+        try {
+            const participant = JSON.parse(studentDataStr);
+            const socket = io(); // Initialise la connexion WebSocket
+            
+            socket.on('connect', () => {
+                // Envoie l'ID de l'élève au serveur
+                socket.emit('student_login', participant.id);
+                console.log("Connecté au serveur en direct !");
+            });
+        } catch (e) {
+            console.error("Erreur de connexion socket élève :", e);
+        }
+    }
 });

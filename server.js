@@ -3,8 +3,13 @@ const path = require('path');
 const crypto = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
 
+const http = require('http');
+const { Server } = require('socket.io');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: '*' } });
 
 // ==========================================
 // CONNEXION SUPABASE
@@ -25,7 +30,28 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
+// ==========================================
+// TEMPS RÉEL (SOCKET.IO)
+// ==========================================
 
+let connectedStudents = {};
+
+io.on('connection', (socket) => {
+    socket.on('student_login', (participantId) => {
+        connectedStudents[socket.id] = participantId;
+        console.log(`🟢 Élève connecté (Socket: ${socket.id}, ID: ${participantId})`);
+        
+        io.emit('update_prof_dashboard');
+    });
+
+    socket.on('disconnect', () => {
+        if (connectedStudents[socket.id]) {
+            console.log(`🔴 Élève déconnecté (ID: ${connectedStudents[socket.id]})`);
+            delete connectedStudents[socket.id];
+            io.emit('update_prof_dashboard');
+        }
+    });
+});
 // ========================================================
 // SÉCURITÉ ET IDENTIFICATION (Professeur & Élèves)
 // ========================================================
@@ -185,6 +211,26 @@ app.get('/api/test', (req, res) => {
         date: new Date().toISOString()
     });
 });
+
+// ADMIN — VOIR LES PORTEFEUILLES EN DIRECT
+app.get('/api/admin/live-portfolios', wrap(async (req, res) => {
+    const activeParticipantIds = [...new Set(Object.values(connectedStudents))];
+
+    if (activeParticipantIds.length === 0) {
+        return res.json({ success: true, participants: [] });
+    }
+    const { data, error } = await supabase
+        .from('tl_participants')
+        .select('*')
+        .in('id', activeParticipantIds);
+
+    if (error) throw error;
+    res.json({
+        success: true,
+        participants: data.map(toParticipant)
+    });
+}));
+
 
 // ADMIN — RÉCUPÉRER LES SESSIONS
 app.get('/api/admin/sessions', wrap(async (req, res) => {
@@ -580,7 +626,7 @@ app.get('/{*path}', (req, res) => {
 // DÉMARRAGE
 // ==========================================
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log('');
     console.log('====================================');
     console.log('🚀 TradeLab démarré');

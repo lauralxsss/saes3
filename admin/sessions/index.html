@@ -86,6 +86,21 @@
             </form>
         </div>
     </div>
+    <div class="admin-section" style="margin-top: 30px;">
+    <h2>🔴 Élèves en ligne en direct</h2>
+    <table style="width: 100%; text-align: left; border-collapse: collapse;">
+        <thead>
+            <tr style="border-bottom: 2px solid var(--border-color);">
+                <th>Nom de l'élève</th>
+                <th>Solde Liquidités (Cash)</th>
+                <th>Valeur Totale</th>
+            </tr>
+        </thead>
+        <tbody id="live-students-body">
+            <tr><td colspan="3" style="text-align: center; padding: 10px;">Chargement...</td></tr>
+        </tbody>
+    </table>
+</div>
     <footer class="app-footer">
         <div class="footer-content">
             <div class="footer-logo"><i class="fa-solid fa-chart-line"></i> TradeLab</div>
@@ -98,5 +113,6 @@
         </div>
         <div class="footer-bottom">&copy; 2026 SAE Simulateur Boursier - Équipe 4. Projet étudiant.</div>
     </footer>
+    <script src="/socket.io/socket.io.js"></script>
 </body>
 </html>
