@@ -469,13 +469,13 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
    9. PAGE CONNEXION PROFESSEUR & REJOINDRE
    ========================================= */
 .connexion, .auth-body {
-    /*display: flex;*/
     justify-content: center;
     align-items: center;
     padding: 60px 20px;
     width: 100%;
     min-height: calc(100vh - 200px);
 }
+.connexion {display: flex;}
 
 .connexion .layout {
     display: grid;
@@ -535,8 +535,8 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 }
 
 /* Page Rejoindre (Élève) */
-.auth-container { width: 100%; max-width: 440px; margin: 0 auto; }
-.auth-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 32px; box-shadow: var(--shadow-panel); backdrop-filter: blur(10px); }
+.auth-container { width: 100%; max-width: 440px; margin: 0 auto; min-height:calc(50vh);}
+.auth-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 32px; box-shadow: var(--shadow-panel); backdrop-filter: blur(10px); margin-top:20%}
 .auth-logo { font-size: 1.25rem; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 24px; cursor: pointer; }
 .auth-logo i { color: #2962FF; }
 .auth-title { font-size: 1.4rem; font-weight: 600; color: #fff; margin: 0 0 6px 0; }
@@ -551,6 +551,10 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 .preview-row { justify-content: space-between; font-size: 0.85rem; }
 .preview-label { color: var(--text-secondary); }
 .preview-val { color: #fff; font-weight: 500; }
+.auth-body .navbar {margin-top:-4em}
+.auth-body .auth-footer a {display:flex;justify-content: center;margin-top:25px;color:var(--text-secondary);opacity:50%;font-size:90%;}
+.auth-body .auth-footer a:hover {opacity:90%}
+.auth-body .auth-footer {max-width: 65%; margin-left: auto; margin-right: auto;}
 
 /* =========================================
    10. PAGE CLASSEMENT (Podium & Table Pro)
