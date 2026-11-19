@@ -499,6 +499,124 @@ app.post('/api/student/orders', verifierJeton, async (req, res) => {
     }
 });
 
+// ==========================
+// ROUTES API - Portefeuille 
+// ==========================
+
+app.get('/api/student/portfolio', verifierJeton, wrap(async (req, res) => {
+    // L'id vient du jeton (un élève ne peut pas lire le portefeuille d'un autre)
+    const id = req.user.participantId;
+    if (!id) return res.status(400).json({ success: false, message: "ID manquant." });
+
+    const { data: participant } = await supabase
+        .from('tl_participants').select('*').eq('id', id).single();
+    if (!participant) return res.status(404).json({ success: false, message: "Participant introuvable." });
+
+    const { data: session } = await supabase
+        .from('tl_sessions').select('*').eq('id', participant.session_id).single();
+    if (!session) return res.status(404).json({ success: false, message: "Session introuvable." });
+
+    // Ordres exécutés de l'élève
+    const { data: orders } = await supabase
+        .from('tl_orders').select('*')
+        .eq('participant_id', id).eq('statut', 'execute')
+        .order('created_at', { ascending: true });
+
+    // Tous les participants de la session (pour le classement)
+    const { data: peers } = await supabase
+        .from('tl_participants').select('id, value')
+        .eq('session_id', participant.session_id);
+    const tous = peers || [];
+
+    const capital = Number(session.initial_capital);
+    const positions = {};
+    const history = [];
+    const series = [{ date: session.created_at || orders?.[0]?.created_at || new Date().toISOString(), value: capital }];
+    let realise = 0;     // gains réalisés (ventes)
+
+    (orders || []).forEach(o => {
+        const qte = Number(o.quantite);
+        const prix = Number(o.prix);
+
+        history.unshift({
+            date: o.created_at, symbole: o.symbole, side: o.side,
+            quantite: qte, prix: prix, montant: qte * prix,
+            commentaire: o.commentaire || ''
+        });
+
+        const p = positions[o.symbole] || (positions[o.symbole] = { symbole: o.symbole, quantite: 0, cout: 0 });
+        if (o.side === 'buy') {
+            p.quantite += qte;
+            p.cout += qte * prix;
+        } else {
+            const pru = p.quantite > 0 ? p.cout / p.quantite : 0;      // prix moyen
+            realise += Math.min(qte, p.quantite) * (prix - pru);
+            p.quantite = Math.max(0, p.quantite - qte);
+            p.cout = p.quantite * pru;
+        }
+        series.push({ date: o.created_at, value: capital + realise });
+    });
+
+    // Prix actuel = dernier prix d'échange du symbole dans la session
+    const ouvertes = Object.values(positions).filter(p => p.quantite > 0);
+    const dernierPrix = {};
+    if (ouvertes.length) {
+        const { data: derniers } = await supabase
+            .from('tl_orders').select('symbole, prix')
+            .in('participant_id', tous.map(p => p.id))
+            .in('symbole', ouvertes.map(p => p.symbole))
+            .eq('statut', 'execute')
+            .order('created_at', { ascending: false })
+            .limit(1000);
+        (derniers || []).forEach(o => {
+            if (!(o.symbole in dernierPrix)) dernierPrix[o.symbole] = Number(o.prix);
+        });
+    }
+
+    const lignes = ouvertes.map(p => {
+        const prixAchat = p.cout / p.quantite;
+        const prixActuel = dernierPrix[p.symbole] ?? prixAchat;
+        const valeur = p.quantite * prixActuel;
+        return {
+            symbole: p.symbole,
+            quantite: p.quantite,
+            prix_achat: prixAchat,
+            prix_actuel: prixActuel,
+            valeur: valeur,
+            pourcentage: p.cout > 0 ? ((valeur - p.cout) / p.cout) * 100 : 0
+        };
+    });
+
+    const cash = Number(participant.cash);
+    const totalValue = cash + lignes.reduce((s, l) => s + l.valeur, 0);
+    series.push({ date: new Date().toISOString(), value: totalValue });
+
+    // Enregistre ma valeur (sert au classement) puis calcule mon rang
+    await supabase.from('tl_participants')
+        .update({ value: totalValue, positions: lignes.length }).eq('id', id);
+    const rank = 1 + tous.filter(p => String(p.id) !== String(id) && Number(p.value) > totalValue).length;
+
+    res.json({
+        success: true,
+        data: {
+            name: participant.pseudo || participant.name || participant.nom ||
+                  participant.username || participant.prenom || 'Participant',
+            cash: cash,
+            capital: capital,
+            totalValue: totalValue,
+            rank: rank,
+            total: tous.length,
+            positions: lignes,
+            history: history,
+            series: series,
+            allocation: {
+                labels: [...lignes.map(l => l.symbole), ...(cash > 0 ? ['Liquidités'] : [])],
+                values: [...lignes.map(l => l.valeur), ...(cash > 0 ? [cash] : [])]
+            }
+        }
+    });
+}));
+
 // ==========================================
 // ROUTES API - DIVERS
 // ==========================================

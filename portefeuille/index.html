@@ -89,7 +89,7 @@
             <section class="user-zone">
                 <div class="user-card">
                     <div class="user-info">
-                        <h2>Alex Trader</h2>
+                        <h2 id="portfolio-user-name">Username</h2>
                         <span class="user-status">Compte Virtuel</span>
                     </div>
                 </div>
@@ -97,26 +97,26 @@
                 <div class="kpi-grid">
                     <div class="kpi-card">
                         <span class="kpi-label">Valeur Totale</span>
-                        <div class="kpi-value price">114 250,00 €</div>
-                        <span class="gain">+14,25 %</span>
+                        <div class="kpi-value price" id="kpi-total">114 250,00 €</div>
+                        <span class="gain" id="kpi-total-pct">+14,25 %</span>
                     </div>
 
                     <div class="kpi-card">
                         <span class="kpi-label">Solde Disponible</span>
-                        <div class="kpi-value price">32 400,00 €</div>
-                        <span class="kpi-sub">Sur 100 000,00 €</span>
+                        <div class="kpi-value price" id="kpi-cash">32 400,00 €</div>
+                        <span class="kpi-sub" id="kpi-initial">Sur 100 000,00 €</span>
                     </div>
 
                     <div class="kpi-card">
                         <span class="kpi-label">Gains / Pertes</span>
-                        <div class="kpi-value">+14 250,00 €</div>
-                        <span class="gain">+14,25 %</span>
+                        <div class="kpi-value" id="kpi-gain">+14 250,00 €</div>
+                        <span class="gain" id="kpi-gain-pct">+14,25 %</span>
                     </div>
 
                     <div class="kpi-card">
                         <span class="kpi-label">Classement</span>
-                        <div class="kpi-value">12<sup>e</sup></div>
-                        <span class="kpi-sub">sur 1 450 participants</span>
+                        <div class="kpi-value" id="kpi-rank">12<sup>e</sup></div>
+                        <span class="kpi-sub" id="kpi-rank-total">sur 1 450 participants</span>
                     </div>
                 </div>
             </section>

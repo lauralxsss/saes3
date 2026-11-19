@@ -1072,6 +1072,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('sessions-container')) {
         initAdminSessions();
     }
+    if(document.getElementById('tableCurrentStock')){
+        initPortfolio();
+    }
 
     // --- NAVIGATION LOGO ET BOUTON ---
     const navLogoBtn = document.getElementById('nav-logo-btn');
@@ -1293,7 +1296,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         scrollBtn.style.display = scrollTop > 600 ? "flex" : "none";
     });
-
+    /*
     const ctxPerf = document.getElementById('portfolioPerformanceChart');
     if (ctxPerf) {
         const contextPerf = ctxPerf.getContext('2d');
@@ -1382,6 +1385,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     });
+    */
 
     // Export Excel
 
@@ -1651,7 +1655,214 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+async function initPortfolio() {
+    if (!document.getElementById('tableCurrentStock')) return; // pas la page portefeuille
 
+    // Noms des actions (la base ne contient que les symboles) : complète la liste
+    const NOMS = { 'AAPL': 'Apple Inc.', 'MC.PA': 'LVMH', 'TSLA': 'Tesla' };
+    const PERIODES = { '1S': 7, '1M': 30, '1A': 365 };
+    const COULEURS = ['#1D6F42', '#2E86DE', '#F39C12', '#8E44AD', '#E74C3C', '#16A085', '#7F8C8D', '#D35400'];
+    const nom = (s) => NOMS[s] || s;
+    const eur = (v) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(v);
+    const pct = (v, d) => (v > 0 ? '+' : '') +
+        new Intl.NumberFormat('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d }).format(v) + ' %';
+    const dateCourte = (iso) => new Date(iso).toLocaleDateString('fr-FR');
+    const dateLongue = (iso) => new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+    const $ = (id) => document.getElementById(id);
+    let series = [];
+    let jours = 365;
+
+    // Écrit un texte dans un élément (et change sa classe si besoin)
+    function set(id, texte, classe) {
+        const e = $(id);
+        if (!e) return;
+        e.textContent = texte;
+        if (classe) e.className = classe;
+    }
+
+    // Crée un élément avec du texte (textContent : pas de faille XSS)
+    function el(tag, classe, texte) {
+        const e = document.createElement(tag);
+        if (classe) e.className = classe;
+        if (texte !== undefined) e.textContent = texte;
+        return e;
+    }
+
+    // Remplit un tableau : lignes = [[contenu, classe], [contenu, classe], ...]
+    function remplirTableau(selecteur, lignes, nbColonnes, messageVide) {
+        const tbody = document.querySelector(selecteur + ' tbody');
+        if (!tbody) return;
+        tbody.replaceChildren();
+        if (!lignes.length) {
+            const td = el('td', '', messageVide);
+            td.colSpan = nbColonnes;
+            td.style.cssText = 'text-align:center;color:#94A3B8;padding:15px;';
+            const tr = el('tr');
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+            return;
+        }
+        lignes.forEach(cellules => {
+            const tr = el('tr');
+            cellules.forEach(([contenu, classe]) => {
+                const td = el('td', classe);
+                if (contenu instanceof Node) td.appendChild(contenu);
+                else td.textContent = contenu;
+                tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+        });
+    }
+
+
+    // Met à jour un graphique Chart.js existant, ou le crée
+    function graphique(canvasId, type, labels, valeurs, style) {
+        const canvas = $(canvasId);
+        if (!canvas || typeof Chart === 'undefined') return;
+        const ancien = Chart.getChart ? Chart.getChart(canvas) : null;
+        if (ancien) {
+            ancien.data.labels = labels;
+            ancien.data.datasets[0].data = valeurs;
+            ancien.update();
+            return;
+        }
+        new Chart(canvas, {
+            type: type,
+            data: { labels: labels, datasets: [Object.assign({ data: valeurs }, style)] },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+
+    // Courbe d'évolution sur la période choisie (1S / 1M / 1A)
+    function dessinerCourbe() {
+        const limite = Date.now() - jours * 86400000;
+        let points = series.filter(p => new Date(p.date) >= limite);
+        if (points.length < 2) points = series.slice(-2); // au moins 2 points
+        graphique('portfolioPerformanceChart', 'line',
+            points.map(p => dateCourte(p.date)),
+            points.map(p => p.value),
+            { label: 'Valeur du portefeuille', borderColor: '#1D6F42',
+              backgroundColor: 'rgba(29,111,66,0.12)', fill: true, tension: 0.3 });
+    }
+
+
+    // Affiche un message partout (chargement, déconnecté, erreur)
+    function vide(message) {
+        ['portfolio-user-name', 'kpi-total', 'kpi-total-pct', 'kpi-cash', 'kpi-initial',
+         'kpi-gain', 'kpi-gain-pct', 'kpi-rank', 'kpi-rank-total'].forEach(id => set(id, '—'));
+        remplirTableau('#tableCurrentStock', [], 7, message);
+        remplirTableau('#tableTradeHistory', [], 7, message);
+        const liste = document.querySelector('.journal-list');
+        if (liste) {
+            liste.replaceChildren();
+            const p = el('p', 'journal-text', message);
+            p.style.color = '#94A3B8';
+            liste.appendChild(p);
+        }
+    }
+    
+    // Affiche toutes les données de la page
+    function afficher(d) {
+
+        const gain = d.totalValue - d.capital;
+        const gainPct = d.capital > 0 ? (gain / d.capital) * 100 : 0;
+        const classe = gain >= 0 ? 'gain' : 'perte';
+
+        // Nom + 4 cartes
+        set('portfolio-user-name', d.name);
+        set('kpi-total', eur(d.totalValue));
+        set('kpi-total-pct', pct(gainPct, 2), classe);
+        set('kpi-cash', eur(d.cash));
+        set('kpi-initial', 'Sur ' + eur(d.capital));
+        set('kpi-gain', (gain > 0 ? '+' : '') + eur(gain));
+        set('kpi-gain-pct', pct(gainPct, 2), classe);
+        set('kpi-rank-total', 'sur ' + d.total + ' participants');
+        const rang = $('kpi-rank');
+        if (rang) rang.replaceChildren(String(d.rank), el('sup', '', d.rank === 1 ? 'er' : 'e'));
+
+        // Graphiques
+        series = d.series;
+        dessinerCourbe();
+        graphique('assetAllocationChart', 'doughnut', d.allocation.labels, d.allocation.values,
+                  { backgroundColor: COULEURS });
+
+        // Tableau "Mes Actions" (7 colonnes)
+        remplirTableau('#tableCurrentStock', d.positions.map(p => [
+            [nom(p.symbole)],
+            [el('span', 'stock-ticker', p.symbole)],
+            [String(p.quantite)],
+            [eur(p.prix_achat), 'price'],
+            [eur(p.prix_actuel), 'price'],
+            [eur(p.valeur), 'price'],
+            [pct(p.pourcentage, 1), p.pourcentage >= 0 ? 'gain' : 'perte']
+        ]), 7, 'Aucune position active.');
+
+        // Tableau "Historique" (7 colonnes)
+        remplirTableau('#tableTradeHistory', d.history.map(o => [
+            [dateCourte(o.date)],
+            [nom(o.symbole) + ' (' + o.symbole + ')'],
+            [o.side === 'buy' ? 'Achat' : 'Vente'],
+            [String(o.quantite)],
+            [eur(o.prix), 'price'],
+            [eur(o.montant), 'price'],
+            [o.commentaire]
+        ]), 7, 'Aucune opération.');
+        // Journal de trading (ordres qui ont un commentaire)
+        const liste = document.querySelector('.journal-list');
+        if (liste) {
+            liste.replaceChildren();
+            const notes = d.history.filter(o => o.commentaire);
+            if (!notes.length) {
+                const p = el('p', 'journal-text', 'Aucune note pour le moment.');
+                p.style.color = '#94A3B8';
+                liste.appendChild(p);
+            }
+            notes.forEach(o => {
+                const carte = el('div', 'journal-card');
+                const meta = el('div', 'journal-meta');
+                meta.appendChild(el('span', 'journal-stock', nom(o.symbole) + ' (' + o.symbole + ')'));
+                meta.appendChild(el('span', 'journal-date', dateLongue(o.date)));
+                carte.appendChild(meta);
+                carte.appendChild(el('p', 'journal-text', '« ' + o.commentaire + ' »'));
+                const pied = el('div', 'journal-footer');
+                pied.appendChild(el('span', '', (o.side === 'buy' ? 'Achat : ' : 'Vente : ') + eur(o.prix)));
+                carte.appendChild(pied);
+                liste.appendChild(carte);
+            });
+        }
+    }
+
+    // ---------- Démarrage ----------
+    // Boutons 1S / 1M / 1A
+    document.querySelectorAll('.time-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.time-btn').forEach(b => b.classList.toggle('active', b === btn));
+            jours = PERIODES[btn.dataset.period];
+            dessinerCourbe();
+        });
+    });
+    const token = localStorage.getItem('tradelab_token');
+    if (!token) {
+        vide('Connecte-toi pour voir ton portefeuille.');
+        return;
+    }
+    vide('Chargement...');
+    try {
+        const res = await fetch('/api/student/portfolio', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+            vide(json.message || 'Impossible de charger le portefeuille.');
+            return;
+        }
+        afficher(json.data);
+    } catch (err) {
+        console.error('[portefeuille]', err);
+        vide('Erreur de chargement.');
+    }
+}
 
 
 // ==========================================
