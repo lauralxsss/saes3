@@ -2217,17 +2217,38 @@ const StudentWorkspace = {
     portfolioData: null,
     socket: typeof io !== 'undefined' ? io() : null,
 
+    getStorageKey() {
+        return `tradelab_wl_${this.sessionId}_${this.participantId}`;
+    },
+
+    saveLocalWatchlist() {
+        if (this.sessionId && this.participantId) {
+            localStorage.setItem(this.getStorageKey(), JSON.stringify(this.watchlist));
+        }
+    },
+
     async init() {
         const token = localStorage.getItem('tradelab_token');
         const partStr = localStorage.getItem('tradelab_participant');
-        const sessionId = localStorage.getItem('tradelab_active_session_id');
-        if (!token || !partStr || !sessionId) return false;
+        if (!token || !partStr) return false;
 
         const participant = JSON.parse(partStr);
+        const rawSession = localStorage.getItem('tradelab_active_session_id');
+
         this.token = token;
-        this.sessionId = String(sessionId);
-        this.participantId = String(participant.id);
+        this.participantId = String(participant.id || participant.participantId || participant.name || 'default');
+        this.sessionId = (rawSession && rawSession !== 'undefined' && rawSession !== 'null')
+            ? String(rawSession)
+            : String(participant.sessionId || participant.session_id || 'default');
         this.studentName = participant.name;
+
+        // 1. Charge immédiatement la watchlist de cet élève depuis le navigateur
+        try {
+            const cached = localStorage.getItem(this.getStorageKey());
+            if (cached) this.watchlist = JSON.parse(cached);
+        } catch (e) {}
+
+        refreshWatchlistStars();
 
         await Promise.all([
             this.loadWatchlist(),
@@ -2241,14 +2262,25 @@ const StudentWorkspace = {
 
     async loadWatchlist() {
         if (!sbClient) return;
-        const { data } = await sbClient
+        const { data, error } = await sbClient
             .from('watchlists')
             .select('symbol, asset_name')
             .eq('session_id', this.sessionId)
             .eq('participant_id', this.participantId)
             .order('added_at', { ascending: true });
 
-        this.watchlist = data || [];
+        if (error) {
+            console.warn('Lecture Supabase watchlists :', error.message);
+            return;
+        }
+
+        // Ne remplace jamais la watchlist locale par un tableau vide []
+        if (Array.isArray(data) && data.length > 0) {
+            const merged = new Map(this.watchlist.map(w => [w.symbol, w]));
+            data.forEach(w => merged.set(w.symbol, w));
+            this.watchlist = Array.from(merged.values());
+            this.saveLocalWatchlist();
+        }
     },
 
     async loadPortfolioFromApi() {
@@ -2272,6 +2304,11 @@ const StudentWorkspace = {
         const found = findMarketAsset(cleanSymbol);
         const assetName = found ? found.nom : cleanSymbol;
 
+        this.watchlist.push({ symbol: cleanSymbol, asset_name: assetName });
+        this.saveLocalWatchlist();
+        refreshWatchlistStars();
+        this.syncWithTeacher(`Ajout watchlist : ${cleanSymbol}`);
+
         if (sbClient) {
             const { error } = await sbClient
                 .from('watchlists')
@@ -2281,29 +2318,25 @@ const StudentWorkspace = {
                     symbol: cleanSymbol,
                     asset_name: assetName
                 });
-            if (error) {
-                console.error('Erreur ajout watchlist :', error);
-                return;
-            }
+            if (error) console.warn('Insert Supabase watchlist :', error.message);
         }
-
-        this.watchlist.push({ symbol: cleanSymbol, asset_name: assetName });
-        refreshWatchlistStars();
-        this.syncWithTeacher(`Ajout watchlist : ${cleanSymbol}`);
     },
 
     async removeFromWatchlist(symbol) {
+        this.watchlist = this.watchlist.filter(w => w.symbol !== symbol);
+        this.saveLocalWatchlist();
+        refreshWatchlistStars();
+        this.syncWithTeacher(`Retrait watchlist : ${symbol}`);
+
         if (sbClient) {
-            await sbClient
+            const { error } = await sbClient
                 .from('watchlists')
                 .delete()
                 .eq('session_id', this.sessionId)
                 .eq('participant_id', this.participantId)
                 .eq('symbol', symbol);
+            if (error) console.warn('Delete Supabase watchlist :', error.message);
         }
-        this.watchlist = this.watchlist.filter(w => w.symbol !== symbol);
-        refreshWatchlistStars();
-        this.syncWithTeacher(`Retrait watchlist : ${symbol}`);
     },
 
     syncWithTeacher(lastAction, trade = null) {
@@ -2345,7 +2378,6 @@ const StudentWorkspace = {
     }
 };
 
-// Clic sur une étoile n'importe où sur le site (carrousels, page Trader, etc.)
 document.addEventListener('click', async (e) => {
     const starBtn = e.target.closest('.btn-star-wl');
     if (!starBtn) return;
@@ -2376,66 +2408,66 @@ document.addEventListener('click', async (e) => {
     }
 });
 
-// Affichage dynamique sur la page d'accueil (index.html)
 document.addEventListener('DOMContentLoaded', async () => {
     const portfolioBody = document.getElementById('home-portfolio-body');
     const watchlistList = document.getElementById('home-watchlist-list');
 
     const isConnected = await StudentWorkspace.init();
-    if (!portfolioBody || !watchlistList) return;
+    if (!portfolioBody && !watchlistList) return;
 
     const formatEuro = (n) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n || 0);
 
     window.renderHomeWorkspace = function () {
-        const positions = StudentWorkspace.portfolioData?.positions || [];
-
-        // 1. Positions en cours (vide au départ)
-        if (!isConnected || positions.length === 0) {
-            portfolioBody.innerHTML = `
-                <tr>
-                    <td colspan="5">Aucune position en cours. Passez un premier ordre d'achat pour démarrer votre portefeuille.</td>
-                </tr>
-            `;
-        } else {
-            portfolioBody.innerHTML = positions.map(p => {
-                const diff = (p.prix_actuel - p.prix_achat) * p.quantite;
-                const cssClass = diff >= 0 ? 'change-up' : 'change-down';
-                const sign = diff >= 0 ? '+' : '';
-                return `
+        if (portfolioBody) {
+            const positions = StudentWorkspace.portfolioData?.positions || [];
+            if (!isConnected || positions.length === 0) {
+                portfolioBody.innerHTML = `
                     <tr>
-                        <td><div class="asset-info"><strong>${p.symbole}</strong><span>${p.symbole}</span></div></td>
-                        <td>${p.quantite}</td>
-                        <td>${formatEuro(p.prix_achat)}</td>
-                        <td class="price">${formatEuro(p.prix_actuel)}</td>
-                        <td class="${cssClass}">${sign}${formatEuro(diff)} (${sign}${Number(p.pourcentage || 0).toFixed(1)}%)</td>
+                        <td colspan="5">Aucune position en cours. Passez un premier ordre d'achat pour démarrer votre portefeuille.</td>
                     </tr>
                 `;
-            }).join('');
+            } else {
+                portfolioBody.innerHTML = positions.map(p => {
+                    const diff = (p.prix_actuel - p.prix_achat) * p.quantite;
+                    const cssClass = diff >= 0 ? 'change-up' : 'change-down';
+                    const sign = diff >= 0 ? '+' : '';
+                    return `
+                        <tr>
+                            <td><div class="asset-info"><strong>${p.symbole}</strong><span>${p.symbole}</span></div></td>
+                            <td>${p.quantite}</td>
+                            <td>${formatEuro(p.prix_achat)}</td>
+                            <td class="price">${formatEuro(p.prix_actuel)}</td>
+                            <td class="${cssClass}">${sign}${formatEuro(diff)} (${sign}${Number(p.pourcentage || 0).toFixed(1)}%)</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
         }
 
-        // 2. Watchlist individuelle (alimentée par les étoiles)
-        if (!isConnected || StudentWorkspace.watchlist.length === 0) {
-            watchlistList.innerHTML = `<p>Votre watchlist est vide. Cliquez sur l'étoile ☆ d'une action pour la suivre ici.</p>`;
-        } else {
-            watchlistList.innerHTML = StudentWorkspace.watchlist.map(w => {
-                const marketItem = findMarketAsset(w.symbol);
-                const priceText = marketItem ? `${marketItem.prix} ${marketItem.devise}` : '--';
+        if (watchlistList) {
+            if (!isConnected || StudentWorkspace.watchlist.length === 0) {
+                watchlistList.innerHTML = `<p>Votre watchlist est vide. Cliquez sur l'étoile ☆ d'une action pour la suivre ici.</p>`;
+            } else {
+                watchlistList.innerHTML = StudentWorkspace.watchlist.map(w => {
+                    const marketItem = findMarketAsset(w.symbol);
+                    const priceText = marketItem ? `${marketItem.prix} ${marketItem.devise}` : '--';
 
-                return `
-                    <div class="watchlist-item">
-                        <div class="wl-info">
-                            <span class="wl-name">${w.asset_name || w.symbol}</span>
-                            <span class="wl-ticker">${w.symbol}</span>
+                    return `
+                        <div class="watchlist-item">
+                            <div class="wl-info">
+                                <span class="wl-name">${w.asset_name || w.symbol}</span>
+                                <span class="wl-ticker">${w.symbol}</span>
+                            </div>
+                            <div class="wl-stats">
+                                <span class="price">${priceText}</span>
+                                <button type="button" class="btn-star-wl is-active" data-wl-ticker="${w.symbol}" title="Retirer de la watchlist">
+                                    <i class="fa-solid fa-star"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="wl-stats">
-                            <span class="price">${priceText}</span>
-                            <button type="button" class="btn-star-wl is-active" data-wl-ticker="${w.symbol}" title="Retirer de la watchlist">
-                                <i class="fa-solid fa-star"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+                    `;
+                }).join('');
+            }
         }
     };
 
