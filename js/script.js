@@ -1751,6 +1751,7 @@ async function initPortfolio() {
 
     // Courbe d'évolution sur la période choisie (1S / 1M / 1A)
     function dessinerCourbe() {
+        if(!series.length) return;
         const limite = Date.now() - jours * 86400000;
         let points = series.filter(p => new Date(p.date) >= limite);
         if (points.length < 2) points = series.slice(-2); // au moins 2 points
