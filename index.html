@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="css/style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/js/script.js" defer></script>
     <!-- tag meta pour le SEO -->
     <link rel="canonical" href="https://saes3.onrender.com">
@@ -73,7 +74,8 @@
         </ul>
 
         <div class="nav-auth">
-        <button class="btn-primary" onclick="window.location.href='/rejoindre/'">Connexion</button>        </div>
+            <button class="btn-primary" onclick="window.location.href='/rejoindre/'">Connexion</button>
+        </div>
     </nav>
 
     <div class="market-ticker">
@@ -103,12 +105,12 @@
                 </div>
                 <div class="header-actions">
                     <button class="btn-outline"><i class="fa-solid fa-plus"></i> Dépôt virtuel</button>
-                    <button class="btn-primary"><i class="fa-solid fa-bolt"></i> Nouveau Trade</button>
+                    <button class="btn-primary" onclick="window.location.href='/trader-et-investir/actions/'"><i class="fa-solid fa-bolt"></i> Nouveau Trade</button>
                 </div>
             </header>
 
             <div class="dashboard-layout">
-                                <div class="main-column">
+                <div class="main-column">
                     <section class="portfolio-section">
                         <h2><i class="fa-solid fa-briefcase"></i> Positions en cours</h2>
                         <div class="table-container">
@@ -122,27 +124,9 @@
                                         <th>+/- Latente</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="home-portfolio-body">
                                     <tr>
-                                        <td><div class="asset-info"><strong>Airbus</strong><span>AIR.PA</span></div></td>
-                                        <td>20</td>
-                                        <td>125,40 €</td>
-                                        <td class="price">132,10 €</td>
-                                        <td class="change-up">+134,00 € (5.3%)</td>
-                                    </tr>
-                                    <tr>
-                                        <td><div class="asset-info"><strong>L'Oréal</strong><span>OR.PA</span></div></td>
-                                        <td>5</td>
-                                        <td>410,20 €</td>
-                                        <td class="price">398,50 €</td>
-                                        <td class="change-down">-58,50 € (-2.8%)</td>
-                                    </tr>
-                                    <tr>
-                                        <td><div class="asset-info"><strong>Amazon</strong><span>AMZN</span></div></td>
-                                        <td>35</td>
-                                        <td>130,00 $</td>
-                                        <td class="price">138,50 $</td>
-                                        <td class="change-up">+297,50 $ (6.5%)</td>
+                                        <td colspan="5">Aucune position en cours. Passez un premier ordre d'achat pour démarrer votre portefeuille.</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -184,12 +168,15 @@
                     
                     <div class="sidebar-widget">
                         <h3><i class="fa-solid fa-star"></i> Watchlist</h3>
-                        <div class="watchlist-list">
-                            <div class="watchlist-item"><div class="wl-info"><span class="wl-name">LVMH</span><span class="wl-ticker">MC.PA</span></div><div class="wl-stats"><span class="price">845,20 €</span><span class="change-up">+1.2%</span></div></div>
-                            <div class="watchlist-item"><div class="wl-info"><span class="wl-name">Alphabet (Google)</span><span class="wl-ticker">GOOGL</span></div><div class="wl-stats"><span class="price">136,40 $</span><span class="change-down">-0.5%</span></div></div>
-                            <div class="watchlist-item"><div class="wl-info"><span class="wl-name">BNP Paribas</span><span class="wl-ticker">BNP.PA</span></div><div class="wl-stats"><span class="price">58,12 €</span><span class="change-up">+2.1%</span></div></div>
+                        
+                        <form id="watchlist-add-form" class="field">
+                            <input type="text" id="watchlist-symbol-input" placeholder="Ajouter un symbole (ex: AAPL, AIR.PA)" required>
+                            <button type="submit" class="btn-full-width"><i class="fa-solid fa-plus"></i> Ajouter à ma watchlist</button>
+                        </form>
+
+                        <div class="watchlist-list" id="home-watchlist-list">
+                            <p>Votre watchlist est vide. Ajoutez une action ci-dessus pour la suivre.</p>
                         </div>
-                        <button class="btn-full-width">Voir tout</button>
                     </div>
 
                     <div class="sidebar-widget">

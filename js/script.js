@@ -45,7 +45,7 @@ async function rejoindre(sessionId, pseudo) {
 // ==========================================
 async function fetchFrenchNews() {
     const newsContainer = document.getElementById('news-container');
-    if (!newsContainer) return; // Sécurité : arrête la fonction si on n'est pas sur l'accueil
+    if (!newsContainer) return;
 
     newsContainer.innerHTML = '<p class="loading-text" style="color: #94A3B8;"><i class="fa-solid fa-spinner fa-spin"></i> Chargement des actualités...</p>';
 
@@ -195,7 +195,7 @@ const marketData = {
 
 function genererCartesModernes(donnees, containerId) {
     const container = document.getElementById(containerId);
-    if(!container) return;
+    if (!container) return;
     container.innerHTML = '';
     donnees.forEach(actif => {
         const card = document.createElement('div');
@@ -240,13 +240,13 @@ function initialiserCarrousels() {
     document.querySelectorAll('.prev-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const track = document.getElementById(btn.getAttribute('data-target'));
-            if(track) track.scrollBy({ left: -320, behavior: 'smooth' });
+            if (track) track.scrollBy({ left: -320, behavior: 'smooth' });
         });
     });
     document.querySelectorAll('.next-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const track = document.getElementById(btn.getAttribute('data-target'));
-            if(track) track.scrollBy({ left: 320, behavior: 'smooth' });
+            if (track) track.scrollBy({ left: 320, behavior: 'smooth' });
         });
     });
 }
@@ -870,20 +870,20 @@ async function closeSession(id) {
         }
     }
 }
+
 // ==========================================
 // AFFICHAGE EN DIRECT POUR LE PROFESSEUR
 // ==========================================
 async function loadLivePortfolios() {
     const tbody = document.getElementById('live-students-body');
-    if (!tbody) return; // Sécurité si on n'est pas sur la bonne page
+    if (!tbody) return;
 
     try {
-        // Tu as déjà créé "adminFetch", c'est parfait pour passer le jeton de sécurité !
         const res = await adminFetch('/api/admin/live-portfolios');
         const data = await res.json();
 
         if (res.ok && data.success) {
-            tbody.innerHTML = ''; // On vide le tableau
+            tbody.innerHTML = '';
 
             if (data.participants.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #94A3B8; padding: 10px;">Aucun élève actuellement connecté.</td></tr>';
@@ -910,11 +910,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminToken = sessionStorage.getItem('tradelab_admin_token');
     const liveBody = document.getElementById('live-students-body');
 
-    if (adminToken && liveBody) {
+    if (adminToken && liveBody && typeof io !== 'undefined') {
         const socket = io();
-        
         loadLivePortfolios();
-
         socket.on('update_prof_dashboard', () => {
             loadLivePortfolios();
         });
@@ -950,7 +948,7 @@ function updateAuthUI() {
             const part = JSON.parse(studentDataStr);
             pseudo = part.name;
             initials = pseudo.substring(0, 2).toUpperCase();
-        } catch(e) {}
+        } catch (e) {}
     }
 
     if (role) {
@@ -1048,7 +1046,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (actionsContainer) {
         actionsContainer.innerHTML = marketData.actions.map(createCardHTML).join('');
-        if(typeof cardsHTML !== 'undefined') actionsContainer.innerHTML += cardsHTML;
+        if (typeof cardsHTML !== 'undefined') actionsContainer.innerHTML += cardsHTML;
         buildActionsNav(marketData.actions);
     }
     const indicesDetail = document.getElementById('indices-detail-container');
@@ -1072,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('sessions-container')) {
         initAdminSessions();
     }
-    if(document.getElementById('tableCurrentStock')){
+    if (document.getElementById('tableCurrentStock')) {
         initPortfolio();
     }
 
@@ -1140,7 +1138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-}); // <-- FIN SECTION 7
+});
 
 // ==========================================
 // 8. PARCOURS ÉLÈVE : GESTION DE LA PAGE REJOINDRE
@@ -1286,7 +1284,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ==========================================
-// 9. PORTEFEUILLE : Gestion des graphiques
+// 9. PORTEFEUILLE : Gestion des graphiques et exports
 // ==========================================
 document.addEventListener("DOMContentLoaded", function() {
     window.addEventListener("scroll", function() {
@@ -1296,109 +1294,12 @@ document.addEventListener("DOMContentLoaded", function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         scrollBtn.style.display = scrollTop > 600 ? "flex" : "none";
     });
-    /*
-    // GRAPHIQUES STATIQUES
-    const ctxPerf = document.getElementById('portfolioPerformanceChart');
-    if (ctxPerf) {
-        const contextPerf = ctxPerf.getContext('2d');
-        const gradient = contextPerf.createLinearGradient(0, 0, 0, 300);
-        gradient.addColorStop(0, 'rgba(34, 197, 94, 0.35)');
-        gradient.addColorStop(1, 'rgba(34, 197, 94, 0.0)');
 
-        performanceChart = new Chart(contextPerf, {
-            type: 'line',
-            data: {
-                labels: ['Janv', 'Févr', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept'],
-                datasets: [{
-                    label: 'Valeur du portefeuille (€)',
-                    data: [100000, 101200, 99800, 103500, 106000, 104200, 109800, 112000, 114250],
-                    borderColor: '#22C55E',
-                    borderWidth: 2,
-                    backgroundColor: gradient,
-                    fill: true,
-                    tension: 0.3,
-                    pointBackgroundColor: '#22C55E',
-                    pointRadius: 3
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { color: '#2A2E39' }, ticks: { color: '#94A3B8' } },
-                    y: { grid: { color: '#2A2E39' }, ticks: { color: '#94A3B8' } }
-                }
-            }
-        });
-    }
-
-    const ctxAlloc = document.getElementById('assetAllocationChart');
-    if (ctxAlloc) {
-        new Chart(ctxAlloc.getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Apple', 'LVMH', 'Tesla', 'Liquidités'],
-                datasets: [{
-                    data: [26025, 25356, 30072, 32400],
-                    backgroundColor: ['#3B82F6', '#8B5CF6', '#F59E0B', '#10B981'],
-                    borderWidth: 2,
-                    borderColor: '#151924'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom', labels: { color: '#94A3B8', font: { family: 'Inter', size: 12 }, padding: 15 } }
-                },
-                cutout: '70%'
-            }
-        });
-    }
-
-    const timeButtons = document.querySelectorAll('.time-btn');
-
-    timeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            timeButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            const period = this.getAttribute('data-period');
-
-            let newLabels = [];
-            let newData = [];
-
-            if (period === '1S') {
-                newLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
-                newData = [113200, 113500, 112900, 113800, 114000, 114250, 114250];
-            } else if (period === '1M') {
-                newLabels = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'];
-                newData = [109000, 111200, 110500, 114250];
-            } else if (period === '1A') {
-                newLabels = ['Janv', 'Févr', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept'];
-                newData = [100000, 101200, 99800, 103500, 106000, 104200, 109800, 112000, 114250];
-            }
-
-            if (performanceChart) {
-                performanceChart.data.labels = newLabels;
-                performanceChart.data.datasets[0].data = newData;
-                performanceChart.update();
-            }
-        });
-    });
-    */
-
-    // Export Excel
-
-    /* =========================================================
-    Normalisation : convertit le texte des cellules en vrais
-    nombres / pourcentages / dates avec un format Excel adapté
-    ========================================================= */
     function normalizeSheet(ws) {
-        const clean = (s) => String(s).replace(/[   ]/g, ' ').trim();
+        const clean = (s) => String(s).replace(/[   ]/g, ' ').trim();
         const range = XLSX.utils.decode_range(ws['!ref']);
 
-        for (let R = range.s.r + 1; R <= range.e.r; ++R) { // on saute l'en-tête
+        for (let R = range.s.r + 1; R <= range.e.r; ++R) {
             for (let C = range.s.c; C <= range.e.c; ++C) {
                 const cell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
                 if (!cell || cell.v === undefined || cell.v === null) continue;
@@ -1406,31 +1307,26 @@ document.addEventListener("DOMContentLoaded", function() {
                 const txt = clean(cell.v);
                 let m;
 
-                // Date JJ/MM/AAAA
                 if ((m = txt.match(/^(\d{2})\/(\d{2})\/(\d{4})$/))) {
                     cell.t = 'n';
                     cell.v = Date.UTC(+m[3], +m[2] - 1, +m[1]) / 86400000 + 25569;
                     cell.z = 'dd/mm/yyyy';
                 }
-                // Montant : 17 350,00 $ / 860,00 €
                 else if ((m = txt.match(/^(-?[\d\s]+(?:,\d+)?)\s*([$€£])$/))) {
                     cell.t = 'n';
                     cell.v = parseFloat(m[1].replace(/\s/g, '').replace(',', '.'));
                     cell.z = '#,##0.00 "' + m[2] + '"';
                 }
-                // Pourcentage : +15,6 % / -1,7 %
                 else if ((m = txt.match(/^([+-]?\d+(?:,\d+)?)\s*%$/))) {
                     cell.t = 'n';
                     cell.v = parseFloat(m[1].replace(',', '.')) / 100;
                     cell.z = '+0.0%;-0.0%;0.0%';
                 }
-                // Entier
                 else if (/^-?\d+$/.test(txt.replace(/\s/g, ''))) {
                     cell.t = 'n';
                     cell.v = parseInt(txt.replace(/\s/g, ''), 10);
                     cell.z = '0';
                 }
-                // Texte (tickers, commentaires...)
                 else {
                     cell.t = 's';
                     cell.v = txt;
@@ -1473,7 +1369,6 @@ document.addEventListener("DOMContentLoaded", function() {
     function formatWorksheet(ws) {
         const range = XLSX.utils.decode_range(ws['!ref']);
 
-        // Styles
         for (let R = range.s.r; R <= range.e.r; ++R) {
             for (let C = range.s.c; C <= range.e.c; ++C) {
                 const addr = XLSX.utils.encode_cell({ r: R, c: C });
@@ -1515,7 +1410,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 alert('Aucune donnée à exporter.');
                 return;
             }
-
             let wb = XLSX.utils.book_new();
             let tableCurrent = document.getElementById('tableCurrentStock');
             let tableHistory = document.getElementById('tableTradeHistory');
@@ -1539,7 +1433,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    //Export PDF
     function exportTablesToPDF() {
 
         const lignes = Array.from(document.querySelectorAll('#tableCurrentStock tbody tr, #tableTradeHistory tbody tr'))
@@ -1556,11 +1449,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+        const clean = (s) => String(s).replace(/[   ]/g, ' ').trim();
 
-        // Les espaces insécables (séparateurs de milliers) s'affichent mal dans un PDF
-        const clean = (s) => String(s).replace(/[   ]/g, ' ').trim();
-
-        // Lit un <table> HTML -> { head, body }
         function readTable(table) {
             const head = [[...table.querySelectorAll('thead th')].map((th) => clean(th.textContent))];
             const body = [...table.querySelectorAll('tbody tr')].map((tr) =>
@@ -1569,7 +1459,6 @@ document.addEventListener("DOMContentLoaded", function() {
             return { head, body };
         }
 
-        // Compatible avec les deux versions d'AutoTable
         function drawTable(options) {
             if (typeof doc.autoTable === 'function') doc.autoTable(options);
             else if (window.autoTable) window.autoTable(doc, options);
@@ -1584,7 +1473,6 @@ document.addEventListener("DOMContentLoaded", function() {
             alternateRowStyles: { fillColor: [232, 245, 233] }
         };
 
-        // ----- Titre -----
         doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
         doc.text('Rapport de portefeuille', 14, 16);
@@ -1592,7 +1480,6 @@ document.addEventListener("DOMContentLoaded", function() {
         doc.setFont('helvetica', 'normal');
         doc.text("Date d'export : " + new Date().toLocaleDateString('fr-FR'), 14, 22);
 
-        // ----- Tableau 1 : Mes Actions -----
         const actions = readTable(document.getElementById('tableCurrentStock'));
         doc.setFontSize(13);
         doc.setFont('helvetica', 'bold');
@@ -1610,7 +1497,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 5: { halign: 'right' },
                 6: { halign: 'right', fontStyle: 'bold' }
             },
-            // Vert pour un gain, rouge pour une perte (colonne Gain / Perte)
             didParseCell: (data) => {
                 if (data.section === 'body' && data.column.index === 6) {
                     const txt = data.cell.raw;
@@ -1620,7 +1506,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
 
-        // ----- Tableau 2 : Historique -----
         const history = readTable(document.getElementById('tableTradeHistory'));
         const y = doc.lastAutoTable.finalY + 14;
 
@@ -1643,7 +1528,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
 
-        // ----- Numéros de page -----
         const pages = doc.getNumberOfPages();
         for (let i = 1; i <= pages; i++) {
             doc.setPage(i);
@@ -1657,7 +1541,6 @@ document.addEventListener("DOMContentLoaded", function() {
         doc.save('portefeuille_' + today + '.pdf');
     }
 
-    /* ---------- Bouton ---------- */
     let btnExportPDF = document.getElementById('btnExportGlobalPDF');
     if (btnExportPDF) {
         btnExportPDF.addEventListener('click', function () {
@@ -1671,9 +1554,8 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 async function initPortfolio() {
-    if (!document.getElementById('tableCurrentStock')) return; // pas la page portefeuille
+    if (!document.getElementById('tableCurrentStock')) return;
 
-    // Noms des actions (la base ne contient que les symboles) : complète la liste
     const NOMS = { 'AAPL': 'Apple Inc.', 'MC.PA': 'LVMH', 'TSLA': 'Tesla' };
     const PERIODES = { '1S': 7, '1M': 30, '1A': 365 };
     const COULEURS = ['#1D6F42', '#2E86DE', '#F39C12', '#8E44AD', '#E74C3C', '#16A085', '#7F8C8D', '#D35400'];
@@ -1687,7 +1569,6 @@ async function initPortfolio() {
     let series = [];
     let jours = 365;
 
-    // Écrit un texte dans un élément (et change sa classe si besoin)
     function set(id, texte, classe) {
         const e = $(id);
         if (!e) return;
@@ -1695,7 +1576,6 @@ async function initPortfolio() {
         if (classe) e.className = classe;
     }
 
-    // Crée un élément avec du texte (textContent : pas de faille XSS)
     function el(tag, classe, texte) {
         const e = document.createElement(tag);
         if (classe) e.className = classe;
@@ -1703,7 +1583,6 @@ async function initPortfolio() {
         return e;
     }
 
-    // Remplit un tableau : lignes = [[contenu, classe], [contenu, classe], ...]
     function remplirTableau(selecteur, lignes, nbColonnes, messageVide) {
         const tbody = document.querySelector(selecteur + ' tbody');
         if (!tbody) return;
@@ -1729,8 +1608,6 @@ async function initPortfolio() {
         });
     }
 
-
-    // Met à jour un graphique Chart.js existant, ou le crée
     function graphique(canvasId, type, labels, valeurs, style) {
         const canvas = $(canvasId);
         if (!canvas || typeof Chart === 'undefined') return;
@@ -1748,13 +1625,11 @@ async function initPortfolio() {
         });
     }
 
-
-    // Courbe d'évolution sur la période choisie (1S / 1M / 1A)
     function dessinerCourbe() {
         if(!series.length) return;
         const limite = Date.now() - jours * 86400000;
         let points = series.filter(p => new Date(p.date) >= limite);
-        if (points.length < 2) points = series.slice(-2); // au moins 2 points
+        if (points.length < 2) points = series.slice(-2);
         graphique('portfolioPerformanceChart', 'line',
             points.map(p => dateCourte(p.date)),
             points.map(p => p.value),
@@ -1762,8 +1637,6 @@ async function initPortfolio() {
               backgroundColor: 'rgba(29,111,66,0.12)', fill: true, tension: 0.3 });
     }
 
-
-    // Affiche un message partout (chargement, déconnecté, erreur)
     function vide(message) {
         ['portfolio-user-name', 'kpi-total', 'kpi-total-pct', 'kpi-cash', 'kpi-initial',
          'kpi-gain', 'kpi-gain-pct', 'kpi-rank', 'kpi-rank-total'].forEach(id => set(id, '—'));
@@ -1778,14 +1651,11 @@ async function initPortfolio() {
         }
     }
     
-    // Affiche toutes les données de la page
     function afficher(d) {
-
         const gain = d.totalValue - d.capital;
         const gainPct = d.capital > 0 ? (gain / d.capital) * 100 : 0;
         const classe = gain >= 0 ? 'gain' : 'perte';
 
-        // Nom + 4 cartes
         set('portfolio-user-name', d.name);
         set('kpi-total', eur(d.totalValue));
         set('kpi-total-pct', pct(gainPct, 2), classe);
@@ -1797,13 +1667,11 @@ async function initPortfolio() {
         const rang = $('kpi-rank');
         if (rang) rang.replaceChildren(String(d.rank), el('sup', '', d.rank === 1 ? 'er' : 'e'));
 
-        // Graphiques
         series = d.series;
         dessinerCourbe();
         graphique('assetAllocationChart', 'doughnut', d.allocation.labels, d.allocation.values,
                   { backgroundColor: COULEURS });
 
-        // Tableau "Mes Actions" (7 colonnes)
         remplirTableau('#tableCurrentStock', d.positions.map(p => [
             [nom(p.symbole)],
             [el('span', 'stock-ticker', p.symbole)],
@@ -1814,7 +1682,6 @@ async function initPortfolio() {
             [pct(p.pourcentage, 1), p.pourcentage >= 0 ? 'gain' : 'perte']
         ]), 7, 'Aucune position active.');
 
-        // Tableau "Historique" (7 colonnes)
         remplirTableau('#tableTradeHistory', d.history.map(o => [
             [dateCourte(o.date)],
             [nom(o.symbole) + ' (' + o.symbole + ')'],
@@ -1825,7 +1692,7 @@ async function initPortfolio() {
             [o.commentaire]
         ]), 7, 'Aucune opération.');
 
-        // Journal de trading (ordres qui ont un commentaire)
+
         const liste = document.querySelector('.journal-list');
         if (liste) {
             liste.replaceChildren();
@@ -1850,8 +1717,6 @@ async function initPortfolio() {
         }
     }
 
-    // ---------- Démarrage ----------
-    // Boutons 1S / 1M / 1A
     document.querySelectorAll('.time-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.time-btn').forEach(b => b.classList.toggle('active', b === btn));
@@ -1890,50 +1755,58 @@ async function initPortfolio() {
 // 10. PASSAGE D'ORDRES (Achat / Vente pour les élèves)
 // ==========================================
 document.addEventListener('click', async (e) => {
-    if (e.target.classList.contains('btn-action-buy') || e.target.classList.contains('btn-action-sell')) {
-        e.preventDefault();
-        
-        const isBuy = e.target.classList.contains('btn-action-buy');
-        const ticker = e.target.getAttribute('href').split('-')[1];
-        
-        const action = marketData.actions.find(a => a.ticker === ticker);
-        if (!action) return alert("Action introuvable.");
+    const buyBtn = e.target.closest('.btn-action-buy, .stock-btn--buy');
+    const sellBtn = e.target.closest('.btn-action-sell, .stock-btn--sell');
+    const btn = buyBtn || sellBtn;
+    if (!btn) return;
 
-        const quantite = prompt(`Combien d'actions ${ticker} voulez-vous ${isBuy ? 'acheter' : 'vendre'} au prix de ${action.prix} ${action.devise} ?`);
-        if (!quantite || isNaN(quantite) || parseInt(quantite) <= 0) return;
+    e.preventDefault();
 
-        const token = localStorage.getItem('tradelab_token');
-        const participantStr = localStorage.getItem('tradelab_participant');
-        if (!token || !participantStr) return alert("Vous n'êtes pas connecté à une session. (Essayez de rejoindre à nouveau la session avec votre code)");
+    const isBuy = Boolean(buyBtn);
+    const ticker = (btn.getAttribute('href') || '').replace(/^#(achat|vente)-/, '');
 
-        const participantId = JSON.parse(participantStr).id;
+    const action = marketData.actions.find(a => a.ticker === ticker);
+    if (!action) return alert("Action introuvable.");
 
-        try {
-            const response = await fetch('/api/student/orders', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                },
-                body: JSON.stringify({
-                    participantId: participantId,
-                    symbole: ticker,
-                    side: isBuy ? 'buy' : 'sell',
-                    quantite: parseInt(quantite),
-                    prix: action.prix
-                })
-            });
+    const quantite = prompt(`Combien d'actions ${ticker} voulez-vous ${isBuy ? 'acheter' : 'vendre'} au prix de ${action.prix} ${action.devise} ?`);
+    if (!quantite || isNaN(quantite) || parseInt(quantite) <= 0) return;
 
-            const data = await response.json();
-            if (response.ok && data.success) {
-                alert(`Ordre exécuté ! Vous avez ${isBuy ? 'acheté' : 'vendu'} ${quantite} actions ${ticker}.`);
-            } else {
-                alert(data.message || "Erreur lors de la transaction.");
-            }
-        } catch (err) {
-            console.error(err);
-            alert("Erreur de connexion au serveur.");
+    const token = localStorage.getItem('tradelab_token');
+    const participantStr = localStorage.getItem('tradelab_participant');
+    if (!token || !participantStr) return alert("Vous n'êtes pas connecté à une session. (Essayez de rejoindre à nouveau la session avec votre code)");
+
+    const participantId = JSON.parse(participantStr).id;
+
+    try {
+        const response = await fetch('/api/student/orders', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({
+                participantId: participantId,
+                symbole: ticker,
+                side: isBuy ? 'buy' : 'sell',
+                quantite: parseInt(quantite),
+                prix: action.prix
+            })
+        });
+
+        const data = await response.json();
+        if (response.ok && data.success) {
+            alert(`Ordre exécuté ! Vous avez ${isBuy ? 'acheté' : 'vendu'} ${quantite} actions ${ticker}.`);
+            await StudentWorkspace.loadPortfolioFromApi();
+            StudentWorkspace.syncWithTeacher(
+                `${isBuy ? 'Achat' : 'Vente'} ${quantite} ${ticker}`,
+                { side: isBuy ? 'BUY' : 'SELL', symbol: ticker, qty: parseInt(quantite), price: action.prix }
+            );
+        } else {
+            alert(data.message || "Erreur lors de la transaction.");
         }
+    } catch (err) {
+        console.error(err);
+        alert("Erreur de connexion au serveur.");
     }
 });
 
@@ -1982,7 +1855,7 @@ if (document.readyState === 'loading') {
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const fullNewsContainer = document.getElementById('full-news-container');
-        if (!fullNewsContainer) return;
+    if (!fullNewsContainer) return;
 
     let allNews = [];
     let currentFilters = { category: 'all', sector: 'all', geo: 'all', search: '' };
@@ -2037,7 +1910,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const description = item.querySelector('description')?.textContent.replace(/(<([^>]+)>)/gi, "") || '';
                 const pubDate = item.querySelector('pubDate')?.textContent;
                 
-                // Cherche une image attachée à l'article, sinon met une image par défaut
                 let imageUrl = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=600'; 
                 const enclosure = item.querySelector('enclosure');
                 if (enclosure && enclosure.getAttribute('url')) {
@@ -2077,8 +1949,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = '';
         newsArray.forEach(news => {
             let visibleTagsHtml = '';
-            if(news.tags.sector.length > 0) visibleTagsHtml += `<span class="tag-badge">${news.tags.sector[0]}</span>`;
-            if(news.tags.geo.length > 0) visibleTagsHtml += `<span class="tag-badge">${news.tags.geo[0]}</span>`;
+            if (news.tags.sector.length > 0) visibleTagsHtml += `<span class="tag-badge">${news.tags.sector[0]}</span>`;
+            if (news.tags.geo.length > 0) visibleTagsHtml += `<span class="tag-badge">${news.tags.geo[0]}</span>`;
 
             html += `
                 <a href="${news.link}" target="_blank" rel="noopener" class="news-card">
@@ -2134,19 +2006,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// 12. TEMPS RÉEL : CONNEXION DES ÉLÈVES
+// 12. TEMPS RÉEL : CONNEXION DES ÉLÈVES & SUIVI PROFESSEUR
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const studentDataStr = localStorage.getItem('tradelab_participant');
     
-    // Si l'utilisateur est un élève connecté
-    if (studentDataStr) {
+    if (studentDataStr && typeof io !== 'undefined') {
         try {
             const participant = JSON.parse(studentDataStr);
-            const socket = io(); // Initialise la connexion WebSocket
+            const socket = io();
             
             socket.on('connect', () => {
-                // Envoie l'ID de l'élève au serveur
                 socket.emit('student_login', participant.id);
                 console.log("Connecté au serveur en direct !");
             });
@@ -2156,7 +2026,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// --- SUIVI PROFESSEUR EN TEMPS RÉEL (LECTURE SEULE) ---
 document.addEventListener('DOMContentLoaded', () => {
     const tbody = document.getElementById('live-students-body');
     if (!tbody || typeof io === 'undefined') return;
@@ -2248,6 +2117,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('detail-history-body').innerHTML = (s.history && s.history.length)
             ? s.history.map(h => `<tr><td>${new Date(h.timestamp).toLocaleTimeString('fr-FR')}</td><td>${h.side}</td><td>${h.symbol}</td><td>${h.qty}</td><td>${formatEuro(h.price)}</td></tr>`).join('')
             : '<tr><td colspan="5">Aucune transaction</td></tr>';
+
+        const wlEl = document.getElementById('detail-watchlist-list');
+        if (wlEl) {
+            wlEl.innerHTML = (s.watchlist && s.watchlist.length)
+                ? s.watchlist.map(w => `<li><strong>${w.symbol}</strong> - ${w.asset_name || ''}</li>`).join('')
+                : '<li>Aucune action dans la watchlist</li>';
+        }
     }
 
     window.openStudentDetail = (id) => {
@@ -2265,7 +2141,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     filterSelect?.addEventListener('change', renderStudentsTable);
 
-    // Écoute Socket.io en temps réel
     socket.emit('teacher:watch');
 
     socket.on('students:list', (data) => {
@@ -2286,5 +2161,224 @@ document.addEventListener('DOMContentLoaded', () => {
         const li = document.createElement('li');
         li.textContent = `[${new Date().toLocaleTimeString('fr-FR')}] ${trade.studentName} : ${trade.side} ${trade.qty} ${trade.symbol} à ${formatEuro(trade.price)}`;
         tradesFeed.prepend(li);
+    });
+});
+
+// ==========================================
+// 13. ACCUEIL ÉLÈVE VIERGE & SYNCHRONISATION LIVE
+// ==========================================
+const StudentWorkspace = {
+    sessionId: null,
+    participantId: null,
+    studentName: null,
+    token: null,
+    watchlist: [],
+    portfolioData: null,
+    socket: typeof io !== 'undefined' ? io() : null,
+
+    async init() {
+        const token = localStorage.getItem('tradelab_token');
+        const partStr = localStorage.getItem('tradelab_participant');
+        const sessionId = localStorage.getItem('tradelab_active_session_id');
+        if (!token || !partStr || !sessionId) return false;
+
+        const participant = JSON.parse(partStr);
+        this.token = token;
+        this.sessionId = String(sessionId);
+        this.participantId = String(participant.id);
+        this.studentName = participant.name;
+
+        await Promise.all([
+            this.loadWatchlist(),
+            this.loadPortfolioFromApi()
+        ]);
+
+        this.syncWithTeacher('En ligne sur TradeLab');
+        return true;
+    },
+
+    async loadWatchlist() {
+        if (!sbClient) return;
+        const { data } = await sbClient
+            .from('watchlists')
+            .select('symbol, asset_name')
+            .eq('session_id', this.sessionId)
+            .eq('participant_id', this.participantId)
+            .order('added_at', { ascending: true });
+
+        this.watchlist = data || [];
+    },
+
+    async loadPortfolioFromApi() {
+        try {
+            const res = await fetch('/api/student/portfolio', {
+                headers: { 'Authorization': 'Bearer ' + this.token }
+            });
+            const json = await res.json();
+            if (res.ok && json.success) {
+                this.portfolioData = json.data;
+            }
+        } catch (err) {
+            console.error('Erreur chargement portefeuille accueil :', err);
+        }
+    },
+
+    async addToWatchlist(symbol) {
+        const cleanSymbol = symbol.trim().toUpperCase();
+        if (!cleanSymbol || this.watchlist.some(w => w.symbol === cleanSymbol)) return;
+
+        const found = (typeof marketData !== 'undefined' && marketData.actions)
+            ? marketData.actions.find(a => a.ticker === cleanSymbol)
+            : null;
+        const assetName = found ? found.nom : cleanSymbol;
+
+        if (sbClient) {
+            const { error } = await sbClient
+                .from('watchlists')
+                .insert({
+                    session_id: this.sessionId,
+                    participant_id: this.participantId,
+                    symbol: cleanSymbol,
+                    asset_name: assetName
+                });
+            if (error) {
+                console.error('Erreur ajout watchlist :', error);
+                return;
+            }
+        }
+
+        this.watchlist.push({ symbol: cleanSymbol, asset_name: assetName });
+        this.syncWithTeacher(`Ajout watchlist : ${cleanSymbol}`);
+    },
+
+    async removeFromWatchlist(symbol) {
+        if (sbClient) {
+            await sbClient
+                .from('watchlists')
+                .delete()
+                .eq('session_id', this.sessionId)
+                .eq('participant_id', this.participantId)
+                .eq('symbol', symbol);
+        }
+        this.watchlist = this.watchlist.filter(w => w.symbol !== symbol);
+        this.syncWithTeacher(`Retrait watchlist : ${symbol}`);
+    },
+
+    syncWithTeacher(lastAction, trade = null) {
+        if (!this.socket) return;
+        const d = this.portfolioData || {};
+
+        this.socket.emit('student:sync-state', {
+            id: this.participantId,
+            sessionId: this.sessionId,
+            name: this.studentName,
+            isOnline: true,
+            lastAction,
+            lastActionAt: new Date().toISOString(),
+            initialCapital: d.capital || 100000,
+            cash: d.cash ?? (d.capital || 100000),
+            totalValue: d.totalValue ?? (d.capital || 100000),
+            watchlist: this.watchlist,
+            portfolio: (d.positions || []).map(p => ({
+                symbol: p.symbole,
+                qty: p.quantite,
+                avgPrice: p.prix_achat,
+                currentValue: p.valeur
+            })),
+            history: (d.history || []).map(h => ({
+                timestamp: h.date,
+                side: h.side === 'buy' ? 'BUY' : 'SELL',
+                symbol: h.symbole,
+                qty: h.quantite,
+                price: h.prix
+            }))
+        });
+
+        if (trade) {
+            this.socket.emit('student:trade', {
+                studentName: this.studentName,
+                ...trade
+            });
+        }
+    }
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const portfolioBody = document.getElementById('home-portfolio-body');
+    const watchlistList = document.getElementById('home-watchlist-list');
+    const watchlistForm = document.getElementById('watchlist-add-form');
+
+    const isConnected = await StudentWorkspace.init();
+    if (!portfolioBody || !watchlistList) return;
+
+    const formatEuro = (n) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n || 0);
+
+    function renderHome() {
+        const positions = StudentWorkspace.portfolioData?.positions || [];
+
+        if (!isConnected || positions.length === 0) {
+            portfolioBody.innerHTML = `
+                <tr>
+                    <td colspan="5">Aucune position en cours. Passez un premier ordre d'achat pour démarrer votre portefeuille.</td>
+                </tr>
+            `;
+        } else {
+            portfolioBody.innerHTML = positions.map(p => {
+                const diff = (p.prix_actuel - p.prix_achat) * p.quantite;
+                const cssClass = diff >= 0 ? 'change-up' : 'change-down';
+                const sign = diff >= 0 ? '+' : '';
+                return `
+                    <tr>
+                        <td><div class="asset-info"><strong>${p.symbole}</strong><span>${p.symbole}</span></div></td>
+                        <td>${p.quantite}</td>
+                        <td>${formatEuro(p.prix_achat)}</td>
+                        <td class="price">${formatEuro(p.prix_actuel)}</td>
+                        <td class="${cssClass}">${sign}${formatEuro(diff)} (${sign}${Number(p.pourcentage || 0).toFixed(1)}%)</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        if (!isConnected || StudentWorkspace.watchlist.length === 0) {
+            watchlistList.innerHTML = `<p>Votre watchlist est vide. Ajoutez une action ci-dessus pour la suivre.</p>`;
+        } else {
+            watchlistList.innerHTML = StudentWorkspace.watchlist.map(w => {
+                const marketItem = (typeof marketData !== 'undefined' && marketData.actions)
+                    ? marketData.actions.find(a => a.ticker === w.symbol)
+                    : null;
+                const priceText = marketItem ? `${marketItem.prix} ${marketItem.devise}` : '--';
+
+                return `
+                    <div class="watchlist-item">
+                        <div class="wl-info">
+                            <span class="wl-name">${w.asset_name || w.symbol}</span>
+                            <span class="wl-ticker">${w.symbol}</span>
+                        </div>
+                        <div class="wl-stats">
+                            <span class="price">${priceText}</span>
+                            <button type="button" class="btn-outline" data-remove-wl="${w.symbol}">×</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            watchlistList.querySelectorAll('[data-remove-wl]').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    await StudentWorkspace.removeFromWatchlist(btn.dataset.removeWl);
+                    renderHome();
+                });
+            });
+        }
+    }
+
+    renderHome();
+
+    watchlistForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!isConnected) return alert("Connectez-vous à une session pour gérer votre watchlist.");
+        const input = document.getElementById('watchlist-symbol-input');
+        await StudentWorkspace.addToWatchlist(input.value);
+        input.value = '';
+        renderHome();
     });
 });
