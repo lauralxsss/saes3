@@ -1314,7 +1314,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     function normalizeSheet(ws) {
-        const clean = (s) => String(s).replace(/[   ]/g, ' ').trim();
+        const clean = (s) => String(s).replace(/\s+/g, ' ').trim();
         const range = XLSX.utils.decode_range(ws['!ref']);
 
         for (let R = range.s.r + 1; R <= range.e.r; ++R) {
