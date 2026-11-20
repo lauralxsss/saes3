@@ -1297,6 +1297,7 @@ document.addEventListener("DOMContentLoaded", function() {
         scrollBtn.style.display = scrollTop > 600 ? "flex" : "none";
     });
     /*
+    // GRAPHIQUES STATIQUES
     const ctxPerf = document.getElementById('portfolioPerformanceChart');
     if (ctxPerf) {
         const contextPerf = ctxPerf.getContext('2d');
@@ -1508,6 +1509,13 @@ document.addEventListener("DOMContentLoaded", function() {
     if (btnExport) {
         btnExport.addEventListener('click', function () {
 
+            const lignes = Array.from(document.querySelectorAll('#tableCurrentStock tbody tr, #tableTradeHistory tbody tr'))
+            .filter(tr => !tr.querySelector('td[colspan]'));
+            if(!lignes.length){
+                alert('Aucune donnée à exporter.');
+                return;
+            }
+
             let wb = XLSX.utils.book_new();
             let tableCurrent = document.getElementById('tableCurrentStock');
             let tableHistory = document.getElementById('tableTradeHistory');
@@ -1533,6 +1541,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
     //Export PDF
     function exportTablesToPDF() {
+
+        const lignes = Array.from(document.querySelectorAll('#tableCurrentStock tbody tr, #tableTradeHistory tbody tr'))
+        .filter(tr => !tr.querySelector('td[colspan]'));
+        if(!lignes.length){
+            alert('Aucune donnée à exporter.');
+            return;
+        }
+
         if (!window.jspdf) {
             alert("jsPDF n'est pas chargé : vérifie le chemin du fichier.");
             return;
@@ -1648,7 +1664,6 @@ document.addEventListener("DOMContentLoaded", function() {
             try {
                 exportTablesToPDF();
             } catch (err) {
-                console.error('Erreur export PDF :', err);
                 alert('Erreur export PDF : ' + err.message);
             }
         });
@@ -1808,6 +1823,7 @@ async function initPortfolio() {
             [eur(o.montant), 'price'],
             [o.commentaire]
         ]), 7, 'Aucune opération.');
+
         // Journal de trading (ordres qui ont un commentaire)
         const liste = document.querySelector('.journal-list');
         if (liste) {
@@ -1842,12 +1858,15 @@ async function initPortfolio() {
             dessinerCourbe();
         });
     });
+
     const token = localStorage.getItem('tradelab_token');
     if (!token) {
         vide('Connecte-toi pour voir ton portefeuille.');
         return;
     }
+
     vide('Chargement...');
+
     try {
         const res = await fetch('/api/student/portfolio', {
             headers: { 'Authorization': 'Bearer ' + token }
@@ -1862,6 +1881,7 @@ async function initPortfolio() {
         console.error('[portefeuille]', err);
         vide('Erreur de chargement.');
     }
+
 }
 
 
