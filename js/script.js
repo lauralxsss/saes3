@@ -1467,7 +1467,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-        const clean = (s) => String(s).replace(/[   ]/g, ' ').trim();
+        const clean = (s) => String(s).replace(/\s+/g, ' ').trim();
 
         function readTable(table) {
             const head = [[...table.querySelectorAll('thead th')].map((th) => clean(th.textContent))];
