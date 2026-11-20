@@ -674,3 +674,26 @@ section h2, .sidebar-widget h3 { font-size: 1.1rem; margin-bottom: 20px; color: 
 .mentions-legales #mentions-legales, .mentions-legales #cgu, .mentions-legales #rgpd { scroll-margin-top: 80px; }
 .mentions-legales .contest-banner {margin-bottom:2em}
 .mentions-legales .preview-details {margin-left:auto; margin-right:auto; width:70%}
+
+/* =========================================
+   13. ETOILE POUR LA WATCHLIST
+   ========================================= */
+.btn-star-wl {
+    background: transparent;
+    border: none;
+    color: #94A3B8;
+    font-size: 1.15rem;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.btn-star-wl:hover {
+    color: #F59E0B;
+    transform: scale(1.15);
+}
+
+.btn-star-wl.is-active {
+    color: #F59E0B;
+}

@@ -201,7 +201,15 @@ function genererCartesModernes(donnees, containerId) {
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-            <div class="card-header"><span class="asset-name">${actif.nom}</span><span class="asset-ticker">${actif.ticker}</span></div>
+            <div class="card-header">
+                <span class="asset-name">${actif.nom}</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="asset-ticker">${actif.ticker}</span>
+                    <button type="button" class="btn-star-wl" data-wl-ticker="${actif.ticker}" title="Ajouter à la watchlist">
+                        <i class="fa-regular fa-star"></i>
+                    </button>
+                </div>
+            </div>
             <div class="price">${actif.prix.toFixed(3)} ${actif.devise}</div>
             <div class="history">
                 <div><span>1 Jour:</span> ${formatVariation(actif.hist["1J"])}</div>
@@ -218,7 +226,12 @@ function createCard(item) {
         <div class="card" style="box-shadow: none !important;">
             <div class="card-header">
                 <span class="asset-name">${item.nom}</span>
-                <span class="asset-ticker">${item.ticker}</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="asset-ticker">${item.ticker}</span>
+                    <button type="button" class="btn-star-wl" data-wl-ticker="${item.ticker}" title="Ajouter à la watchlist">
+                        <i class="fa-regular fa-star"></i>
+                    </button>
+                </div>
             </div>
             <div class="price">${item.prix} ${item.devise}</div>
             <div class="history">
@@ -466,9 +479,14 @@ function createCardHTML(action) {
     return `
         <article class="stock-card" id="trader-${action.ticker}" data-symbol="${action.ticker}">
             <header class="stock-card__header">
-                <h2 class="stock-card__name">${action.nom} (${action.ticker})</h2>
-                <p class="stock-card__price">${formatPrice(action.prix)} ${action.devise}</p>
-            </header>
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%;">
+        <h2 class="stock-card__name">${action.nom} (${action.ticker})</h2>
+        <button type="button" class="btn-star-wl" data-wl-ticker="${action.ticker}" title="Ajouter à la watchlist">
+            <i class="fa-regular fa-star"></i>
+        </button>
+    </div>
+    <p class="stock-card__price">${formatPrice(action.prix)} ${action.devise}</p>
+</header>
             <aside class="stock-card__infos">
                 <dl class="stock-infos">
                     ${infosRows}
@@ -2165,8 +2183,31 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// 13. ACCUEIL ÉLÈVE VIERGE & SYNCHRONISATION LIVE
+// 13. ACCUEIL ÉLÈVE VIERGE, ÉTOILES WATCHLIST & SYNCHRO LIVE
 // ==========================================
+function findMarketAsset(symbol) {
+    if (typeof marketData === 'undefined') return null;
+    const allAssets = [
+        ...(marketData.actions || []),
+        ...(marketData.indices || []),
+        ...(marketData.devises || [])
+    ];
+    return allAssets.find(a => a.ticker === symbol) || null;
+}
+
+function refreshWatchlistStars() {
+    const savedSymbols = new Set((StudentWorkspace.watchlist || []).map(w => w.symbol));
+    document.querySelectorAll('.btn-star-wl').forEach(btn => {
+        const isFav = savedSymbols.has(btn.dataset.wlTicker);
+        btn.classList.toggle('is-active', isFav);
+        btn.title = isFav ? 'Retirer de la watchlist' : 'Ajouter à la watchlist';
+        const icon = btn.querySelector('i');
+        if (icon) {
+            icon.className = isFav ? 'fa-solid fa-star' : 'fa-regular fa-star';
+        }
+    });
+}
+
 const StudentWorkspace = {
     sessionId: null,
     participantId: null,
@@ -2193,6 +2234,7 @@ const StudentWorkspace = {
             this.loadPortfolioFromApi()
         ]);
 
+        refreshWatchlistStars();
         this.syncWithTeacher('En ligne sur TradeLab');
         return true;
     },
@@ -2227,9 +2269,7 @@ const StudentWorkspace = {
         const cleanSymbol = symbol.trim().toUpperCase();
         if (!cleanSymbol || this.watchlist.some(w => w.symbol === cleanSymbol)) return;
 
-        const found = (typeof marketData !== 'undefined' && marketData.actions)
-            ? marketData.actions.find(a => a.ticker === cleanSymbol)
-            : null;
+        const found = findMarketAsset(cleanSymbol);
         const assetName = found ? found.nom : cleanSymbol;
 
         if (sbClient) {
@@ -2248,6 +2288,7 @@ const StudentWorkspace = {
         }
 
         this.watchlist.push({ symbol: cleanSymbol, asset_name: assetName });
+        refreshWatchlistStars();
         this.syncWithTeacher(`Ajout watchlist : ${cleanSymbol}`);
     },
 
@@ -2261,6 +2302,7 @@ const StudentWorkspace = {
                 .eq('symbol', symbol);
         }
         this.watchlist = this.watchlist.filter(w => w.symbol !== symbol);
+        refreshWatchlistStars();
         this.syncWithTeacher(`Retrait watchlist : ${symbol}`);
     },
 
@@ -2303,19 +2345,51 @@ const StudentWorkspace = {
     }
 };
 
+// Clic sur une étoile n'importe où sur le site (carrousels, page Trader, etc.)
+document.addEventListener('click', async (e) => {
+    const starBtn = e.target.closest('.btn-star-wl');
+    if (!starBtn) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!StudentWorkspace.participantId) {
+        alert("Connectez-vous à une session pour ajouter des actions à votre watchlist.");
+        return;
+    }
+
+    const ticker = starBtn.dataset.wlTicker;
+    starBtn.disabled = true;
+
+    try {
+        const exists = StudentWorkspace.watchlist.some(w => w.symbol === ticker);
+        if (exists) {
+            await StudentWorkspace.removeFromWatchlist(ticker);
+        } else {
+            await StudentWorkspace.addToWatchlist(ticker);
+        }
+        if (typeof window.renderHomeWorkspace === 'function') {
+            window.renderHomeWorkspace();
+        }
+    } finally {
+        starBtn.disabled = false;
+    }
+});
+
+// Affichage dynamique sur la page d'accueil (index.html)
 document.addEventListener('DOMContentLoaded', async () => {
     const portfolioBody = document.getElementById('home-portfolio-body');
     const watchlistList = document.getElementById('home-watchlist-list');
-    const watchlistForm = document.getElementById('watchlist-add-form');
 
     const isConnected = await StudentWorkspace.init();
     if (!portfolioBody || !watchlistList) return;
 
     const formatEuro = (n) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n || 0);
 
-    function renderHome() {
+    window.renderHomeWorkspace = function () {
         const positions = StudentWorkspace.portfolioData?.positions || [];
 
+        // 1. Positions en cours (vide au départ)
         if (!isConnected || positions.length === 0) {
             portfolioBody.innerHTML = `
                 <tr>
@@ -2339,13 +2413,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             }).join('');
         }
 
+        // 2. Watchlist individuelle (alimentée par les étoiles)
         if (!isConnected || StudentWorkspace.watchlist.length === 0) {
-            watchlistList.innerHTML = `<p>Votre watchlist est vide. Ajoutez une action ci-dessus pour la suivre.</p>`;
+            watchlistList.innerHTML = `<p>Votre watchlist est vide. Cliquez sur l'étoile ☆ d'une action pour la suivre ici.</p>`;
         } else {
             watchlistList.innerHTML = StudentWorkspace.watchlist.map(w => {
-                const marketItem = (typeof marketData !== 'undefined' && marketData.actions)
-                    ? marketData.actions.find(a => a.ticker === w.symbol)
-                    : null;
+                const marketItem = findMarketAsset(w.symbol);
                 const priceText = marketItem ? `${marketItem.prix} ${marketItem.devise}` : '--';
 
                 return `
@@ -2356,29 +2429,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                         <div class="wl-stats">
                             <span class="price">${priceText}</span>
-                            <button type="button" class="btn-outline" data-remove-wl="${w.symbol}">×</button>
+                            <button type="button" class="btn-star-wl is-active" data-wl-ticker="${w.symbol}" title="Retirer de la watchlist">
+                                <i class="fa-solid fa-star"></i>
+                            </button>
                         </div>
                     </div>
                 `;
             }).join('');
-
-            watchlistList.querySelectorAll('[data-remove-wl]').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    await StudentWorkspace.removeFromWatchlist(btn.dataset.removeWl);
-                    renderHome();
-                });
-            });
         }
-    }
+    };
 
-    renderHome();
-
-    watchlistForm?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!isConnected) return alert("Connectez-vous à une session pour gérer votre watchlist.");
-        const input = document.getElementById('watchlist-symbol-input');
-        await StudentWorkspace.addToWatchlist(input.value);
-        input.value = '';
-        renderHome();
-    });
+    window.renderHomeWorkspace();
 });
