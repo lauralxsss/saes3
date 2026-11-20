@@ -2134,3 +2134,136 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// --- SUIVI PROFESSEUR EN TEMPS RÉEL (LECTURE SEULE) ---
+document.addEventListener('DOMContentLoaded', () => {
+    const tbody = document.getElementById('live-students-body');
+    if (!tbody || typeof io === 'undefined') return;
+
+    const socket = io();
+    const students = new Map();
+    let selectedStudentId = null;
+
+    const filterSelect = document.getElementById('filter-status');
+    const detailModal = document.getElementById('student-detail-modal');
+    const tradesFeed = document.getElementById('live-trades-feed');
+
+    const formatEuro = (n) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n || 0);
+
+    function isStudentInactive(s) {
+        if (!s.isOnline) return true;
+        const noHistory = !s.history || s.history.length === 0;
+        const inactiveTime = s.lastActionAt && (Date.now() - new Date(s.lastActionAt).getTime() > 180000);
+        return noHistory || inactiveTime;
+    }
+
+    function renderStudentsTable() {
+        const filter = filterSelect ? filterSelect.value : 'all';
+        let online = 0, active = 0, idle = 0;
+
+        students.forEach(s => {
+            if (s.isOnline) online++;
+            if (isStudentInactive(s)) idle++;
+            else active++;
+        });
+
+        document.getElementById('count-online').textContent = online;
+        document.getElementById('count-active').textContent = active;
+        document.getElementById('count-idle').textContent = idle;
+
+        const list = Array.from(students.values()).filter(s => {
+            if (filter === 'active') return !isStudentInactive(s);
+            if (filter === 'idle') return isStudentInactive(s);
+            return true;
+        });
+
+        if (list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7">Aucun élève trouvé.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = list.map(s => {
+            const initCap = s.initialCapital || 100000;
+            const perf = (((s.totalValue - initCap) / initCap) * 100).toFixed(2);
+            const statusText = !s.isOnline ? 'Hors ligne' : (isStudentInactive(s) ? 'Inactif' : 'Actif');
+
+            return `
+                <tr>
+                    <td><strong>${s.name}</strong></td>
+                    <td>${statusText}</td>
+                    <td>${s.lastAction || 'Consultation'}</td>
+                    <td>${formatEuro(s.cash)}</td>
+                    <td>${formatEuro(s.totalValue)}</td>
+                    <td>${perf > 0 ? '+' : ''}${perf} %</td>
+                    <td>
+                        <button type="button" class="btn-outline" onclick="openStudentDetail('${s.id}')">Voir</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        if (selectedStudentId && students.has(selectedStudentId)) {
+            updateStudentModal(students.get(selectedStudentId));
+        }
+    }
+
+    function updateStudentModal(s) {
+        const initCap = s.initialCapital || 100000;
+        const perf = (((s.totalValue - initCap) / initCap) * 100).toFixed(2);
+
+        document.getElementById('detail-student-name').textContent = s.name;
+        document.getElementById('detail-cash').textContent = formatEuro(s.cash);
+        document.getElementById('detail-total').textContent = formatEuro(s.totalValue);
+        document.getElementById('detail-perf').textContent = `${perf > 0 ? '+' : ''}${perf} %`;
+
+        document.getElementById('detail-portfolio-body').innerHTML = (s.portfolio && s.portfolio.length)
+            ? s.portfolio.map(p => `<tr><td>${p.symbol}</td><td>${p.qty}</td><td>${formatEuro(p.avgPrice)}</td><td>${formatEuro(p.currentValue)}</td></tr>`).join('')
+            : '<tr><td colspan="4">Aucune action en portefeuille</td></tr>';
+
+        document.getElementById('detail-orders-body').innerHTML = (s.pendingOrders && s.pendingOrders.length)
+            ? s.pendingOrders.map(o => `<tr><td>${o.side}</td><td>${o.symbol}</td><td>${o.qty}</td><td>${formatEuro(o.price)}</td></tr>`).join('')
+            : '<tr><td colspan="4">Aucun ordre en cours</td></tr>';
+
+        document.getElementById('detail-history-body').innerHTML = (s.history && s.history.length)
+            ? s.history.map(h => `<tr><td>${new Date(h.timestamp).toLocaleTimeString('fr-FR')}</td><td>${h.side}</td><td>${h.symbol}</td><td>${h.qty}</td><td>${formatEuro(h.price)}</td></tr>`).join('')
+            : '<tr><td colspan="5">Aucune transaction</td></tr>';
+    }
+
+    window.openStudentDetail = (id) => {
+        selectedStudentId = id;
+        const s = students.get(id);
+        if (!s) return;
+        updateStudentModal(s);
+        detailModal.classList.remove('hidden');
+    };
+
+    document.getElementById('close-detail-modal')?.addEventListener('click', () => {
+        detailModal.classList.add('hidden');
+        selectedStudentId = null;
+    });
+
+    filterSelect?.addEventListener('change', renderStudentsTable);
+
+    // Écoute Socket.io en temps réel
+    socket.emit('teacher:watch');
+
+    socket.on('students:list', (data) => {
+        students.clear();
+        data.forEach(s => students.set(s.id, s));
+        renderStudentsTable();
+    });
+
+    socket.on('student:updated', (student) => {
+        students.set(student.id, student);
+        renderStudentsTable();
+    });
+
+    socket.on('student:trade', (trade) => {
+        if (tradesFeed.firstElementChild?.textContent.includes('En attente')) {
+            tradesFeed.innerHTML = '';
+        }
+        const li = document.createElement('li');
+        li.textContent = `[${new Date().toLocaleTimeString('fr-FR')}] ${trade.studentName} : ${trade.side} ${trade.qty} ${trade.symbol} à ${formatEuro(trade.price)}`;
+        tradesFeed.prepend(li);
+    });
+});

@@ -17,7 +17,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="pro-layout">
 
@@ -38,7 +37,8 @@
         </ul>
 
         <div class="nav-auth">
-        <button class="btn-primary" onclick="window.location.href='/rejoindre/'">Connexion</button>        </div>
+            <button class="btn-primary" onclick="window.location.href='/rejoindre/'">Connexion</button>
+        </div>
     </nav>
     
     <main class="page-container" style="max-width: 1200px;">
@@ -47,7 +47,14 @@
                 <h1>Gestion des Sessions</h1>
                 <p class="subtitle">Pilotez vos concours de simulation et suivez l'engagement des étudiants en direct.</p>
             </div>
-            <button class="btn-primary" id="open-modal-btn"><i class="fa-solid fa-plus"></i> Nouvelle session</button>
+            <div>
+                <button type="button" class="btn-outline" onclick="window.location.href='/admin/suivi/suivi.html'">
+                    <i class="fa-solid fa-eye"></i> Suivi en direct
+                </button>
+                <button type="button" class="btn-primary" id="open-modal-btn">
+                    <i class="fa-solid fa-plus"></i> Nouvelle session
+                </button>
+            </div>
         </header>
 
         <!-- GRILLE DES SESSIONS -->
@@ -86,21 +93,7 @@
             </form>
         </div>
     </div>
-    <div class="admin-section" style="margin-top: 30px;">
-    <h2>🔴 Élèves en ligne en direct</h2>
-    <table style="width: 100%; text-align: left; border-collapse: collapse;">
-        <thead>
-            <tr style="border-bottom: 2px solid var(--border-color);">
-                <th>Nom de l'élève</th>
-                <th>Solde Liquidités (Cash)</th>
-                <th>Valeur Totale</th>
-            </tr>
-        </thead>
-        <tbody id="live-students-body">
-            <tr><td colspan="3" style="text-align: center; padding: 10px;">Chargement...</td></tr>
-        </tbody>
-    </table>
-</div>
+
     <footer class="app-footer">
         <div class="footer-content">
             <div class="footer-logo"><i class="fa-solid fa-chart-line"></i> TradeLab</div>
